@@ -93,10 +93,10 @@ Route::middleware(['auth', 'ngo'])->prefix('ngo')->name('ngo.')->group(function 
 
     // Pledges (same as donor, but for NGO)
     Route::middleware('verified.ngo')->group(function () {
-        Route::get('pledges', [\App\Http\Controllers\Donor\PledgeController::class, 'index'])->name('pledges.index');
-        Route::get('pledges/create', [\App\Http\Controllers\Donor\PledgeController::class, 'create'])->name('pledges.create');
-        Route::post('pledges', [\App\Http\Controllers\Donor\PledgeController::class, 'store'])->name('pledges.store');
-        Route::get('pledges/{pledge}', [\App\Http\Controllers\Donor\PledgeController::class, 'show'])->name('pledges.show');
+        Route::get('pledges', [\App\Http\Controllers\Ngo\PledgeController::class, 'index'])->name('pledges.index');
+        Route::get('pledges/create', [\App\Http\Controllers\Ngo\PledgeController::class, 'create'])->name('pledges.create');
+        Route::post('pledges', [\App\Http\Controllers\Ngo\PledgeController::class, 'store'])->name('pledges.store');
+        Route::get('pledges/{pledge}', [\App\Http\Controllers\Ngo\PledgeController::class, 'show'])->name('pledges.show');
     });
 
     // Notifications

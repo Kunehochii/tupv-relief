@@ -166,18 +166,18 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID         | Feature                         | Status | Notes                          |
 | ---------- | ------------------------------- | ------ | ------------------------------ |
-| DPLEDGE-01 | Create new pledge               | ⬜     | pledges/create.blade.php ready |
-| DPLEDGE-02 | Choose financial or in-kind     | ⬜     | Type selection form            |
-| DPLEDGE-03 | View pledge list                | ⬜     | pledges/index.blade.php ready  |
-| DPLEDGE-04 | View pledge details with status | ⬜     | pledges/show.blade.php ready   |
-| DPLEDGE-05 | Receive reference number        | ⬜     | Auto-generated on creation     |
+| DPLEDGE-01 | Create new pledge               | ✅     | pledges/create.blade.php ready |
+| DPLEDGE-02 | Choose financial or in-kind     | ✅     | Type selection form            |
+| DPLEDGE-03 | View pledge list                | ✅     | pledges/index.blade.php ready  |
+| DPLEDGE-04 | View pledge details with status | ✅     | pledges/show.blade.php ready   |
+| DPLEDGE-05 | Receive reference number        | ✅     | Auto-generated on creation     |
 
 **Acceptance Criteria:**
 
-- [ ] Donor can pledge to specific drive
-- [ ] Financial pledges capture amount
-- [ ] In-kind pledges capture quantity and description
-- [ ] Reference number is displayed after submission
+- [x] Donor can pledge to specific drive
+- [x] Financial pledges capture amount
+- [x] In-kind pledges capture quantity and description
+- [x] Reference number is displayed after submission
 
 ### 3.3 Map View
 
@@ -230,15 +230,15 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID      | Feature                      | Status | Notes                           |
 | ------- | ---------------------------- | ------ | ------------------------------- |
-| NGOP-01 | Make pledges (verified only) | ⬜     | verified.ngo middleware applied |
-| NGOP-02 | View organization pledges    | ⬜     | Reuses donor pledge views       |
-| NGOP-03 | Track pledge status          | ⬜     | Same flow as donor              |
+| NGOP-01 | Make pledges (verified only) | ✅     | verified.ngo middleware applied |
+| NGOP-02 | View organization pledges    | ✅     | NGO-specific pledge views       |
+| NGOP-03 | Track pledge status          | ✅     | Same flow as donor              |
 
 **Acceptance Criteria:**
 
-- [ ] Verified NGO can pledge to drives
-- [ ] NGO pledges marked with organization name
-- [ ] Same notification flow as donors
+- [x] Verified NGO can pledge to drives
+- [x] NGO pledges marked with organization name
+- [x] Same notification flow as donors
 
 ### 4.3 External Donation Link
 
