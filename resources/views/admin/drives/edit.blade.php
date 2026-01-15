@@ -45,7 +45,7 @@
                                 <select class="form-select @error('target_type') is-invalid @enderror" 
                                         id="target_type" name="target_type" required>
                                     <option value="financial" {{ old('target_type', $drive->target_type) === 'financial' ? 'selected' : '' }}>Financial (PHP)</option>
-                                    <option value="in-kind" {{ old('target_type', $drive->target_type) === 'in-kind' ? 'selected' : '' }}>In-Kind (Items)</option>
+                                    <option value="quantity" {{ old('target_type', $drive->target_type) === 'quantity' ? 'selected' : '' }}>Quantity (Items)</option>
                                 </select>
                                 @error('target_type')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -55,18 +55,44 @@
                                 <label for="target_amount" class="form-label">Target Amount <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control @error('target_amount') is-invalid @enderror" 
                                        id="target_amount" name="target_amount" value="{{ old('target_amount', $drive->target_amount) }}" 
-                                       min="1" required>
+                                       min="1" step="0.01" required>
                                 @error('target_amount')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
+
+                        <!-- Progress Section -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="collected_amount" class="form-label">Collected Amount (Progress)</label>
+                                <input type="number" class="form-control @error('collected_amount') is-invalid @enderror" 
+                                       id="collected_amount" name="collected_amount" 
+                                       value="{{ old('collected_amount', $drive->collected_amount ?? 0) }}" 
+                                       min="0" step="0.01">
+                                @error('collected_amount')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Current progress: {{ $drive->progress_percentage ?? 0 }}%</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Progress Bar</label>
+                                <div class="progress" style="height: 38px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ $drive->progress_percentage ?? 0 }}%" 
+                                         aria-valuenow="{{ $drive->progress_percentage ?? 0 }}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        {{ $drive->progress_percentage ?? 0 }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                <label for="start_date" class="form-label">Start Date</label>
                                 <input type="date" class="form-control @error('start_date') is-invalid @enderror" 
-                                       id="start_date" name="start_date" value="{{ old('start_date', $drive->start_date->format('Y-m-d')) }}" required>
+                                       id="start_date" name="start_date" value="{{ old('start_date', $drive->start_date?->format('Y-m-d')) }}">
                                 @error('start_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -74,7 +100,7 @@
                             <div class="col-md-6">
                                 <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control @error('end_date') is-invalid @enderror" 
-                                       id="end_date" name="end_date" value="{{ old('end_date', $drive->end_date->format('Y-m-d')) }}" required>
+                                       id="end_date" name="end_date" value="{{ old('end_date', $drive->end_date?->format('Y-m-d')) }}" required>
                                 @error('end_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -97,9 +123,9 @@
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select @error('status') is-invalid @enderror" 
                                     id="status" name="status">
-                                <option value="upcoming" {{ old('status', $drive->status) === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
                                 <option value="active" {{ old('status', $drive->status) === 'active' ? 'selected' : '' }}>Active</option>
                                 <option value="completed" {{ old('status', $drive->status) === 'completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="closed" {{ old('status', $drive->status) === 'closed' ? 'selected' : '' }}>Closed</option>
                             </select>
                             @error('status')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -176,6 +202,32 @@
                 }
             });
     });
+
+    // Real-time progress bar update
+    function updateProgressBar() {
+        const targetAmount = parseFloat(document.getElementById('target_amount').value) || 0;
+        const collectedAmount = parseFloat(document.getElementById('collected_amount').value) || 0;
+        
+        let percentage = 0;
+        if (targetAmount > 0) {
+            percentage = Math.min(100, Math.round((collectedAmount / targetAmount) * 100 * 100) / 100);
+        }
+        
+        const progressBar = document.querySelector('.progress-bar');
+        const progressText = progressBar.parentElement.nextElementSibling;
+        
+        progressBar.style.width = percentage + '%';
+        progressBar.setAttribute('aria-valuenow', percentage);
+        progressBar.textContent = percentage + '%';
+        
+        if (progressText) {
+            progressText.innerHTML = `<small class="text-muted">Current progress: ${percentage}%</small>`;
+        }
+    }
+
+    // Attach event listeners
+    document.getElementById('target_amount').addEventListener('input', updateProgressBar);
+    document.getElementById('collected_amount').addEventListener('input', updateProgressBar);
 </script>
 @endsection
 @endsection

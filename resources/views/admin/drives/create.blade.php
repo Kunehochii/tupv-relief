@@ -51,26 +51,35 @@
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="end_date" class="form-label">End Date *</label>
-                            <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror" 
-                                id="end_date" name="end_date" value="{{ old('end_date') }}" required>
-                            @error('end_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control @error('start_date') is-invalid @enderror" 
+                                    id="start_date" name="start_date" value="{{ old('start_date', now()->format('Y-m-d')) }}">
+                                @error('start_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="end_date" class="form-label">End Date *</label>
+                                <input type="date" class="form-control @error('end_date') is-invalid @enderror" 
+                                    id="end_date" name="end_date" value="{{ old('end_date') }}" required>
+                                @error('end_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Items Needed</label>
-                            <div id="itemsContainer">
-                                <div class="input-group mb-2">
-                                    <input type="text" class="form-control" name="items_needed[]" placeholder="e.g., Rice (5kg bags)">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="addItem()">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <small class="text-muted">Add items donors can pledge</small>
+                            <label for="items_needed" class="form-label">Items Needed (comma-separated)</label>
+                            <input type="text" class="form-control @error('items_needed') is-invalid @enderror" 
+                                   id="items_needed" name="items_needed" 
+                                   value="{{ old('items_needed') }}"
+                                   placeholder="e.g., Rice, Canned Goods, Water, Blankets">
+                            @error('items_needed')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">List of items that donors can contribute</small>
                         </div>
                         
                         <hr>
@@ -146,20 +155,6 @@
                 }
             });
     });
-    
-    // Add item functionality
-    function addItem() {
-        const container = document.getElementById('itemsContainer');
-        const div = document.createElement('div');
-        div.className = 'input-group mb-2';
-        div.innerHTML = `
-            <input type="text" class="form-control" name="items_needed[]" placeholder="e.g., Canned goods">
-            <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
-                <i class="bi bi-trash"></i>
-            </button>
-        `;
-        container.appendChild(div);
-    }
 </script>
 @endsection
 @endsection

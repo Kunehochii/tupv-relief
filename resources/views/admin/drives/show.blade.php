@@ -53,7 +53,24 @@
                     <div class="row mb-3">
                         <div class="col-md-3"><strong>Date Range</strong></div>
                         <div class="col-md-9">
-                            {{ $drive->start_date->format('M d, Y') }} - {{ $drive->end_date->format('M d, Y') }}
+                            {{ $drive->start_date?->format('M d, Y') ?? 'Not set' }} - {{ $drive->end_date?->format('M d, Y') ?? 'Not set' }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Progress</strong></div>
+                        <div class="col-md-9">
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: {{ $drive->progress_percentage ?? 0 }}%" 
+                                     aria-valuenow="{{ $drive->progress_percentage ?? 0 }}" 
+                                     aria-valuemin="0" aria-valuemax="100">
+                                    {{ $drive->progress_percentage ?? 0 }}%
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                Collected: {{ number_format($drive->collected_amount ?? 0) }} / {{ number_format($drive->target_amount) }}
+                                {{ $drive->target_type === 'financial' ? 'PHP' : 'items' }}
+                            </small>
                         </div>
                     </div>
                     @if($drive->items_needed && count($drive->items_needed) > 0)

@@ -78,20 +78,21 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID       | Feature                         | Status | Notes                                   |
 | -------- | ------------------------------- | ------ | --------------------------------------- |
-| DRIVE-01 | Create new drive with details   | ⬜     | DriveController@store                   |
-| DRIVE-02 | Set drive location on map       | ⬜     | Leaflet integration in create.blade.php |
-| DRIVE-03 | Edit existing drives            | ⬜     | DriveController@update                  |
-| DRIVE-04 | View drive details with pledges | ⬜     | drives/show.blade.php ready             |
-| DRIVE-05 | Mark drive as completed         | ⬜     | DriveController@complete                |
+| DRIVE-01 | Create new drive with details   | ✅     | DriveController@store                   |
+| DRIVE-02 | Set drive location on map       | ✅     | Leaflet integration in create.blade.php |
+| DRIVE-03 | Edit existing drives            | ✅     | DriveController@update                  |
+| DRIVE-04 | View drive details with pledges | ✅     | drives/show.blade.php ready             |
+| DRIVE-05 | Mark drive as completed         | ✅     | DriveController@complete                |
 | DRIVE-06 | List all drives with filters    | ⬜     | drives/index.blade.php ready            |
 
 **Acceptance Criteria:**
 
-- [ ] Admin can create drive with name, description, target, dates
-- [ ] Admin can pin location on OpenStreetMap
-- [ ] Drive shows progress percentage
-- [ ] Admin can edit drive details
-- [ ] Admin can mark drive as completed
+- [x] Admin can create drive with name, description, target, dates
+- [x] Admin can pin location on OpenStreetMap
+- [x] Drive shows progress percentage
+- [x] Admin can edit drive details
+- [x] Admin can manually update collected amount (progress)
+- [x] Admin can mark drive as completed
 
 ### 2.3 Pledge Management
 
