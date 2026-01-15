@@ -32,16 +32,27 @@ class DriveController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'target_amount' => ['required', 'numeric', 'min:0'],
+            'collected_amount' => ['nullable', 'numeric', 'min:0'],
             'target_type' => ['required', 'in:financial,quantity'],
-            'items_needed' => ['nullable', 'array'],
+            'items_needed' => ['nullable', 'string'],
+            'start_date' => ['nullable', 'date'],
             'end_date' => ['required', 'date', 'after:today'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'address' => ['nullable', 'string', 'max:500'],
         ]);
 
+        // Convert comma-separated items_needed string to array
+        if (isset($validated['items_needed']) && !empty($validated['items_needed'])) {
+            $validated['items_needed'] = array_map('trim', explode(',', $validated['items_needed']));
+        } else {
+            $validated['items_needed'] = null;
+        }
+
         $validated['created_by'] = Auth::id();
         $validated['status'] = Drive::STATUS_ACTIVE;
+        $validated['collected_amount'] = $validated['collected_amount'] ?? 0;
+        $validated['start_date'] = $validated['start_date'] ?? now();
 
         Drive::create($validated);
 
@@ -67,13 +78,23 @@ class DriveController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'target_amount' => ['required', 'numeric', 'min:0'],
+            'collected_amount' => ['nullable', 'numeric', 'min:0'],
             'target_type' => ['required', 'in:financial,quantity'],
-            'items_needed' => ['nullable', 'array'],
+            'items_needed' => ['nullable', 'string'],
+            'start_date' => ['nullable', 'date'],
             'end_date' => ['required', 'date'],
+            'status' => ['nullable', 'in:active,completed,closed'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'address' => ['nullable', 'string', 'max:500'],
         ]);
+
+        // Convert comma-separated items_needed string to array
+        if (isset($validated['items_needed']) && !empty($validated['items_needed'])) {
+            $validated['items_needed'] = array_map('trim', explode(',', $validated['items_needed']));
+        } else {
+            $validated['items_needed'] = null;
+        }
 
         $drive->update($validated);
 

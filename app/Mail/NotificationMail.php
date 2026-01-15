@@ -15,7 +15,7 @@ class NotificationMail extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public string $subject,
+        public string $emailSubject,
         public string $notificationMessage,
         public string $type,
         public User $user
@@ -24,7 +24,7 @@ class NotificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[Relief] ' . $this->subject,
+            subject: '[Relief] ' . $this->emailSubject,
         );
     }
 

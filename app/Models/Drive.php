@@ -13,8 +13,10 @@ class Drive extends Model
         'name',
         'description',
         'target_amount',
+        'collected_amount',
         'target_type',
         'items_needed',
+        'start_date',
         'end_date',
         'status',
         'latitude',
@@ -26,10 +28,12 @@ class Drive extends Model
     protected function casts(): array
     {
         return [
+            'start_date' => 'datetime',
             'end_date' => 'datetime',
             'items_needed' => 'array',
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',
+            'collected_amount' => 'decimal:2',
         ];
     }
 
@@ -65,7 +69,7 @@ class Drive extends Model
     public function getProgressPercentageAttribute()
     {
         if ($this->target_amount <= 0) return 0;
-        return min(100, round(($this->total_pledged / $this->target_amount) * 100, 2));
+        return min(100, round(($this->collected_amount / $this->target_amount) * 100, 2));
     }
 
     public function scopeActive($query)
