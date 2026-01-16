@@ -9,5 +9,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Schedule pledge expiry tasks
-Schedule::command('pledges:warn-expiry')->hourly();
-Schedule::command('pledges:expire')->hourly();
+// Send expiry warnings daily at 8:00 AM
+Schedule::command('pledges:warn-expiry')->dailyAt('08:00');
+
+// Expire unverified pledges daily at midnight
+Schedule::command('pledges:expire')->dailyAt('00:00');
