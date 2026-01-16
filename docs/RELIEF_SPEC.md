@@ -2,8 +2,8 @@
 
 > Spec-Driven Development Tracking for the Relief Donation Drive Management System
 
-**Version:** 1.0  
-**Last Updated:** 2024  
+**Version:** 1.1  
+**Last Updated:** January 16, 2026  
 **Status:** In Development
 
 ---
@@ -83,7 +83,8 @@ This document tracks the implementation progress of RELIEF features based on the
 | DRIVE-03 | Edit existing drives            | ✅     | DriveController@update                  |
 | DRIVE-04 | View drive details with pledges | ✅     | drives/show.blade.php ready             |
 | DRIVE-05 | Mark drive as completed         | ✅     | DriveController@complete                |
-| DRIVE-06 | List all drives with filters    | ⬜     | drives/index.blade.php ready            |
+| DRIVE-06 | List all drives with filters    | ✅     | drives/index.blade.php implemented      |
+| DRIVE-07 | Map overview of all drives      | ✅     | admin/drives/map.blade.php with Leaflet |
 
 **Acceptance Criteria:**
 
@@ -93,6 +94,7 @@ This document tracks the implementation progress of RELIEF features based on the
 - [x] Admin can edit drive details
 - [x] Admin can manually update collected amount (progress)
 - [x] Admin can mark drive as completed
+- [x] Admin can view all drives on interactive map
 
 ### 2.3 Pledge Management
 
@@ -130,19 +132,19 @@ This document tracks the implementation progress of RELIEF features based on the
 
 ### 2.5 Reports
 
-| ID        | Feature                   | Status | Notes                         |
-| --------- | ------------------------- | ------ | ----------------------------- |
-| REPORT-01 | Overview statistics       | ⬜     | reports/index.blade.php ready |
-| REPORT-02 | Drive performance metrics | ⬜     | Progress, pledge counts       |
-| REPORT-03 | NGO contribution tracking | ⬜     | Including link clicks         |
-| REPORT-04 | Export to CSV/Excel       | ⬜     | ReportController@export       |
+| ID        | Feature                   | Status | Notes                                    |
+| --------- | ------------------------- | ------ | ---------------------------------------- |
+| REPORT-01 | Overview statistics       | ✅     | reports/index.blade.php with stats cards |
+| REPORT-02 | Drive performance metrics | ✅     | Progress, pledge counts table            |
+| REPORT-03 | NGO contribution tracking | ✅     | Including link clicks in NGO table       |
+| REPORT-04 | Export to CSV/Excel       | ✅     | ReportController@export with CSV support |
 
 **Acceptance Criteria:**
 
-- [ ] Reports show total donations (financial + in-kind)
-- [ ] Reports show families helped
-- [ ] Admin can export pledge data
-- [ ] NGO link click statistics are visible
+- [x] Reports show total donations (financial + in-kind)
+- [x] Reports show families helped
+- [x] Admin can export pledge data
+- [x] NGO link click statistics are visible
 
 ---
 
@@ -275,19 +277,19 @@ This document tracks the implementation progress of RELIEF features based on the
 
 ### 5.2 Drive Preview Page
 
-| ID      | Feature                     | Status | Notes                                |
-| ------- | --------------------------- | ------ | ------------------------------------ |
-| PREV-01 | Public shareable drive page | ⬜     | public/drive-preview.blade.php ready |
-| PREV-02 | Display drive details       | ⬜     | All drive info shown                 |
-| PREV-03 | Show location map           | ⬜     | Leaflet map embedded                 |
-| PREV-04 | CTA for logged-in users     | ⬜     | Pledge button if authenticated       |
+| ID      | Feature                     | Status | Notes                                              |
+| ------- | --------------------------- | ------ | -------------------------------------------------- |
+| PREV-01 | Public shareable drive page | ✅     | public/drive-preview.blade.php ready               |
+| PREV-02 | Display drive details       | ✅     | All drive info shown                               |
+| PREV-03 | Show location map           | ✅     | Leaflet map embedded                               |
+| PREV-04 | CTA for logged-in users     | ✅     | Pledge button for donor/NGO, manage link for admin |
 
 **Acceptance Criteria:**
 
-- [ ] Drive preview accessible without login
-- [ ] Shows drive name, description, progress, location
-- [ ] Authenticated users see pledge button
-- [ ] Guests see login/register prompt
+- [x] Drive preview accessible without login
+- [x] Shows drive name, description, progress, location
+- [x] Authenticated users see pledge button
+- [x] Guests see login/register prompt
 
 ---
 

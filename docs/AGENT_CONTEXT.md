@@ -120,21 +120,26 @@ const VERIFICATION_REJECTED = 'rejected';
 
 #### pledges
 
-| Column                      | Type       | Notes                                   |
-| --------------------------- | ---------- | --------------------------------------- |
-| id                          | bigint     | Primary key                             |
-| reference_number            | string     | Auto-generated (PLG-XXXXX)              |
-| user_id                     | foreignId  | Donor/NGO who pledged                   |
-| drive_id                    | foreignId  | Target drive                            |
-| type                        | enum       | financial, in-kind                      |
-| amount                      | decimal?   | For financial pledges                   |
-| quantity                    | integer?   | For in-kind pledges                     |
-| item_description            | string?    | What items                              |
-| status                      | enum       | pending, verified, distributed, expired |
-| families_helped             | integer?   | Impact metric (admin fills)             |
-| relief_packages             | integer?   | Impact metric (admin fills)             |
-| admin_feedback              | text?      | Distribution notes                      |
-| verified_at, distributed_at | timestamp? | Status timestamps                       |
+| Column            | Type       | Notes                                   |
+| ----------------- | ---------- | --------------------------------------- |
+| id                | bigint     | Primary key                             |
+| reference_number  | string     | Auto-generated (REL-XXXXXXXX)           |
+| user_id           | foreignId  | Donor/NGO who pledged                   |
+| drive_id          | foreignId  | Target drive                            |
+| items             | json?      | Array of items being pledged            |
+| quantity          | integer    | Number of items (default: 1)            |
+| details           | text?      | Additional details about the pledge     |
+| contact_number    | string?    | Donor contact number                    |
+| notes             | text?      | Additional notes                        |
+| status            | enum       | pending, verified, expired, distributed |
+| verified_at       | timestamp? | When pledge was verified                |
+| verified_by       | foreignId? | Admin who verified                      |
+| expired_at        | timestamp? | When pledge expired                     |
+| distributed_at    | timestamp? | When donation was distributed           |
+| families_helped   | integer?   | Impact metric (admin fills)             |
+| relief_packages   | integer?   | Impact metric (admin fills)             |
+| items_distributed | integer?   | Impact metric (admin fills)             |
+| admin_feedback    | text?      | Distribution notes                      |
 
 #### notifications
 

@@ -102,6 +102,14 @@ class DriveController extends Controller
             ->with('success', 'Drive updated successfully.');
     }
 
+    public function complete(Drive $drive): RedirectResponse
+    {
+        $drive->update(['status' => Drive::STATUS_COMPLETED]);
+
+        return redirect()->route('admin.drives.show', $drive)
+            ->with('success', 'Drive marked as completed successfully.');
+    }
+
     public function close(Drive $drive): RedirectResponse
     {
         $drive->update(['status' => Drive::STATUS_CLOSED]);

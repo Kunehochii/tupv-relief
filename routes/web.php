@@ -40,6 +40,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Drive Management
     Route::resource('drives', \App\Http\Controllers\Admin\DriveController::class);
+    Route::patch('drives/{drive}/complete', [\App\Http\Controllers\Admin\DriveController::class, 'complete'])->name('drives.complete');
     Route::post('drives/{drive}/close', [\App\Http\Controllers\Admin\DriveController::class, 'close'])->name('drives.close');
     Route::get('drives-map', [\App\Http\Controllers\Admin\DriveController::class, 'map'])->name('drives.map');
 
@@ -60,6 +61,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Reports
     Route::get('reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export', [\App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
     Route::get('reports/donations', [\App\Http\Controllers\Admin\ReportController::class, 'donationSummary'])->name('reports.donations');
     Route::get('reports/drives', [\App\Http\Controllers\Admin\ReportController::class, 'drivePerformance'])->name('reports.drives');
     Route::get('reports/donors', [\App\Http\Controllers\Admin\ReportController::class, 'donorStatistics'])->name('reports.donors');

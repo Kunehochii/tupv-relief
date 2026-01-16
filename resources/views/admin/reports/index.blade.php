@@ -11,18 +11,18 @@
         <div class="col-md-3">
             <div class="card bg-primary text-white">
                 <div class="card-body">
-                    <h6 class="card-title opacity-75">Total Donations</h6>
-                    <h2 class="mb-0">₱{{ number_format($stats['total_financial'] ?? 0, 2) }}</h2>
-                    <small>Financial contributions</small>
+                    <h6 class="card-title opacity-75">Total Pledges</h6>
+                    <h2 class="mb-0">{{ number_format($stats['total_pledges'] ?? 0) }}</h2>
+                    <small>All pledges</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <h6 class="card-title opacity-75">In-Kind Items</h6>
+                    <h6 class="card-title opacity-75">Items Pledged</h6>
                     <h2 class="mb-0">{{ number_format($stats['total_inkind'] ?? 0) }}</h2>
-                    <small>Items donated</small>
+                    <small>Total quantity</small>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <h6 class="card-title opacity-75">Active Donors</h6>
                     <h2 class="mb-0">{{ number_format($stats['active_donors'] ?? 0) }}</h2>
-                    <small>Unique contributors</small>
+                    <small>Last 30 days</small>
                 </div>
             </div>
         </div>
@@ -141,11 +141,11 @@
                             <tr>
                                 <th>Donor</th>
                                 <th>Pledges</th>
-                                <th>Amount</th>
+                                <th>Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($topDonors as $donor)
+                            @forelse($topDonors as $donor)
                                 <tr>
                                     <td>
                                         {{ Str::limit($donor->name, 15) }}
@@ -154,9 +154,13 @@
                                         @endif
                                     </td>
                                     <td>{{ $donor->pledges_count }}</td>
-                                    <td>₱{{ number_format($donor->total_amount, 0) }}</td>
+                                    <td>{{ number_format($donor->total_quantity ?? 0) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">No donor data available</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -197,8 +201,7 @@
                         <th>Organization</th>
                         <th>Status</th>
                         <th>Pledges</th>
-                        <th>Financial</th>
-                        <th>In-Kind</th>
+                        <th>Total Quantity</th>
                         <th>Link Clicks</th>
                     </tr>
                 </thead>
@@ -216,13 +219,12 @@
                                 @endif
                             </td>
                             <td>{{ $ngo->pledges_count }}</td>
-                            <td>₱{{ number_format($ngo->financial_total ?? 0, 0) }}</td>
-                            <td>{{ number_format($ngo->inkind_total ?? 0) }} items</td>
+                            <td>{{ number_format($ngo->total_quantity ?? 0) }} items</td>
                             <td>{{ number_format($ngo->link_clicks_count ?? 0) }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">No NGO data available</td>
+                            <td colspan="5" class="text-center text-muted py-4">No NGO data available</td>
                         </tr>
                     @endforelse
                 </tbody>

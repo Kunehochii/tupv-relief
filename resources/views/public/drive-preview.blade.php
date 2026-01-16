@@ -70,12 +70,20 @@
                     
                     <!-- CTA -->
                     <div class="text-center py-3">
-                        <h5 class="mb-3">Ready to help?</h5>
                         @auth
-                            <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}" class="btn btn-primary btn-lg">
-                                <i class="bi bi-heart-fill me-2"></i>Pledge to this Drive
-                            </a>
+                            @if(auth()->user()->role === 'admin')
+                                <h5 class="mb-3">Manage this Drive</h5>
+                                <a href="{{ route('admin.drives.show', $drive) }}" class="btn btn-secondary btn-lg">
+                                    <i class="bi bi-gear-fill me-2"></i>View Drive Details
+                                </a>
+                            @else
+                                <h5 class="mb-3">Ready to help?</h5>
+                                <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-heart-fill me-2"></i>Pledge to this Drive
+                                </a>
+                            @endif
                         @else
+                            <h5 class="mb-3">Ready to help?</h5>
                             <p class="text-muted mb-3">Login or register to make a pledge</p>
                             <div class="d-flex gap-2 justify-content-center">
                                 <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
