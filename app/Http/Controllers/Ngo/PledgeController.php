@@ -22,7 +22,7 @@ class PledgeController extends Controller
     public function index(): View
     {
         $user = Auth::user();
-        
+
         $pledges = $user->pledges()
             ->with(['drive', 'pledgeItems'])
             ->latest()
@@ -43,8 +43,8 @@ class PledgeController extends Controller
     {
         // NGOs can see exact quantities
         $drives = Drive::active()->with('driveItems')->get();
-        $selectedDrive = $request->get('drive_id') 
-            ? Drive::with('driveItems')->find($request->get('drive_id')) 
+        $selectedDrive = $request->get('drive_id')
+            ? Drive::with('driveItems')->find($request->get('drive_id'))
             : null;
 
         return view('ngo.pledges.create', compact('drives', 'selectedDrive'));
@@ -55,17 +55,36 @@ class PledgeController extends Controller
         $validated = $request->validate([
             'drive_id' => ['required', 'exists:drives,id'],
             'pledge_type' => ['required', 'in:in-kind,financial'],
-            'financial_amount' => ['required_if:pledge_type,financial', 'nullable', 'numeric', 'min:0'],
-            'items' => ['required_if:pledge_type,in-kind', 'nullable', 'array'],
-            'items.*.drive_item_id' => ['required_with:items', 'exists:drive_items,id'],
-            'items.*.quantity' => ['required_with:items', 'numeric', 'min:0.01'],
+            'financial_amount' => ['required_if:pledge_type,financial', 'nullable', 'numeric', 'min:0.01'],
+            'items' => ['nullable', 'array'],
+            'items.*.drive_item_id' => ['required_with:items.*.quantity', 'exists:drive_items,id'],
+            'items.*.quantity' => ['nullable', 'numeric', 'min:0'],
             'details' => ['nullable', 'string', 'max:1000'],
             'contact_number' => ['required', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
+        // For in-kind pledges, ensure at least one item has a valid quantity
+        if ($validated['pledge_type'] === 'in-kind') {
+            $hasValidItems = false;
+            if (!empty($validated['items'])) {
+                foreach ($validated['items'] as $item) {
+                    if (isset($item['quantity']) && $item['quantity'] > 0) {
+                        $hasValidItems = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$hasValidItems) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['items' => 'Please enter a quantity for at least one item.']);
+            }
+        }
+
         $drive = Drive::findOrFail($validated['drive_id']);
-        
+
         if (!$drive->isActive()) {
             return back()->with('error', 'This drive is no longer accepting pledges.');
         }
@@ -87,7 +106,7 @@ class PledgeController extends Controller
                 foreach ($validated['items'] as $item) {
                     if (isset($item['quantity']) && $item['quantity'] > 0) {
                         $driveItem = $drive->driveItems()->find($item['drive_item_id']);
-                        
+
                         if ($driveItem) {
                             PledgeItem::create([
                                 'pledge_id' => $pledge->id,
@@ -113,9 +132,9 @@ class PledgeController extends Controller
     public function show(Pledge $pledge): View
     {
         $this->authorize('view', $pledge);
-        
+
         $pledge->load(['drive', 'verifier', 'pledgeItems']);
-        
+
         return view('ngo.pledges.show', compact('pledge'));
     }
 }
