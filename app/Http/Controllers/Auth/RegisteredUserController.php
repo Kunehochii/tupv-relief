@@ -39,11 +39,13 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'organization_name' => ['required', 'string', 'max:255'],
                 'certificate' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+                'logo_url' => ['nullable', 'url', 'max:500'],
             ]);
 
             $userData['organization_name'] = $request->organization_name;
             $userData['verification_status'] = User::STATUS_PENDING;
-            
+            $userData['logo_url'] = $request->logo_url ?? 'https://placehold.co/800x800';
+
             if ($request->hasFile('certificate')) {
                 $path = $request->file('certificate')->store('certificates', 'public');
                 $userData['certificate_path'] = $path;

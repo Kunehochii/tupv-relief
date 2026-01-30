@@ -34,6 +34,16 @@ class HomeController extends Controller
         return view('public.drive-preview', compact('drive'));
     }
 
+    public function driveDonate(Drive $drive): View
+    {
+        // Load supporting NGOs with their logos
+        $supportingNgos = $drive->supportingNgos()
+            ->where('verification_status', 'verified')
+            ->get();
+
+        return view('public.drive-donate', compact('drive', 'supportingNgos'));
+    }
+
     public function about(): View
     {
         return view('public.about');

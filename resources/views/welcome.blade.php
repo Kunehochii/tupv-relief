@@ -462,7 +462,7 @@
                 <div class="row g-4">
                     @forelse($drives as $drive)
                         <div class="col-md-4">
-                            <a href="{{ route('drive.preview', $drive) }}" class="text-decoration-none">
+                            <a href="{{ route('drive.donate', $drive) }}" class="text-decoration-none">
                                 <div class="drive-card">
                                     @if ($drive->cover_photo)
                                         <img src="{{ asset('storage/' . $drive->cover_photo) }}"

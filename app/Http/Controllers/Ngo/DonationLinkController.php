@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ngo;
 
 use App\Http\Controllers\Controller;
 use App\Models\LinkClick;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +14,9 @@ class DonationLinkController extends Controller
 {
     public function index(): View
     {
+        /** @var User $user */
         $user = Auth::user();
-        
+
         $linkStats = [
             'total_clicks' => $user->linkClicks()->count(),
             'clicks_this_month' => $user->linkClicks()
@@ -32,11 +34,14 @@ class DonationLinkController extends Controller
     {
         $validated = $request->validate([
             'external_donation_url' => ['required', 'url', 'max:500'],
+            'logo_url' => ['nullable', 'url', 'max:500'],
         ]);
 
-        Auth::user()->update($validated);
+        /** @var User $user */
+        $user = Auth::user();
+        $user->update($validated);
 
-        return back()->with('success', 'Donation link updated successfully.');
+        return back()->with('success', 'Donation link and logo updated successfully.');
     }
 
     public function trackClick(Request $request, int $ngoId): RedirectResponse

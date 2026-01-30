@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/drive/{drive}/preview', [HomeController::class, 'drivePreview'])->name('drive.preview');
+Route::get('/drive/{drive}/donate', [HomeController::class, 'driveDonate'])->name('drive.donate');
 Route::get('/api/statistics', [HomeController::class, 'statistics'])->name('api.statistics');
 
 // NGO External Link Tracking

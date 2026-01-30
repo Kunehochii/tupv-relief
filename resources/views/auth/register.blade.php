@@ -55,6 +55,19 @@
                     @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="logo_url" class="form-label">Organization Logo URL <span
+                            class="text-muted">(Optional)</span></label>
+                    <input type="url" class="form-control @error('logo_url') is-invalid @enderror" id="logo_url"
+                        name="logo_url" value="{{ old('logo_url') }}"
+                        placeholder="https://your-logo-image-url.com/logo.png">
+                    <div class="form-text">Enter a URL to your organization's square logo (1:1 ratio recommended). This will
+                        be displayed on drive donation pages.</div>
+                    @error('logo_url')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="alert-auth alert-auth-info mb-3">
                     <i class="bi bi-info-circle me-2"></i>
                     NGO accounts require admin verification. You'll have limited access until verified.

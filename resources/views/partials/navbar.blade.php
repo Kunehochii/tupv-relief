@@ -18,12 +18,10 @@
                     <a href="{{ route('admin.reports.index') }}" class="nav-link-custom">Reports</a>
                 @elseif(auth()->user()->isDonor())
                     <a href="{{ route('donor.dashboard') }}" class="nav-link-custom">Dashboard</a>
-                    <a href="{{ route('donor.pledges.create') }}" class="nav-link-custom">Make a Pledge</a>
                     <a href="{{ route('donor.pledges.index') }}" class="nav-link-custom">My Pledges</a>
                     <a href="{{ route('donor.map') }}" class="nav-link-custom">Drive Map</a>
                 @elseif(auth()->user()->isNgo())
                     <a href="{{ route('ngo.dashboard') }}" class="nav-link-custom">Dashboard</a>
-                    <a href="{{ route('ngo.pledges.create') }}" class="nav-link-custom">Make a Pledge</a>
                     <a href="{{ route('ngo.pledges.index') }}" class="nav-link-custom">Our Pledges</a>
                     <a href="{{ route('ngo.donation-link.index') }}" class="nav-link-custom">Donation Link</a>
                     <a href="{{ route('ngo.map') }}" class="nav-link-custom">Drive Map</a>
@@ -89,12 +87,10 @@
             <a href="{{ route('admin.reports.index') }}" class="nav-link-mobile">Reports</a>
         @elseif(auth()->user()->isDonor())
             <a href="{{ route('donor.dashboard') }}" class="nav-link-mobile">Dashboard</a>
-            <a href="{{ route('donor.pledges.create') }}" class="nav-link-mobile">Make a Pledge</a>
             <a href="{{ route('donor.pledges.index') }}" class="nav-link-mobile">My Pledges</a>
             <a href="{{ route('donor.map') }}" class="nav-link-mobile">Drive Map</a>
         @elseif(auth()->user()->isNgo())
             <a href="{{ route('ngo.dashboard') }}" class="nav-link-mobile">Dashboard</a>
-            <a href="{{ route('ngo.pledges.create') }}" class="nav-link-mobile">Make a Pledge</a>
             <a href="{{ route('ngo.pledges.index') }}" class="nav-link-mobile">Our Pledges</a>
             <a href="{{ route('ngo.donation-link.index') }}" class="nav-link-mobile">Donation Link</a>
             <a href="{{ route('ngo.map') }}" class="nav-link-mobile">Drive Map</a>

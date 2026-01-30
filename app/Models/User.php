@@ -21,6 +21,7 @@ class User extends Authenticatable
         'organization_name',
         'certificate_path',
         'external_donation_url',
+        'logo_url',
         'verification_status',
         'rejection_reason',
         'verified_at',
@@ -75,31 +76,49 @@ class User extends Authenticatable
         return $this->verification_status === self::STATUS_PENDING;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function pledges()
     {
         return $this->hasMany(Pledge::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function notifications()
     {
         return $this->hasMany(Notification::class)->latest();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function unreadNotifications()
     {
         return $this->notifications()->unread();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function linkClicks()
     {
         return $this->hasMany(LinkClick::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function createdDrives()
     {
         return $this->hasMany(Drive::class, 'created_by');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function supportedDrives()
     {
         return $this->belongsToMany(Drive::class, 'ngo_drive_supports')
@@ -107,6 +126,9 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function driveSupports()
     {
         return $this->hasMany(NgoDriveSupport::class);
