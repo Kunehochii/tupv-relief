@@ -75,6 +75,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::middleware(['auth', 'donor'])->prefix('donor')->name('donor.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Donor\DashboardController::class, 'index'])->name('dashboard');
     Route::get('map', [\App\Http\Controllers\Donor\DashboardController::class, 'map'])->name('map');
+    Route::get('drives/fetch', [\App\Http\Controllers\Donor\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
 
     // Pledges
     Route::get('pledges', [\App\Http\Controllers\Donor\PledgeController::class, 'index'])->name('pledges.index');
@@ -92,6 +93,7 @@ Route::middleware(['auth', 'donor'])->prefix('donor')->name('donor.')->group(fun
 Route::middleware(['auth', 'ngo'])->prefix('ngo')->name('ngo.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Ngo\DashboardController::class, 'index'])->name('dashboard');
     Route::get('map', [\App\Http\Controllers\Ngo\DashboardController::class, 'map'])->name('map');
+    Route::get('drives/fetch', [\App\Http\Controllers\Ngo\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
 
     // Donation Link
     Route::get('donation-link', [\App\Http\Controllers\Ngo\DonationLinkController::class, 'index'])->name('donation-link.index');

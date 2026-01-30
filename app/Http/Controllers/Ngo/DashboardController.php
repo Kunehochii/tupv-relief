@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Drive;
 use App\Models\NgoDriveSupport;
 use App\Models\Pledge;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -13,8 +16,9 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
+        /** @var User $user */
         $user = Auth::user();
-        
+
         $stats = [
             'total_pledges' => $user->pledges()->count(),
             'verified_count' => $user->pledges()->where('status', Pledge::STATUS_VERIFIED)->count(),
@@ -26,11 +30,12 @@ class DashboardController extends Controller
             'drives_supported' => $user->driveSupports()->where('is_active', true)->count(),
         ];
 
-        // NGOs can see exact item quantities
+        // Get initial drives for carousel
         $activeDrives = Drive::active()
-            ->with(['creator', 'driveItems'])
+            ->with(['creator', 'driveItems', 'supportingNgos'])
             ->latest()
-            ->paginate(10);
+            ->take(10)
+            ->get();
 
         // Get IDs of drives this NGO supports
         $supportedDriveIds = $user->driveSupports()
@@ -41,6 +46,53 @@ class DashboardController extends Controller
         $linkClicks = $user->linkClicks()->count();
 
         return view('ngo.dashboard', compact('stats', 'activeDrives', 'linkClicks', 'supportedDriveIds'));
+    }
+
+    /**
+     * Fetch more drives for infinite carousel
+     */
+    public function fetchDrives(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 5);
+
+        // Get IDs of drives this NGO supports
+        $supportedDriveIds = $user->driveSupports()
+            ->where('is_active', true)
+            ->pluck('drive_id')
+            ->toArray();
+
+        $drives = Drive::active()
+            ->with(['creator', 'driveItems', 'supportingNgos'])
+            ->latest()
+            ->skip($offset)
+            ->take($limit)
+            ->get()
+            ->map(function ($drive) use ($supportedDriveIds) {
+                return [
+                    'id' => $drive->id,
+                    'name' => $drive->name,
+                    'description' => $drive->description,
+                    'cover_photo_url' => $drive->cover_photo_url ?? null,
+                    'latitude' => $drive->latitude,
+                    'longitude' => $drive->longitude,
+                    'address' => $drive->address,
+                    'progress_percentage' => $drive->progress_percentage,
+                    'pledge_url' => route('ngo.pledges.create', ['drive' => $drive->id]),
+                    'preview_url' => route('drive.preview', $drive),
+                    'support_url' => route('ngo.drives.support', $drive),
+                    'is_supported' => in_array($drive->id, $supportedDriveIds),
+                ];
+            });
+
+        $hasMore = Drive::active()->count() > ($offset + $limit);
+
+        return response()->json([
+            'drives' => $drives,
+            'hasMore' => $hasMore,
+        ]);
     }
 
     public function map(): View
