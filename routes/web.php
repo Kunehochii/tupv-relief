@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/drive/{drive}/preview', [HomeController::class, 'drivePreview'])->name('drive.preview');
 Route::get('/api/statistics', [HomeController::class, 'statistics'])->name('api.statistics');
 

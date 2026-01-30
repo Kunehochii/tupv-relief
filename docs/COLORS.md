@@ -15,3 +15,6 @@ Gray Blue
 
 Gray
 #e6e6e4
+
+Vivid Orange
+#ea4f2d

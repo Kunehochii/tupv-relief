@@ -429,7 +429,7 @@
             <a href="{{ route('home') }}" class="navbar-brand-custom">TABANG</a>
             <div class="d-flex align-items-center">
                 <a href="#" class="nav-link-custom">Contacts</a>
-                <a href="#" class="nav-link-custom">About us</a>
+                <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
                 <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
             </div>
         </div>

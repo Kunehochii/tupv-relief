@@ -34,6 +34,11 @@ class HomeController extends Controller
         return view('public.drive-preview', compact('drive'));
     }
 
+    public function about(): View
+    {
+        return view('public.about');
+    }
+
     /**
      * Get platform statistics
      */
