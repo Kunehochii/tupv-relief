@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mail\NotificationMail;
 use App\Models\Notification;
 use App\Models\Pledge;
+use App\Models\PledgeItem;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
@@ -102,6 +103,37 @@ class NotificationService
             'Donation Distributed',
             "Your donation (Ref: {$pledge->reference_number}) has been distributed to beneficiaries. Thank you for making a difference!",
             ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number]
+        );
+    }
+
+    /**
+     * Notify user about individual item distribution (SYSTEM ONLY, NO EMAIL)
+     * Used for per-item distribution tracking
+     */
+    public function notifyItemDistributed(User $user, PledgeItem $item): void
+    {
+        $message = "Your donation of {$item->quantity_distributed} {$item->unit} of {$item->item_name} " .
+                   "has been distributed";
+        
+        if ($item->families_helped > 0) {
+            $message .= ", helping {$item->families_helped} " . 
+                       ($item->families_helped === 1 ? 'family' : 'families');
+        }
+        
+        $message .= ". Thank you!";
+
+        $this->createNotification(
+            $user,
+            Notification::TYPE_ITEM_DISTRIBUTED,
+            'Item Distributed',
+            $message,
+            [
+                'pledge_item_id' => $item->id,
+                'item_name' => $item->item_name,
+                'quantity_distributed' => $item->quantity_distributed,
+                'families_helped' => $item->families_helped,
+            ],
+            false // NO email for cost reduction
         );
     }
 

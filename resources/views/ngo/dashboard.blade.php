@@ -138,16 +138,46 @@
                 @forelse($activeDrives as $drive)
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 border">
+                            @if($drive->cover_photo)
+                                <img src="{{ $drive->cover_photo_url }}" class="card-img-top" 
+                                     alt="{{ $drive->name }}" style="height: 160px; object-fit: cover;">
+                            @else
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 160px;">
+                                    <i class="bi bi-image text-white fs-1"></i>
+                                </div>
+                            @endif
                             <div class="card-body">
                                 <h5 class="card-title">{{ $drive->name }}</h5>
                                 <p class="card-text text-muted small">{{ Str::limit($drive->description, 100) }}</p>
                                 
+                                {{-- 3-Color Progress Bar --}}
                                 <div class="mb-3">
-                                    <div class="progress" style="height: 6px;">
-                                        <div class="progress-bar" style="width: {{ $drive->progress_percentage }}%"></div>
-                                    </div>
-                                    <small class="text-muted">{{ $drive->progress_percentage }}% of target</small>
+                                    @include('partials.progress-bar-3color', ['drive' => $drive, 'showLegend' => true])
                                 </div>
+                                
+                                {{-- Items Needed with Exact Quantities (NGO can see this) --}}
+                                @if($drive->driveItems->count() > 0)
+                                    <div class="mb-3">
+                                        <small class="fw-bold text-muted d-block mb-1">Items Needed:</small>
+                                        <div class="small" style="max-height: 120px; overflow-y: auto;">
+                                            @foreach($drive->driveItems->take(5) as $item)
+                                                <div class="d-flex justify-content-between border-bottom py-1">
+                                                    <span>{{ $item->item_name }}</span>
+                                                    <span class="text-muted">
+                                                        {{ number_format($item->quantity_needed) }} {{ $item->unit }}
+                                                        @if($item->quantity_pledged > 0)
+                                                            <span class="text-success">({{ number_format($item->quantity_pledged) }} pledged)</span>
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                            @if($drive->driveItems->count() > 5)
+                                                <small class="text-muted">+{{ $drive->driveItems->count() - 5 }} more items</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                                 
                                 @if($drive->address)
                                     <p class="small mb-2">
@@ -156,15 +186,30 @@
                                 @endif
                             </div>
                             <div class="card-footer bg-transparent">
-                                @if(auth()->user()->isVerified())
-                                    <a href="{{ route('ngo.pledges.create', ['drive_id' => $drive->id]) }}" class="btn btn-primary w-100">
-                                        <i class="bi bi-heart me-2"></i>Pledge
-                                    </a>
-                                @else
-                                    <button class="btn btn-secondary w-100" disabled>
-                                        Account Pending
-                                    </button>
-                                @endif
+                                <div class="d-flex gap-2">
+                                    @if(auth()->user()->isVerified())
+                                        {{-- Support Button --}}
+                                        <form action="{{ route('ngo.drives.support', $drive) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @if(in_array($drive->id, $supportedDriveIds ?? []))
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="bi bi-heart-fill me-1"></i>Supporting
+                                                </button>
+                                            @else
+                                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                                    <i class="bi bi-heart me-1"></i>Support
+                                                </button>
+                                            @endif
+                                        </form>
+                                        <a href="{{ route('ngo.pledges.create', ['drive_id' => $drive->id]) }}" class="btn btn-primary btn-sm flex-grow-1">
+                                            <i class="bi bi-gift me-1"></i>Pledge
+                                        </a>
+                                    @else
+                                        <button class="btn btn-secondary w-100" disabled>
+                                            Account Pending
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

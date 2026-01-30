@@ -89,15 +89,22 @@
                 @forelse($activeDrives as $drive)
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 border">
+                            @if($drive->cover_photo)
+                                <img src="{{ $drive->cover_photo_url }}" class="card-img-top" 
+                                     alt="{{ $drive->name }}" style="height: 160px; object-fit: cover;">
+                            @else
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 160px;">
+                                    <i class="bi bi-image text-white fs-1"></i>
+                                </div>
+                            @endif
                             <div class="card-body">
                                 <h5 class="card-title">{{ $drive->name }}</h5>
                                 <p class="card-text text-muted small">{{ Str::limit($drive->description, 100) }}</p>
                                 
+                                {{-- 3-Color Progress Bar (donors only see progress, not exact quantities) --}}
                                 <div class="mb-3">
-                                    <div class="progress" style="height: 6px;">
-                                        <div class="progress-bar" style="width: {{ $drive->progress_percentage }}%"></div>
-                                    </div>
-                                    <small class="text-muted">{{ $drive->progress_percentage }}% of target reached</small>
+                                    @include('partials.progress-bar-3color', ['drive' => $drive, 'showLegend' => true])
                                 </div>
                                 
                                 @if($drive->address)

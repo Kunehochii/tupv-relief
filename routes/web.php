@@ -42,6 +42,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('drives', \App\Http\Controllers\Admin\DriveController::class);
     Route::patch('drives/{drive}/complete', [\App\Http\Controllers\Admin\DriveController::class, 'complete'])->name('drives.complete');
     Route::post('drives/{drive}/close', [\App\Http\Controllers\Admin\DriveController::class, 'close'])->name('drives.close');
+    Route::post('drives/{drive}/recalculate', [\App\Http\Controllers\Admin\DriveController::class, 'recalculateProgress'])->name('drives.recalculate');
     Route::get('drives-map', [\App\Http\Controllers\Admin\DriveController::class, 'map'])->name('drives.map');
 
     // Pledge Management
@@ -92,6 +93,12 @@ Route::middleware(['auth', 'ngo'])->prefix('ngo')->name('ngo.')->group(function 
     // Donation Link
     Route::get('donation-link', [\App\Http\Controllers\Ngo\DonationLinkController::class, 'index'])->name('donation-link.index');
     Route::put('donation-link', [\App\Http\Controllers\Ngo\DonationLinkController::class, 'update'])->name('donation-link.update');
+
+    // Drive Support (verified NGOs only)
+    Route::middleware('verified.ngo')->group(function () {
+        Route::post('drives/{drive}/support', [\App\Http\Controllers\Ngo\DriveSupportController::class, 'toggle'])->name('drives.support');
+        Route::get('supports', [\App\Http\Controllers\Ngo\DriveSupportController::class, 'index'])->name('supports.index');
+    });
 
     // Pledges (same as donor, but for NGO)
     Route::middleware('verified.ngo')->group(function () {

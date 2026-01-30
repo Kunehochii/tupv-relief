@@ -14,8 +14,8 @@ class Pledge extends Model
         'user_id',
         'drive_id',
         'reference_number',
-        'items',
-        'quantity',
+        'pledge_type',
+        'financial_amount',
         'details',
         'contact_number',
         'notes',
@@ -33,12 +33,16 @@ class Pledge extends Model
     protected function casts(): array
     {
         return [
-            'items' => 'array',
+            'financial_amount' => 'decimal:2',
             'verified_at' => 'datetime',
             'expired_at' => 'datetime',
             'distributed_at' => 'datetime',
         ];
     }
+
+    // Pledge type constants
+    const TYPE_IN_KIND = 'in-kind';
+    const TYPE_FINANCIAL = 'financial';
 
     // Status constants
     const STATUS_PENDING = 'pending';
@@ -79,6 +83,43 @@ class Pledge extends Model
     public function verifier()
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function pledgeItems()
+    {
+        return $this->hasMany(PledgeItem::class);
+    }
+
+    /**
+     * Get total quantity across all pledge items
+     */
+    public function getTotalQuantityAttribute(): float
+    {
+        return $this->pledgeItems->sum('quantity');
+    }
+
+    /**
+     * Get total distributed across all pledge items
+     */
+    public function getTotalDistributedAttribute(): float
+    {
+        return $this->pledgeItems->sum('quantity_distributed');
+    }
+
+    /**
+     * Get total families helped across all pledge items
+     */
+    public function getTotalFamiliesHelpedAttribute(): int
+    {
+        return $this->pledgeItems->sum('families_helped') ?? 0;
+    }
+
+    /**
+     * Check if all items are fully distributed
+     */
+    public function isFullyDistributed(): bool
+    {
+        return $this->pledgeItems->every(fn($item) => $item->isFullyDistributed());
     }
 
     public function isPending(): bool

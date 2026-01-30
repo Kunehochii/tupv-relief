@@ -31,11 +31,11 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID      | Feature                                         | Status | Notes                                          |
 | ------- | ----------------------------------------------- | ------ | ---------------------------------------------- |
-| AUTH-01 | Email/password registration with role selection | ⬜     | RegisteredUserController ready                 |
-| AUTH-02 | Google OAuth sign-in                            | ⬜     | GoogleController ready, needs Socialite config |
-| AUTH-03 | Role-based redirect after login                 | ⬜     | Logic in AuthenticatedSessionController        |
-| AUTH-04 | NGO certificate upload during registration      | ⬜     | File upload to certificates/                   |
-| AUTH-05 | Email verification for all users                | ⬜     | Laravel MustVerifyEmail                        |
+| AUTH-01 | Email/password registration with role selection | ✅     | RegisteredUserController ready                 |
+| AUTH-02 | Google OAuth sign-in                            | ✅     | GoogleController ready, needs Socialite config |
+| AUTH-03 | Role-based redirect after login                 | ✅     | Logic in AuthenticatedSessionController        |
+| AUTH-04 | NGO certificate upload during registration      | ✅     | File upload to certificates/                   |
+| AUTH-05 | Email verification for all users                | ✅     | Laravel MustVerifyEmail                        |
 
 **Acceptance Criteria:**
 
@@ -49,7 +49,7 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID      | Feature                          | Status | Notes               |
 | ------- | -------------------------------- | ------ | ------------------- |
-| SEED-01 | Default admin account via seeder | ⬜     | AdminSeeder created |
+| SEED-01 | Default admin account via seeder | ✅     | AdminSeeder created |
 
 **Acceptance Criteria:**
 
@@ -64,9 +64,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID       | Feature                     | Status | Notes                           |
 | -------- | --------------------------- | ------ | ------------------------------- |
-| ADMIN-01 | Overview statistics display | ⬜     | admin/dashboard.blade.php ready |
-| ADMIN-02 | Quick action links          | ⬜     | Links to pending pledges, NGOs  |
-| ADMIN-03 | Recent activity feed        | ⬜     | Show recent pledges             |
+| ADMIN-01 | Overview statistics display | ✅     | admin/dashboard.blade.php ready |
+| ADMIN-02 | Quick action links          | ✅     | Links to pending pledges, NGOs  |
+| ADMIN-03 | Recent activity feed        | ✅     | Show recent pledges             |
 
 **Acceptance Criteria:**
 
@@ -100,12 +100,12 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID        | Feature                        | Status | Notes                                   |
 | --------- | ------------------------------ | ------ | --------------------------------------- |
-| PLEDGE-01 | View all pledges with filters  | ⬜     | pledges/index.blade.php ready           |
-| PLEDGE-02 | View individual pledge details | ⬜     | pledges/show.blade.php ready            |
-| PLEDGE-03 | Verify pending pledges         | ⬜     | PledgeController@verify                 |
-| PLEDGE-04 | Mark pledge as distributed     | ⬜     | PledgeController@distribute             |
-| PLEDGE-05 | Add impact feedback            | ⬜     | families_helped, relief_packages fields |
-| PLEDGE-06 | Reject pledge with reason      | ⬜     | PledgeController@reject                 |
+| PLEDGE-01 | View all pledges with filters  | ✅     | pledges/index.blade.php ready           |
+| PLEDGE-02 | View individual pledge details | ✅     | pledges/show.blade.php ready            |
+| PLEDGE-03 | Verify pending pledges         | ✅     | PledgeController@verify                 |
+| PLEDGE-04 | Mark pledge as distributed     | ✅     | PledgeController@distribute             |
+| PLEDGE-05 | Add impact feedback            | ✅     | families_helped, relief_packages fields |
+| PLEDGE-06 | Reject pledge with reason      | ✅     | PledgeController@reject                 |
 
 **Acceptance Criteria:**
 
@@ -118,10 +118,10 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID     | Feature                       | Status | Notes                             |
 | ------ | ----------------------------- | ------ | --------------------------------- |
-| NGO-01 | View pending NGO applications | ⬜     | ngos/pending.blade.php ready      |
-| NGO-02 | Review certificate document   | ⬜     | Certificate preview/download      |
-| NGO-03 | Approve NGO organization      | ⬜     | NgoVerificationController@approve |
-| NGO-04 | Reject NGO with reason        | ⬜     | NgoVerificationController@reject  |
+| NGO-01 | View pending NGO applications | ✅     | ngos/pending.blade.php ready      |
+| NGO-02 | Review certificate document   | ✅     | Certificate preview/download      |
+| NGO-03 | Approve NGO organization      | ✅     | NgoVerificationController@approve |
+| NGO-04 | Reject NGO with reason        | ✅     | NgoVerificationController@reject  |
 
 **Acceptance Criteria:**
 
@@ -154,9 +154,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID       | Feature                 | Status | Notes                           |
 | -------- | ----------------------- | ------ | ------------------------------- |
-| DONOR-01 | View active drives list | ⬜     | donor/dashboard.blade.php ready |
-| DONOR-02 | See own pledge summary  | ⬜     | Pledge counts by status         |
-| DONOR-03 | Quick pledge action     | ⬜     | Button to create pledge         |
+| DONOR-01 | View active drives list | ✅     | donor/dashboard.blade.php ready |
+| DONOR-02 | See own pledge summary  | ✅     | Pledge counts by status         |
+| DONOR-03 | Quick pledge action     | ✅     | Button to create pledge         |
 
 **Acceptance Criteria:**
 
@@ -185,9 +185,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID     | Feature                     | Status | Notes                     |
 | ------ | --------------------------- | ------ | ------------------------- |
-| MAP-01 | View all drives on map      | ⬜     | donor/map.blade.php ready |
-| MAP-02 | Click marker for drive info | ⬜     | Popup with details        |
-| MAP-03 | Navigate to pledge from map | ⬜     | Link in popup             |
+| MAP-01 | View all drives on map      | ✅     | donor/map.blade.php ready |
+| MAP-02 | Click marker for drive info | ✅     | Popup with details        |
+| MAP-03 | Navigate to pledge from map | ✅     | Link in popup             |
 
 **Acceptance Criteria:**
 
@@ -199,9 +199,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID       | Feature                     | Status | Notes                               |
 | -------- | --------------------------- | ------ | ----------------------------------- |
-| NOTIF-01 | View notification list      | ⬜     | notifications/index.blade.php ready |
-| NOTIF-02 | Mark as read                | ⬜     | NotificationController@markAsRead   |
-| NOTIF-03 | Receive email notifications | ⬜     | NotificationService + SendGrid      |
+| NOTIF-01 | View notification list      | ✅     | notifications/index.blade.php ready |
+| NOTIF-02 | Mark as read                | ✅     | NotificationController@markAsRead   |
+| NOTIF-03 | Receive email notifications | ✅     | NotificationService + SendGrid      |
 
 **Acceptance Criteria:**
 
@@ -218,9 +218,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID      | Feature                           | Status | Notes                            |
 | ------- | --------------------------------- | ------ | -------------------------------- |
-| NGOV-01 | Show verification status banner   | ⬜     | ngo/dashboard.blade.php ready    |
-| NGOV-02 | Restrict features until verified  | ⬜     | VerifiedNgo middleware           |
-| NGOV-03 | Receive verification notification | ⬜     | NotificationService handles this |
+| NGOV-01 | Show verification status banner   | ✅     | ngo/dashboard.blade.php ready    |
+| NGOV-02 | Restrict features until verified  | ✅     | VerifiedNgo middleware           |
+| NGOV-03 | Receive verification notification | ✅     | NotificationService handles this |
 
 **Acceptance Criteria:**
 
@@ -246,9 +246,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID      | Feature                   | Status | Notes                               |
 | ------- | ------------------------- | ------ | ----------------------------------- |
-| LINK-01 | Set external donation URL | ⬜     | donation-link/index.blade.php ready |
-| LINK-02 | Track link clicks         | ⬜     | LinkClick model, tracking route     |
-| LINK-03 | View click statistics     | ⬜     | Count + recent clicks shown         |
+| LINK-01 | Set external donation URL | ✅     | donation-link/index.blade.php ready |
+| LINK-02 | Track link clicks         | ✅     | LinkClick model, tracking route     |
+| LINK-03 | View click statistics     | ✅     | Count + recent clicks shown         |
 
 **Acceptance Criteria:**
 
@@ -265,9 +265,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID     | Feature                         | Status | Notes                   |
 | ------ | ------------------------------- | ------ | ----------------------- |
-| PUB-01 | Display active drives           | ⬜     | welcome.blade.php ready |
-| PUB-02 | Show drive progress             | ⬜     | Progress bars on cards  |
-| PUB-03 | Call-to-action for registration | ⬜     | Login/Register buttons  |
+| PUB-01 | Display active drives           | ✅     | welcome.blade.php ready |
+| PUB-02 | Show drive progress             | ✅     | Progress bars on cards  |
+| PUB-03 | Call-to-action for registration | ✅     | Login/Register buttons  |
 
 **Acceptance Criteria:**
 
@@ -317,9 +317,9 @@ This document tracks the implementation progress of RELIEF features based on the
 
 | ID       | Feature                      | Status | Notes                               |
 | -------- | ---------------------------- | ------ | ----------------------------------- |
-| EMAIL-01 | Configure SendGrid SMTP      | ⬜     | .env.example has placeholders       |
-| EMAIL-02 | Notification email template  | ⬜     | emails/notification.blade.php ready |
-| EMAIL-03 | Send on pledge status change | ⬜     | NotificationService handles         |
+| EMAIL-01 | Configure SendGrid SMTP      | ✅     | .env.example has placeholders       |
+| EMAIL-02 | Notification email template  | ✅     | emails/notification.blade.php ready |
+| EMAIL-03 | Send on pledge status change | ✅     | NotificationService handles         |
 
 **Acceptance Criteria:**
 

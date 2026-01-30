@@ -100,6 +100,18 @@ class User extends Authenticatable
         return $this->hasMany(Drive::class, 'created_by');
     }
 
+    public function supportedDrives()
+    {
+        return $this->belongsToMany(Drive::class, 'ngo_drive_supports')
+            ->wherePivot('is_active', true)
+            ->withTimestamps();
+    }
+
+    public function driveSupports()
+    {
+        return $this->hasMany(NgoDriveSupport::class);
+    }
+
     public function isRejected(): bool
     {
         return $this->verification_status === self::STATUS_REJECTED;

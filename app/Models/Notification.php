@@ -34,6 +34,7 @@ class Notification extends Model
     const TYPE_PLEDGE_EXPIRED = 'pledge_expired';
     const TYPE_PLEDGE_EXPIRY_WARNING = 'pledge_expiry_warning';
     const TYPE_DONATION_DISTRIBUTED = 'donation_distributed';
+    const TYPE_ITEM_DISTRIBUTED = 'item_distributed';
     const TYPE_IMPACT_FEEDBACK = 'impact_feedback';
     const TYPE_NEW_DRIVE = 'new_drive';
     const TYPE_DRIVE_ENDING_SOON = 'drive_ending_soon';
@@ -49,6 +50,7 @@ class Notification extends Model
             self::TYPE_PLEDGE_EXPIRY_WARNING => 'warning',
             self::TYPE_NEW_DRIVE => 'info',
             self::TYPE_DONATION_DISTRIBUTED => 'purple',
+            self::TYPE_ITEM_DISTRIBUTED => 'success',
             self::TYPE_NGO_VERIFIED => 'success',
             self::TYPE_NGO_REJECTED => 'danger',
             default => 'secondary',
