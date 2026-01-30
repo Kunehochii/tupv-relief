@@ -1,97 +1,207 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Manage Drives')
 
+@section('page', 'drives')
+
 @section('content')
-<div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>Manage Donation Drives</h4>
-        <a href="{{ route('admin.drives.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Create Drive
-        </a>
-    </div>
-    
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <h1 class="page-title mb-0">Manage Donation Drives</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.drives.map') }}" class="btn-header-action">
+                <i class="bi bi-geo-alt me-1"></i>Map View
+            </a>
+            <a href="{{ route('admin.drives.create') }}" class="btn-header-action btn-header-primary">
+                <i class="bi bi-plus-lg me-1"></i>Create Drive
+            </a>
         </div>
-    @endif
-    
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+    </div>
+
+    <div class="content-card">
+        <div class="content-card-body">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Drive Name</th>
+                        <th>Status</th>
+                        <th>End Date</th>
+                        <th>Pledges</th>
+                        <th>Progress</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($drives as $drive)
                         <tr>
-                            <th>Drive Name</th>
-                            <th>Status</th>
-                            <th>End Date</th>
-                            <th>Pledges</th>
-                            <th>Progress</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($drives as $drive)
-                            <tr>
-                                <td>
-                                    <a href="{{ route('admin.drives.show', $drive) }}" class="fw-medium">
-                                        {{ $drive->name }}
-                                    </a>
-                                </td>
-                                <td>
-                                    @if($drive->status === 'active')
-                                        <span class="badge bg-success">Active</span>
-                                    @elseif($drive->status === 'completed')
-                                        <span class="badge bg-primary">Completed</span>
-                                    @else
-                                        <span class="badge bg-secondary">Closed</span>
-                                    @endif
-                                </td>
-                                <td>{{ $drive->end_date->format('M d, Y') }}</td>
-                                <td>{{ $drive->pledges_count }}</td>
-                                <td style="width: 150px;">
-                                    <div class="progress" style="height: 6px;">
+                            <td>
+                                <a href="{{ route('admin.drives.show', $drive) }}">
+                                    {{ $drive->name }}
+                                </a>
+                            </td>
+                            <td>
+                                @if ($drive->status === 'active')
+                                    <span class="status-badge status-active">Active</span>
+                                @elseif($drive->status === 'completed')
+                                    <span class="status-badge status-completed">Completed</span>
+                                @elseif($drive->status === 'upcoming')
+                                    <span class="status-badge status-upcoming">Upcoming</span>
+                                @else
+                                    <span class="status-badge status-closed">Closed</span>
+                                @endif
+                            </td>
+                            <td>{{ $drive->end_date->format('M d, Y') }}</td>
+                            <td>{{ $drive->pledges_count }}</td>
+                            <td style="width: 140px;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress-sm flex-grow-1">
                                         <div class="progress-bar" style="width: {{ $drive->progress_percentage }}%"></div>
                                     </div>
-                                    <small class="text-muted">{{ $drive->progress_percentage }}%</small>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('admin.drives.show', $drive) }}" class="btn btn-outline-primary" title="View">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.drives.edit', $drive) }}" class="btn btn-outline-secondary" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        @if($drive->status === 'active')
-                                            <form method="POST" action="{{ route('admin.drives.close', $drive) }}" class="d-inline" 
-                                                onsubmit="return confirm('Are you sure you want to close this drive?')">
-                                                @csrf
-                                                <button type="submit" class="btn btn-outline-danger" title="Close">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
-                                    No drives found. <a href="{{ route('admin.drives.create') }}">Create one</a>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    <span class="progress-text">{{ $drive->progress_percentage }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ route('admin.drives.show', $drive) }}" class="btn-icon" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.drives.edit', $drive) }}" class="btn-icon" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @if ($drive->status === 'active')
+                                        <form method="POST" action="{{ route('admin.drives.close', $drive) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Are you sure you want to close this drive?')">
+                                            @csrf
+                                            <button type="submit" class="btn-icon btn-icon-danger" title="Close">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="empty-state">
+                                    <i class="bi bi-folder"></i>
+                                    <p>No drives found</p>
+                                    <a href="{{ route('admin.drives.create') }}"
+                                        class="btn-relief-primary btn btn-sm mt-2">
+                                        <i class="bi bi-plus-lg me-1"></i>Create Drive
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-    
-    <div class="mt-4">
-        {{ $drives->links() }}
-    </div>
-</div>
+
+    @if ($drives->hasPages())
+        <div class="mt-4">
+            {{ $drives->links() }}
+        </div>
+    @endif
+@endsection
+
+@section('styles')
+    .btn-header-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: #ffffff;
+    color: var(--relief-dark-blue);
+    border: 1px solid #d0d0d0;
+    transition: all 0.2s;
+    }
+
+    .btn-header-action:hover {
+    background-color: #f5f5f5;
+    color: var(--relief-dark-blue);
+    }
+
+    .btn-header-primary {
+    background-color: var(--relief-vivid-orange);
+    color: #ffffff;
+    border-color: var(--relief-vivid-orange);
+    }
+
+    .btn-header-primary:hover {
+    background-color: var(--relief-red);
+    border-color: var(--relief-red);
+    color: #ffffff;
+    }
+
+    .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    }
+
+    .status-active {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    }
+
+    .status-completed {
+    background-color: rgba(0, 1, 103, 0.1);
+    color: var(--relief-dark-blue);
+    }
+
+    .status-upcoming {
+    background-color: rgba(255, 174, 68, 0.15);
+    color: #b37700;
+    }
+
+    .status-closed {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    }
+
+    .progress-text {
+    font-size: 12px;
+    color: var(--relief-gray-blue);
+    min-width: 35px;
+    }
+
+    .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    }
+
+    .btn-icon {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+    color: var(--relief-dark-blue);
+    text-decoration: none;
+    transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+    background-color: var(--relief-dark-blue);
+    border-color: var(--relief-dark-blue);
+    color: #ffffff;
+    }
+
+    .btn-icon-danger:hover {
+    background-color: var(--relief-red);
+    border-color: var(--relief-red);
+    color: #ffffff;
+    }
 @endsection

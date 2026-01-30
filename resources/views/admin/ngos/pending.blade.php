@@ -1,110 +1,202 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Pending NGO Verifications')
+@section('title', 'Account Verifications')
+
+@section('page', 'ngos')
 
 @section('content')
-<div class="container py-4">
-    <h4 class="mb-4">Pending NGO Verifications</h4>
-    
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
+    <h1 class="page-title">Account Verifications</h1>
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-    
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+
+    <div class="content-card">
+        <div class="content-card-body">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Submitted</th>
+                        <th>Attached File</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($ngos as $ngo)
                         <tr>
-                            <th>Organization</th>
-                            <th>Contact Person</th>
-                            <th>Email</th>
-                            <th>Registered</th>
-                            <th>Certificate</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($pendingNgos as $ngo)
-                            <tr>
-                                <td>
-                                    <strong>{{ $ngo->organization_name }}</strong>
-                                </td>
-                                <td>{{ $ngo->name }}</td>
-                                <td>{{ $ngo->email }}</td>
-                                <td>{{ $ngo->created_at->format('M d, Y') }}</td>
-                                <td>
-                                    @if($ngo->certificate_path)
-                                        <a href="{{ route('admin.ngos.certificate', $ngo) }}" class="btn btn-sm btn-outline-primary" target="_blank">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i>View
-                                        </a>
-                                    @else
-                                        <span class="text-muted">None</span>
+                            <td>
+                                <span class="ngo-name">{{ $ngo->organization_name ?? $ngo->name }}</span>
+                            </td>
+                            <td>{{ $ngo->email }}</td>
+                            <td>{{ $ngo->created_at->format('M j, g:i A') }}</td>
+                            <td>
+                                @if ($ngo->certificate_path)
+                                    <a href="{{ route('admin.ngos.certificate', $ngo) }}" class="file-link" target="_blank">
+                                        {{ basename($ngo->certificate_path) }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">No file</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    @if ($ngo->verification_status === 'pending')
+                                        <form method="POST" action="{{ route('admin.ngos.approve', $ngo) }}"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn-status btn-status-pending">
+                                                Pending
+                                            </button>
+                                        </form>
+                                    @elseif ($ngo->verification_status === 'verified')
+                                        <form method="POST" action="{{ route('admin.ngos.destroy', $ngo) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Are you sure you want to delete this NGO?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                        <span class="btn-status btn-status-verified">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Verified
+                                        </span>
+                                    @elseif ($ngo->verification_status === 'rejected')
+                                        <form method="POST" action="{{ route('admin.ngos.destroy', $ngo) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Are you sure you want to delete this NGO?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                        <span class="btn-status btn-status-rejected">
+                                            <i class="bi bi-x-circle-fill me-1"></i>Rejected
+                                        </span>
                                     @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button type="button" class="btn btn-success" 
-                                            onclick="document.getElementById('approveForm{{ $ngo->id }}').submit()">
-                                            <i class="bi bi-check-circle me-1"></i>Approve
-                                        </button>
-                                        <button type="button" class="btn btn-danger" 
-                                            data-bs-toggle="modal" data-bs-target="#rejectModal{{ $ngo->id }}">
-                                            <i class="bi bi-x-circle me-1"></i>Reject
-                                        </button>
-                                    </div>
-                                    
-                                    <form id="approveForm{{ $ngo->id }}" method="POST" 
-                                        action="{{ route('admin.ngos.approve', $ngo) }}" class="d-none">
-                                        @csrf
-                                    </form>
-                                    
-                                    <!-- Reject Modal -->
-                                    <div class="modal fade" id="rejectModal{{ $ngo->id }}" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form method="POST" action="{{ route('admin.ngos.reject', $ngo) }}">
-                                                    @csrf
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Reject {{ $ngo->organization_name }}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Rejection Reason *</label>
-                                                            <textarea class="form-control" name="rejection_reason" rows="3" required 
-                                                                placeholder="Explain why this NGO is being rejected..."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-danger">Reject Application</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
-                                    <i class="bi bi-check-circle fs-3 mb-2"></i>
-                                    <p class="mb-0">No pending NGO verifications</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="empty-state">
+                                    <i class="bi bi-people"></i>
+                                    <p>No NGO accounts found</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-    
-    <div class="mt-4">
-        {{ $pendingNgos->links() }}
-    </div>
-</div>
+
+    @if ($ngos->hasPages())
+        <div class="mt-4">
+            {{ $ngos->links() }}
+        </div>
+    @endif
+@endsection
+
+@section('styles')
+    <style>
+        .ngo-name {
+            font-weight: 500;
+            color: var(--relief-dark-blue);
+        }
+
+        .file-link {
+            color: var(--relief-dark-blue);
+            text-decoration: none;
+        }
+
+        .file-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+
+        .btn-status-pending {
+            background-color: var(--relief-red);
+            color: #ffffff;
+        }
+
+        .btn-status-pending:hover {
+            background-color: var(--relief-vivid-red);
+        }
+
+        .btn-status-verified {
+            background-color: #198754;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .btn-status-rejected {
+            background-color: #6c757d;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            background-color: #ffffff;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--relief-gray-blue);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 16px;
+        }
+    </style>
 @endsection

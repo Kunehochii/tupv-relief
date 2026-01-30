@@ -1,270 +1,327 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Create Drive')
 
+@section('page', 'create-drive')
+
+@section('styles')
+    .create-drive-form {
+    background-color: #f5f3ed;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 800px;
+    }
+
+    .form-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--relief-dark-blue);
+    margin-bottom: 8px;
+    }
+
+    .form-label-styled {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+    }
+
+    .form-select-styled,
+    .form-control-styled {
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    background-color: #ffffff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-select-styled:focus,
+    .form-control-styled:focus {
+    border-color: var(--relief-dark-blue);
+    box-shadow: 0 0 0 3px rgba(0, 1, 103, 0.1);
+    outline: none;
+    }
+
+    .map-container {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #d0d0d0;
+    }
+
+    #map {
+    height: 280px;
+    width: 100%;
+    }
+
+    .btn-create-drive {
+    background-color: var(--relief-vivid-orange);
+    border: none;
+    color: #ffffff;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: background-color 0.2s;
+    }
+
+    .btn-create-drive:hover {
+    background-color: var(--relief-red);
+    color: #ffffff;
+    }
+
+    .btn-cancel {
+    background-color: transparent;
+    border: 1px solid #d0d0d0;
+    color: #666;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    }
+
+    .cover-upload-area {
+    border: 2px dashed #d0d0d0;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .cover-upload-area:hover {
+    border-color: var(--relief-dark-blue);
+    background-color: #fafafa;
+    }
+
+    .cover-upload-area i {
+    font-size: 32px;
+    color: var(--relief-gray-blue);
+    margin-bottom: 8px;
+    }
+
+    .cover-preview {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 12px;
+    }
+
+    .pack-type-card {
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    }
+
+    .pack-type-card:hover {
+    border-color: var(--relief-dark-blue);
+    }
+
+    .pack-type-card.selected {
+    border-color: var(--relief-dark-blue);
+    background-color: rgba(0, 1, 103, 0.05);
+    }
+
+    .pack-type-card input {
+    display: none;
+    }
+@endsection
+
 @section('content')
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Create New Donation Drive</h5>
+    <h1 class="page-title">Create New Drive</h1>
+
+    <div class="create-drive-form">
+        <form method="POST" action="{{ route('admin.drives.store') }}" enctype="multipart/form-data">
+            @csrf
+
+            {{-- Cover Photo Section --}}
+            <div class="mb-4">
+                <label class="form-label-styled">Cover Photo</label>
+                <div class="cover-upload-area" onclick="document.getElementById('cover_photo').click()">
+                    <i class="bi bi-image"></i>
+                    <p class="mb-1 text-muted" style="font-size: 13px;">Click to upload cover image</p>
+                    <small class="text-muted">16:9 ratio recommended • Max 5MB</small>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ route('admin.drives.store') }}" enctype="multipart/form-data">
-                        @csrf
-                        
-                        {{-- Cover Photo --}}
-                        <div class="mb-4">
-                            <label for="cover_photo" class="form-label">Cover Photo (16:9 ratio recommended)</label>
-                            <input type="file" class="form-control @error('cover_photo') is-invalid @enderror" 
-                                   id="cover_photo" name="cover_photo" accept="image/jpeg,image/png,image/jpg,image/webp">
-                            @error('cover_photo')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Max 5MB. Recommended size: 1280x720 pixels</small>
-                            <div id="cover_preview" class="mt-2" style="max-width: 400px; display: none;">
-                                <img id="cover_preview_img" src="" alt="Preview" class="img-fluid rounded" style="aspect-ratio: 16/9; object-fit: cover;">
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Drive Name *</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                id="name" name="name" value="{{ old('name') }}" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description *</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                id="description" name="description" rows="4" required>{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="target_type" class="form-label">Target Type *</label>
-                                <select class="form-select @error('target_type') is-invalid @enderror" 
-                                    id="target_type" name="target_type" required>
-                                    <option value="quantity" {{ old('target_type') == 'quantity' ? 'selected' : '' }}>Quantity (Items)</option>
-                                    <option value="financial" {{ old('target_type') == 'financial' ? 'selected' : '' }}>Financial (Value)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="target_amount" class="form-label">Target Amount *</label>
-                                <input type="number" class="form-control @error('target_amount') is-invalid @enderror" 
-                                    id="target_amount" name="target_amount" value="{{ old('target_amount', 0) }}" min="0" step="0.01" required>
-                                @error('target_amount')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="start_date" class="form-label">Start Date</label>
-                                <input type="date" class="form-control @error('start_date') is-invalid @enderror" 
-                                    id="start_date" name="start_date" value="{{ old('start_date', now()->format('Y-m-d')) }}">
-                                @error('start_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="end_date" class="form-label">End Date *</label>
-                                <input type="date" class="form-control @error('end_date') is-invalid @enderror" 
-                                    id="end_date" name="end_date" value="{{ old('end_date') }}" required>
-                                @error('end_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        
-                        <h6 class="mb-3">Relief Pack Configuration</h6>
-                        
-                        {{-- Pack Types Multi-Select --}}
-                        <div class="mb-3">
-                            <label class="form-label">Pack Types Needed</label>
-                            <div class="row">
-                                @foreach($packTypes as $value => $label)
-                                    <div class="col-md-4 col-6 mb-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" 
-                                                   name="pack_types_needed[]" value="{{ $value }}" 
-                                                   id="pack_{{ $value }}"
-                                                   {{ in_array($value, old('pack_types_needed', [])) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="pack_{{ $value }}">
-                                                {{ $label }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <small class="text-muted">Select pack types to auto-generate items based on the Mother Formula</small>
-                        </div>
-                        
-                        {{-- Families Affected --}}
-                        <div class="mb-3">
-                            <label for="families_affected" class="form-label">Number of Families Affected</label>
-                            <input type="number" class="form-control @error('families_affected') is-invalid @enderror" 
-                                   id="families_affected" name="families_affected" value="{{ old('families_affected') }}" min="0">
-                            @error('families_affected')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">If set, items will be auto-generated based on selected pack types using the Mother Formula</small>
-                        </div>
-                        
-                        <hr>
-                        
-                        {{-- Legacy Items Needed (comma-separated) --}}
-                        <div class="mb-3">
-                            <label for="items_needed" class="form-label">Additional Items Needed (comma-separated)</label>
-                            <input type="text" class="form-control @error('items_needed') is-invalid @enderror" 
-                                   id="items_needed" name="items_needed" 
-                                   value="{{ old('items_needed') }}"
-                                   placeholder="e.g., Rice, Canned Goods, Water, Blankets">
-                            @error('items_needed')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">List of items visible on the drive card (optional)</small>
-                        </div>
-                        
-                        {{-- Custom Items Section --}}
-                        <div class="mb-4">
-                            <label class="form-label">Custom Items with Quantities</label>
-                            <div id="custom_items_container"></div>
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addCustomItem()">
-                                <i class="bi bi-plus-circle me-1"></i>Add Custom Item
-                            </button>
-                        </div>
-                        
-                        <hr>
-                        
-                        <h6 class="mb-3">Location (Pin on Map)</h6>
-                        
-                        <div class="mb-3">
-                            <div id="map" style="height: 300px; border-radius: 0.5rem;"></div>
-                            <small class="text-muted">Click on the map to set the drive location</small>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="latitude" class="form-label">Latitude</label>
-                                <input type="number" class="form-control" id="latitude" name="latitude" 
-                                    value="{{ old('latitude') }}" step="any" readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="longitude" class="form-label">Longitude</label>
-                                <input type="number" class="form-control" id="longitude" name="longitude" 
-                                    value="{{ old('longitude') }}" step="any" readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control @error('address') is-invalid @enderror" 
-                                    id="address" name="address" value="{{ old('address') }}">
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-2"></i>Create Drive
-                            </button>
-                            <a href="{{ route('admin.drives.index') }}" class="btn btn-outline-secondary">Cancel</a>
-                        </div>
-                    </form>
+                <input type="file" class="d-none @error('cover_photo') is-invalid @enderror" id="cover_photo"
+                    name="cover_photo" accept="image/jpeg,image/png,image/jpg,image/webp">
+                @error('cover_photo')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                <div id="cover_preview" style="display: none;">
+                    <img id="cover_preview_img" src="" alt="Preview" class="cover-preview"
+                        style="aspect-ratio: 16/9; object-fit: cover; width: 100%;">
                 </div>
             </div>
-        </div>
+
+            {{-- Drive Name --}}
+            <div class="mb-4">
+                <label for="name" class="form-label-styled">Drive Name *</label>
+                <input type="text" class="form-control form-control-styled @error('name') is-invalid @enderror"
+                    id="name" name="name" value="{{ old('name') }}" placeholder="Enter drive name" required>
+                @error('name')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Description --}}
+            <div class="mb-4">
+                <label for="description" class="form-label-styled">Description *</label>
+                <textarea class="form-control form-control-styled @error('description') is-invalid @enderror" id="description"
+                    name="description" rows="3" placeholder="Describe the relief drive..." required>{{ old('description') }}</textarea>
+                @error('description')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Pack Types Selection --}}
+            <div class="mb-4">
+                <label class="form-label-styled">Pack Types Needed *</label>
+                <div class="row g-2">
+                    @php
+                        $selectedPacks = old('pack_types', []);
+                    @endphp
+                    @foreach ($packTypes as $value => $label)
+                        <div class="col-md-4 col-6">
+                            <label
+                                class="pack-type-card d-flex align-items-center gap-2 {{ in_array($value, $selectedPacks) ? 'selected' : '' }}"
+                                for="pack_{{ $value }}">
+                                <input type="checkbox" name="pack_types[]" value="{{ $value }}"
+                                    id="pack_{{ $value }}" {{ in_array($value, $selectedPacks) ? 'checked' : '' }}>
+                                <i class="bi bi-box-seam"></i>
+                                <span>{{ $label }}</span>
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+                @error('pack_types')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                <small class="text-muted d-block mt-2">Items will be auto-generated from Mother Formula based on families
+                    affected.</small>
+            </div>
+
+            {{-- Families Affected and Start Date Row --}}
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="families_affected" class="form-label-styled">Families Affected *</label>
+                    <input type="number"
+                        class="form-control form-control-styled @error('families_affected') is-invalid @enderror"
+                        id="families_affected" name="families_affected" value="{{ old('families_affected', 100) }}"
+                        min="1" required>
+                    @error('families_affected')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Quantities for each item will be calculated using Mother Formula ×
+                        families.</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="start_date" class="form-label-styled">Start Date</label>
+                    <input type="date" class="form-control form-control-styled @error('start_date') is-invalid @enderror"
+                        id="start_date" name="start_date" value="{{ old('start_date', now()->format('Y-m-d')) }}">
+                    @error('start_date')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            {{-- Hidden fields for backend compatibility --}}
+            <input type="hidden" name="target_type" value="quantity">
+            <input type="hidden" name="target_amount" value="0">
+            <input type="hidden" name="end_date" value="{{ now()->addYear()->format('Y-m-d') }}">
+
+            {{-- Location Map --}}
+            <div class="mb-4">
+                <label class="form-label-styled">Location:</label>
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+                <small class="text-muted d-block mt-2">Click on the map to set the drive location</small>
+            </div>
+
+            {{-- Hidden location fields --}}
+            <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude') }}">
+            <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude') }}">
+            <input type="hidden" id="address" name="address" value="{{ old('address') }}">
+
+            {{-- Action Buttons --}}
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn btn-create-drive">
+                    <i class="bi bi-plus-circle me-2"></i>Create Drive
+                </button>
+                <a href="{{ route('admin.drives.index') }}" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
     </div>
-</div>
+@endsection
 
 @section('scripts')
-<script>
-    // Cover photo preview
-    document.getElementById('cover_photo').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('cover_preview_img').src = e.target.result;
-                document.getElementById('cover_preview').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+    <script>
+        // Cover photo preview
+        document.getElementById('cover_photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('cover_preview_img').src = e.target.result;
+                    document.getElementById('cover_preview').style.display = 'block';
+                    document.querySelector('.cover-upload-area').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-    // Custom items functionality
-    let customItemIndex = 0;
-    
-    function addCustomItem() {
-        const container = document.getElementById('custom_items_container');
-        const div = document.createElement('div');
-        div.className = 'row g-2 mb-2 custom-item';
-        div.setAttribute('data-index', customItemIndex);
-        div.innerHTML = `
-            <div class="col-md-5">
-                <input type="text" class="form-control form-control-sm" 
-                       name="custom_items[${customItemIndex}][name]" placeholder="Item name">
-            </div>
-            <div class="col-md-3">
-                <input type="number" class="form-control form-control-sm" 
-                       name="custom_items[${customItemIndex}][quantity]" placeholder="Quantity" min="0" step="0.01">
-            </div>
-            <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" 
-                       name="custom_items[${customItemIndex}][unit]" placeholder="Unit (pcs, kg, etc.)">
-            </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeCustomItem(${customItemIndex})">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        `;
-        container.appendChild(div);
-        customItemIndex++;
-    }
-    
-    function removeCustomItem(index) {
-        document.querySelector(`.custom-item[data-index="${index}"]`).remove();
-    }
-
-    // Initialize map
-    const map = L.map('map').setView([14.5995, 120.9842], 10); // Default to Manila
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-    
-    let marker = null;
-    
-    map.on('click', function(e) {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        
-        document.getElementById('latitude').value = lat.toFixed(8);
-        document.getElementById('longitude').value = lng.toFixed(8);
-        
-        if (marker) {
-            marker.setLatLng(e.latlng);
-        } else {
-            marker = L.marker(e.latlng).addTo(map);
-        }
-        
-        // Reverse geocode to get address
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.display_name) {
-                    document.getElementById('address').value = data.display_name;
-                }
+        // Pack type card selection
+        document.querySelectorAll('.pack-type-card input').forEach(input => {
+            input.addEventListener('change', function() {
+                this.closest('.pack-type-card').classList.toggle('selected', this.checked);
             });
-    });
-</script>
-@endsection
+        });
+
+        // Initialize map
+        const map = L.map('map').setView([14.5995, 120.9842], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker = null;
+
+        map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            document.getElementById('latitude').value = lat.toFixed(8);
+            document.getElementById('longitude').value = lng.toFixed(8);
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+
+            // Reverse geocode to get address
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.display_name) {
+                        document.getElementById('address').value = data.display_name;
+                    }
+                });
+        });
+
+        // Restore marker from old values
+        @if (old('latitude') && old('longitude'))
+            marker = L.marker([{{ old('latitude') }}, {{ old('longitude') }}]).addTo(map);
+            map.setView([{{ old('latitude') }}, {{ old('longitude') }}], 12);
+        @endif
+    </script>
 @endsection

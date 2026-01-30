@@ -60,6 +60,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('ngos/{user}', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'show'])->name('ngos.show');
     Route::post('ngos/{user}/approve', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'approve'])->name('ngos.approve');
     Route::post('ngos/{user}/reject', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'reject'])->name('ngos.reject');
+    Route::delete('ngos/{user}', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'destroy'])->name('ngos.destroy');
     Route::get('ngos/{user}/certificate', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'downloadCertificate'])->name('ngos.certificate');
 
     // Reports

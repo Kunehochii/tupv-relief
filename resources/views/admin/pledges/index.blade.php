@@ -1,23 +1,27 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'All Pledges - Admin')
+@section('title', 'All Pledges')
+
+@section('page', 'pledges')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>All Pledges</h2>
-        <div class="d-flex gap-2">
+    <h1 class="page-title">Pledge Verifications</h1>
+
+    <div class="content-card">
+        <div class="content-card-header">
             <form action="{{ route('admin.pledges.index') }}" method="GET" class="d-flex gap-2">
-                <select name="status" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                <select name="status" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
                     <option value="">All Status</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="verified" {{ request('status') === 'verified' ? 'selected' : '' }}>Verified</option>
-                    <option value="distributed" {{ request('status') === 'distributed' ? 'selected' : '' }}>Distributed</option>
+                    <option value="distributed" {{ request('status') === 'distributed' ? 'selected' : '' }}>Distributed
+                    </option>
                     <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired</option>
                 </select>
-                <select name="drive_id" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                <select name="drive_id" class="form-select form-select-sm" style="width: auto;"
+                    onchange="this.form.submit()">
                     <option value="">All Drives</option>
-                    @foreach($drives as $drive)
+                    @foreach ($drives as $drive)
                         <option value="{{ $drive->id }}" {{ request('drive_id') == $drive->id ? 'selected' : '' }}>
                             {{ $drive->name }}
                         </option>
@@ -25,20 +29,16 @@
                 </select>
             </form>
         </div>
-    </div>
-    
-    <div class="card">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+        <div class="content-card-body">
+            <table class="admin-table">
+                <thead>
                     <tr>
                         <th>Reference</th>
-                        <th>Drive</th>
                         <th>Donor</th>
-                        <th>Type</th>
-                        <th>Amount/Qty</th>
-                        <th>Status</th>
-                        <th>Date</th>
+                        <th>Item/s</th>
+                        <th>Quantity</th>
+                        <th>Submitted</th>
+                        <th>Time Left</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -46,52 +46,132 @@
                     @forelse($pledges as $pledge)
                         <tr>
                             <td>
-                                <a href="{{ route('admin.pledges.show', $pledge) }}" class="fw-bold">
+                                <a href="{{ route('admin.pledges.show', $pledge) }}">
                                     {{ $pledge->reference_number }}
                                 </a>
                             </td>
-                            <td>{{ Str::limit($pledge->drive->name, 25) }}</td>
+                            <td>{{ $pledge->user->name }}</td>
                             <td>
-                                {{ $pledge->user->name }}
-                                @if($pledge->user->role === 'ngo')
-                                    <span class="badge bg-info">NGO</span>
-                                @endif
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-dark">{{ ucfirst($pledge->type) }}</span>
-                            </td>
-                            <td>
-                                @if($pledge->type === 'financial')
-                                    ₱{{ number_format($pledge->amount, 2) }}
+                                @if ($pledge->items && count($pledge->items) > 0)
+                                    {{ $pledge->items[0] }}
+                                @elseif($pledge->item_description)
+                                    {{ $pledge->item_description }}
                                 @else
-                                    {{ $pledge->quantity }} {{ $pledge->item_description ?? 'items' }}
+                                    -
                                 @endif
                             </td>
                             <td>
-                                <span class="badge bg-{{ $pledge->status_color }}">{{ ucfirst($pledge->status) }}</span>
+                                @if ($pledge->quantity)
+                                    {{ $pledge->quantity }} ({{ $pledge->unit ?? 'units' }})
+                                @else
+                                    -
+                                @endif
                             </td>
-                            <td>{{ $pledge->created_at->format('M d, Y') }}</td>
+                            <td>{{ $pledge->created_at->format('M d, g:i A') }}</td>
                             <td>
-                                <a href="{{ route('admin.pledges.show', $pledge) }}" class="btn btn-sm btn-outline-primary">
-                                    View
-                                </a>
+                                @php
+                                    $hoursLeft = max(0, 24 - $pledge->created_at->diffInHours(now()));
+                                    $minutesLeft = max(0, 24 * 60 - $pledge->created_at->diffInMinutes(now()));
+                                @endphp
+                                @if ($pledge->status === 'distributed' || $pledge->status === 'expired')
+                                    <span class="text-muted">-</span>
+                                @elseif($minutesLeft > 0)
+                                    {{ floor($minutesLeft / 60) }}:{{ str_pad($minutesLeft % 60, 2, '0', STR_PAD_LEFT) }}h
+                                    left
+                                @else
+                                    <span class="text-danger">Expired</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($pledge->status === 'pending')
+                                    <form method="POST" action="{{ route('admin.pledges.verify', $pledge) }}"
+                                        class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn-action btn-action-pending">
+                                            Pending
+                                        </button>
+                                    </form>
+                                @elseif($pledge->status === 'verified')
+                                    <form method="POST" action="{{ route('admin.pledges.distribute', $pledge) }}"
+                                        class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn-action btn-action-verified">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Verified
+                                        </button>
+                                    </form>
+                                @elseif($pledge->status === 'distributed')
+                                    <span class="btn-action btn-action-distributed">
+                                        <i class="bi bi-box-seam me-1"></i>Distributed
+                                    </span>
+                                @else
+                                    <span class="btn-action btn-action-expired">
+                                        {{ ucfirst($pledge->status) }}
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
-                                No pledges found
+                            <td colspan="7" class="text-center py-4">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p>No pledges found</p>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        @if($pledges->hasPages())
-            <div class="card-footer">
-                {{ $pledges->withQueryString()->links() }}
-            </div>
-        @endif
     </div>
-</div>
+
+    @if ($pledges->hasPages())
+        <div class="mt-4">
+            {{ $pledges->withQueryString()->links() }}
+        </div>
+    @endif
+@endsection
+
+@section('styles')
+    .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 100px;
+    }
+
+    .btn-action-pending {
+    background-color: var(--relief-red);
+    color: #ffffff;
+    }
+
+    .btn-action-pending:hover {
+    background-color: var(--relief-vivid-red);
+    }
+
+    .btn-action-verified {
+    background-color: #198754;
+    color: #ffffff;
+    }
+
+    .btn-action-verified:hover {
+    background-color: #157347;
+    }
+
+    .btn-action-distributed {
+    background-color: var(--relief-dark-blue);
+    color: #ffffff;
+    }
+
+    .btn-action-expired {
+    background-color: var(--relief-gray-blue);
+    color: #ffffff;
+    }
 @endsection

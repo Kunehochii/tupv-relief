@@ -18,12 +18,11 @@ class NgoVerificationController extends Controller
 
     public function index(): View
     {
-        $pendingNgos = User::where('role', User::ROLE_NGO)
-            ->where('verification_status', User::STATUS_PENDING)
+        $ngos = User::where('role', User::ROLE_NGO)
             ->latest()
             ->paginate(15);
 
-        return view('admin.ngos.pending', compact('pendingNgos'));
+        return view('admin.ngos.pending', compact('ngos'));
     }
 
     public function show(User $user): View
@@ -79,6 +78,26 @@ class NgoVerificationController extends Controller
             abort(404);
         }
 
-        return Storage::disk('public')->download($user->certificate_path);
+        $path = Storage::disk('public')->path($user->certificate_path);
+
+        return response()->download($path, basename($user->certificate_path));
+    }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        if ($user->role !== User::ROLE_NGO) {
+            abort(404);
+        }
+
+        // Delete certificate file if exists
+        if ($user->certificate_path && Storage::disk('public')->exists($user->certificate_path)) {
+            Storage::disk('public')->delete($user->certificate_path);
+        }
+
+        $organizationName = $user->organization_name ?? $user->name;
+        $user->delete();
+
+        return redirect()->route('admin.ngos.pending')
+            ->with('success', "NGO '{$organizationName}' has been deleted.");
     }
 }

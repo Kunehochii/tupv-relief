@@ -28,7 +28,7 @@ class DriveController extends Controller
     {
         $packTypes = ReliefPackItem::PACK_TYPES;
         $reliefItems = ReliefPackItem::getAllGroupedByType();
-        
+
         return view('admin.drives.create', compact('packTypes', 'reliefItems'));
     }
 
@@ -41,10 +41,9 @@ class DriveController extends Controller
             'target_amount' => ['required', 'numeric', 'min:0'],
             'collected_amount' => ['nullable', 'numeric', 'min:0'],
             'target_type' => ['required', 'in:financial,quantity'],
-            'items_needed' => ['nullable', 'string'],
-            'pack_types_needed' => ['nullable', 'array'],
-            'pack_types_needed.*' => ['string', 'in:food,kitchen,hygiene,sleeping,clothing'],
-            'families_affected' => ['nullable', 'integer', 'min:0'],
+            'pack_types' => ['required', 'array', 'min:1'],
+            'pack_types.*' => ['string', 'in:food,kitchen,hygiene,sleeping,clothing'],
+            'families_affected' => ['required', 'integer', 'min:1'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['required', 'date', 'after:today'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -61,18 +60,14 @@ class DriveController extends Controller
             $validated['cover_photo'] = $request->file('cover_photo')->store('drive-covers', 'public');
         }
 
-        // Convert comma-separated items_needed string to array
-        if (isset($validated['items_needed']) && !empty($validated['items_needed'])) {
-            $validated['items_needed'] = array_map('trim', explode(',', $validated['items_needed']));
-        } else {
-            $validated['items_needed'] = null;
-        }
+        // Map pack_types to pack_types_needed (consistent with update method)
+        $validated['pack_types_needed'] = $validated['pack_types'];
+        unset($validated['pack_types']);
 
         $validated['created_by'] = Auth::id();
         $validated['status'] = Drive::STATUS_ACTIVE;
         $validated['collected_amount'] = $validated['collected_amount'] ?? 0;
         $validated['start_date'] = $validated['start_date'] ?? now();
-        $validated['pack_types_needed'] = $validated['pack_types_needed'] ?? null;
 
         // Remove custom_items from validated data before creating drive
         $customItems = $validated['custom_items'] ?? [];
@@ -104,15 +99,16 @@ class DriveController extends Controller
     public function show(Drive $drive): View
     {
         $drive->load(['creator', 'pledges.user', 'pledges.pledgeItems', 'driveItems', 'supportingNgos']);
-        
+
         return view('admin.drives.show', compact('drive'));
     }
 
     public function edit(Drive $drive): View
     {
         $drive->load('driveItems');
-        
-        return view('admin.drives.edit', compact('drive'));
+        $packTypes = ReliefPackItem::PACK_TYPES;
+
+        return view('admin.drives.edit', compact('drive', 'packTypes'));
     }
 
     public function update(Request $request, Drive $drive): RedirectResponse
@@ -145,7 +141,7 @@ class DriveController extends Controller
         }
 
         // Check if pack types or families affected changed
-        $shouldRegenerateItems = 
+        $shouldRegenerateItems =
             $drive->families_affected !== $validated['families_affected'] ||
             $drive->pack_types_needed !== $validated['pack_types'];
 
