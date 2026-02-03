@@ -1,25 +1,19 @@
-# Stage 1: Install Composer dependencies
-FROM composer:2 AS composer
-
-WORKDIR /app
-
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-COPY . .
-RUN composer dump-autoload --optimize
-
-# Stage 2: Production image
-FROM php:8.2-fpm-alpine
+# Production image
+FROM php:8.4-fpm-alpine
 
 # Install system dependencies and PHP extensions
 RUN apk add --no-cache \
     nginx \
     supervisor \
     curl \
+    curl-dev \
+    libpng \
     libpng-dev \
+    libjpeg-turbo \
     libjpeg-turbo-dev \
+    freetype \
     freetype-dev \
+    libzip \
     libzip-dev \
     oniguruma-dev \
     libxml2-dev \
@@ -43,11 +37,23 @@ RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini
 
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files from composer stage
-COPY --from=composer /app /var/www/html
+# Copy composer files first for better layer caching
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --no-scripts --no-autoloader --optimize-autoloader --prefer-dist
+
+# Copy application files
+COPY . .
+
+# Generate optimized autoload files
+RUN composer dump-autoload --optimize
 
 # Create necessary directories and set permissions
 RUN mkdir -p /var/www/html/storage/framework/{cache,sessions,views} \
