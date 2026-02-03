@@ -24,10 +24,6 @@ echo "⚙️ Caching configuration..."
 php artisan config:cache
 php artisan route:cache
 
-# Run database migrations
-echo "🗄️ Running database migrations..."
-php artisan migrate --force
-
 # Create supervisor log directory
 mkdir -p /var/log/supervisor
 
