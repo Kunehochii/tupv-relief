@@ -98,7 +98,7 @@
                                                     @csrf
                                                     <button type="submit" class="btn btn-outline-danger"
                                                         title="Withdraw Support">
-                                                        <i class="bi bi-heart-break"></i>
+                                                        <i class="bi bi-x-circle"></i> Withdraw
                                                     </button>
                                                 </form>
                                             </div>

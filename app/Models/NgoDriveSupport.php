@@ -37,6 +37,7 @@ class NgoDriveSupport extends Model
      */
     public function toggle(): void
     {
-        $this->update(['is_active' => !$this->is_active]);
+        $this->is_active = !$this->is_active;
+        $this->save();
     }
 }
