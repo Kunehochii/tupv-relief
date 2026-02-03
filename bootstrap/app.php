@@ -18,6 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified.ngo' => \App\Http\Middleware\VerifiedNgoMiddleware::class,
             'otp.verified' => \App\Http\Middleware\EnsureOtpVerified::class,
         ]);
+
+        // Trust all proxies for Railway
+        $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
