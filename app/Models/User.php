@@ -22,9 +22,11 @@ class User extends Authenticatable
         'certificate_path',
         'external_donation_url',
         'logo_url',
+        'logo_path',
         'verification_status',
         'rejection_reason',
         'verified_at',
+        'otp_verified',
     ];
 
     protected $hidden = [
@@ -132,6 +134,33 @@ class User extends Authenticatable
     public function driveSupports()
     {
         return $this->hasMany(NgoDriveSupport::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function otpVerifications()
+    {
+        return $this->hasMany(OtpVerification::class);
+    }
+
+    /**
+     * Check if user has completed OTP verification.
+     */
+    public function isOtpVerified(): bool
+    {
+        return (bool) $this->otp_verified;
+    }
+
+    /**
+     * Get the logo URL, preferring uploaded path over external URL.
+     */
+    public function getLogoAttribute(): ?string
+    {
+        if ($this->logo_path) {
+            return asset('storage/' . $this->logo_path);
+        }
+        return $this->logo_url;
     }
 
     public function isRejected(): bool

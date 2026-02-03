@@ -626,46 +626,11 @@
                                 </p>
                             </div>
 
-                            <!-- Pledge Type Toggle -->
-                            <div class="pledge-type-toggle">
-                                <label
-                                    class="pledge-type-btn {{ old('pledge_type', 'in-kind') == 'in-kind' ? 'active' : '' }}"
-                                    id="btn_inkind" onclick="selectPledgeType('in-kind')">
-                                    <i class="bi bi-box-seam-fill"></i>
-                                    <span>In-Kind Donation</span>
-                                </label>
-                                <label class="pledge-type-btn {{ old('pledge_type') == 'financial' ? 'active' : '' }}"
-                                    id="btn_financial" onclick="selectPledgeType('financial')">
-                                    <i class="bi bi-cash-stack"></i>
-                                    <span>Financial Donation</span>
-                                </label>
-                            </div>
-                            <input type="hidden" name="pledge_type" id="pledge_type"
-                                value="{{ old('pledge_type', 'in-kind') }}">
-
-                            <!-- Financial Section -->
-                            <div class="financial-section" id="financial_section"
-                                style="display: {{ old('pledge_type') == 'financial' ? 'block' : 'none' }};">
-                                <label for="financial_amount" class="form-label mb-2">Donation Amount (₱)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">₱</span>
-                                    <input type="number"
-                                        class="form-control amount-input @error('financial_amount') is-invalid @enderror"
-                                        id="financial_amount" name="financial_amount" value="{{ old('financial_amount') }}"
-                                        min="0" step="0.01" placeholder="Enter amount">
-                                    @error('financial_amount')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <small class="text-muted mt-2 d-block">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Financial pledges are coordinated with DSWD partners.
-                                </small>
-                            </div>
+                            <!-- Pledge Type - In-Kind Only -->
+                            <input type="hidden" name="pledge_type" id="pledge_type" value="in-kind">
 
                             <!-- Items Section -->
-                            <div id="items_section"
-                                style="display: {{ old('pledge_type') == 'financial' ? 'none' : 'block' }};">
+                            <div id="items_section">
                                 <h4 class="items-section-title">
                                     <i class="bi bi-box-seam me-2"></i>Items Needed
                                 </h4>

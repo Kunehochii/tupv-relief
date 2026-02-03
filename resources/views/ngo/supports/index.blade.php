@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Drives We Support')
+@section('title', 'Drive Support')
 
 @section('content')
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="mb-0">
                 <i class="bi bi-heart-fill text-danger me-2"></i>
-                Drives We Support
+                Drives You Support
             </h4>
             <a href="{{ route('ngo.dashboard') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Dashboard

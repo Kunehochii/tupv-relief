@@ -82,7 +82,7 @@
                                 <a href="{{ route('ngo.external-link', $ngo->id) }}" target="_blank"
                                     rel="noopener noreferrer" class="ngo-logo-card d-block">
                                     <div class="logo-wrapper">
-                                        <img src="{{ $ngo->logo_url ?? 'https://placehold.co/800x800' }}"
+                                        <img src="{{ $ngo->logo ?? 'https://placehold.co/800x800?text=' . urlencode(Str::limit($ngo->organization_name ?? $ngo->name, 10)) }}"
                                             alt="{{ $ngo->organization_name ?? $ngo->name }}" class="ngo-logo">
                                     </div>
                                     <p class="ngo-name text-center mt-2 mb-0">

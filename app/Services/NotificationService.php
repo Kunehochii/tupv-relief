@@ -113,13 +113,13 @@ class NotificationService
     public function notifyItemDistributed(User $user, PledgeItem $item): void
     {
         $message = "Your donation of {$item->quantity_distributed} {$item->unit} of {$item->item_name} " .
-                   "has been distributed";
-        
+            "has been distributed";
+
         if ($item->families_helped > 0) {
-            $message .= ", helping {$item->families_helped} " . 
-                       ($item->families_helped === 1 ? 'family' : 'families');
+            $message .= ", helping {$item->families_helped} " .
+                ($item->families_helped === 1 ? 'family' : 'families');
         }
-        
+
         $message .= ". Thank you!";
 
         $this->createNotification(
@@ -186,5 +186,37 @@ class NotificationService
             "Your NGO verification was rejected. Reason: {$user->rejection_reason}. Please contact support for assistance.",
             ['rejection_reason' => $user->rejection_reason]
         );
+    }
+
+    /**
+     * Notify donors when an NGO pledges items to a drive they're supporting
+     */
+    public function sendNgoPledgeAddedToDonors(Pledge $ngoPledge): void
+    {
+        $drive = $ngoPledge->drive;
+        $ngo = $ngoPledge->user;
+
+        // Get unique donors who have pledged to this drive
+        $donorPledges = Pledge::where('drive_id', $drive->id)
+            ->whereHas('user', fn($q) => $q->where('role', User::ROLE_DONOR))
+            ->with('user')
+            ->get()
+            ->unique('user_id');
+
+        foreach ($donorPledges as $donorPledge) {
+            $this->createNotification(
+                $donorPledge->user,
+                Notification::TYPE_NGO_PLEDGE_ADDED,
+                'NGO Support Added to Drive',
+                "{$ngo->organization_name} has pledged items to \"{$drive->name}\" - a drive you're supporting!",
+                [
+                    'drive_id' => $drive->id,
+                    'ngo_id' => $ngo->id,
+                    'ngo_name' => $ngo->organization_name,
+                    'pledge_id' => $donorPledge->id,
+                ],
+                false // Don't send email for cost reduction
+            );
+        }
     }
 }

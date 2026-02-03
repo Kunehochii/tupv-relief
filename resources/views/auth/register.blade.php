@@ -56,14 +56,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="logo_url" class="form-label">Organization Logo URL <span
+                    <label for="organization_logo" class="form-label">Organization Logo <span
                             class="text-muted">(Optional)</span></label>
-                    <input type="url" class="form-control @error('logo_url') is-invalid @enderror" id="logo_url"
-                        name="logo_url" value="{{ old('logo_url') }}"
-                        placeholder="https://your-logo-image-url.com/logo.png">
-                    <div class="form-text">Enter a URL to your organization's square logo (1:1 ratio recommended). This will
-                        be displayed on drive donation pages.</div>
-                    @error('logo_url')
+                    <input type="file" class="form-control @error('organization_logo') is-invalid @enderror"
+                        id="organization_logo" name="organization_logo" accept="image/jpeg,image/png,image/jpg,image/gif">
+                    <div class="form-text">Upload your organization's logo (JPEG, PNG, GIF - max 2MB).
+                        Square format (1:1 ratio) recommended. This will be displayed on drive donation pages.</div>
+                    @error('organization_logo')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

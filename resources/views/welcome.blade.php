@@ -428,8 +428,8 @@
         <div class="container d-flex justify-content-between align-items-center">
             <a href="{{ route('home') }}" class="navbar-brand-custom">TABANG</a>
             <div class="d-flex align-items-center">
-                <a href="#" class="nav-link-custom">Contacts</a>
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
+                <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
                 <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
             </div>
         </div>
@@ -445,9 +445,8 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-buttons">
-                        <a href="{{ route('login') }}?role=ngo" class="btn-outline-custom">Manage Donations</a>
-                        <a href="{{ route('login') }}?role=admin" class="btn-outline-custom">Create Donation Drive</a>
-                        <a href="{{ route('login') }}?role=donor" class="btn-primary-custom">Donate</a>
+                        <a href="{{ route('login') }}" class="btn-outline-custom">Sign In</a>
+                        <a href="{{ route('register') }}" class="btn-primary-custom">Donate Now</a>
                     </div>
                 </div>
             </div>
@@ -581,8 +580,10 @@
                     @endif
                 </div>
                 <div class="quote-text">
-                    TABANG is a trusted leader in online fundraising. With simple pricing and a team of Trust & Safety
-                    experts in your corner, you can raise money or make a donation with peace of mind.
+                    TABANG brings donors, NGOs, and responders together in one transparent
+                    platform for disaster relief coordination. By showing verified needs and tracking
+                    donations and pledges, it helps ensure that every contribution is purposeful,
+                    accountable, and directed where it is needed most.
                 </div>
             </div>
         </div>
@@ -598,8 +599,10 @@
                     <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="footer-note mb-0">This website is an explainer best basta in coordination with the
-                        Department of Social Welfare and Development.</p>
+                    <p class="footer-note mb-0">This website was developed as an academic project in coordination with
+                        the
+                        Department of Social Welfare and Development (DSWD) to support disaster relief
+                        donation and distribution processes.</p>
                 </div>
             </div>
         </div>

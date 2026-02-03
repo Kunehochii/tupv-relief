@@ -219,10 +219,10 @@
     <!-- Navigation -->
     <nav class="navbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="navbar-brand-custom">BULIG</a>
+            <a href="{{ route('home') }}" class="navbar-brand-custom">TABANG</a>
             <div class="d-flex align-items-center">
-                <a href="#" class="nav-link-custom">Contacts</a>
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
+                <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
                 <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
             </div>
         </div>
@@ -245,6 +245,18 @@
                 system, we help ensure that aid reaches the right people, at the right time, with minimal waste and
                 duplication.
             </p>
+
+            <!-- TABANG Acronym Section -->
+            <div class="acronym-section text-center py-4 bg-light rounded my-4">
+                <h4 class="mb-3" style="color: var(--dark-blue);">
+                    <i class="bi bi-heart-fill" style="color: var(--vivid-red);"></i>
+                    What is TABANG?
+                </h4>
+                <p class="lead mb-0" style="color: var(--dark-blue);">
+                    <strong>T</strong>imely <strong>A</strong>ssistance <strong>B</strong>ringing
+                    <strong>A</strong>id to <strong>N</strong>eedy <strong>G</strong>roups
+                </p>
+            </div>
         </div>
     </section>
 
@@ -325,8 +337,10 @@
                     <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="footer-note mb-0">This website is an explainer best basta in coordination with the
-                        Department of Social Welfare and Development.</p>
+                    <p class="footer-note mb-0">This website was developed as an academic project in coordination with
+                        the
+                        Department of Social Welfare and Development (DSWD) to support disaster relief
+                        donation and distribution processes.</p>
                 </div>
             </div>
         </div>

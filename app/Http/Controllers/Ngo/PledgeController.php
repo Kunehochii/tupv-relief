@@ -54,33 +54,30 @@ class PledgeController extends Controller
     {
         $validated = $request->validate([
             'drive_id' => ['required', 'exists:drives,id'],
-            'pledge_type' => ['required', 'in:in-kind,financial'],
-            'financial_amount' => ['required_if:pledge_type,financial', 'nullable', 'numeric', 'min:0.01'],
+            'pledge_type' => ['required', 'in:in-kind'],
             'items' => ['nullable', 'array'],
             'items.*.drive_item_id' => ['required_with:items.*.quantity', 'exists:drive_items,id'],
-            'items.*.quantity' => ['nullable', 'numeric', 'min:0'],
+            'items.*.quantity' => ['nullable', 'integer', 'min:1'],
             'details' => ['nullable', 'string', 'max:1000'],
             'contact_number' => ['required', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
-        // For in-kind pledges, ensure at least one item has a valid quantity
-        if ($validated['pledge_type'] === 'in-kind') {
-            $hasValidItems = false;
-            if (!empty($validated['items'])) {
-                foreach ($validated['items'] as $item) {
-                    if (isset($item['quantity']) && $item['quantity'] > 0) {
-                        $hasValidItems = true;
-                        break;
-                    }
+        // Ensure at least one item has a valid quantity
+        $hasValidItems = false;
+        if (!empty($validated['items'])) {
+            foreach ($validated['items'] as $item) {
+                if (isset($item['quantity']) && $item['quantity'] > 0) {
+                    $hasValidItems = true;
+                    break;
                 }
             }
+        }
 
-            if (!$hasValidItems) {
-                return back()
-                    ->withInput()
-                    ->withErrors(['items' => 'Please enter a quantity for at least one item.']);
-            }
+        if (!$hasValidItems) {
+            return back()
+                ->withInput()
+                ->withErrors(['items' => 'Please enter a quantity for at least one item.']);
         }
 
         $drive = Drive::findOrFail($validated['drive_id']);
@@ -93,16 +90,15 @@ class PledgeController extends Controller
             $pledge = Pledge::create([
                 'user_id' => Auth::id(),
                 'drive_id' => $validated['drive_id'],
-                'pledge_type' => $validated['pledge_type'],
-                'financial_amount' => $validated['financial_amount'] ?? null,
+                'pledge_type' => 'in-kind',
                 'details' => $validated['details'] ?? null,
                 'contact_number' => $validated['contact_number'],
                 'notes' => $validated['notes'] ?? null,
                 'status' => Pledge::STATUS_PENDING,
             ]);
 
-            // Create pledge items for in-kind pledges
-            if ($validated['pledge_type'] === 'in-kind' && !empty($validated['items'])) {
+            // Create pledge items
+            if (!empty($validated['items'])) {
                 foreach ($validated['items'] as $item) {
                     if (isset($item['quantity']) && $item['quantity'] > 0) {
                         $driveItem = $drive->driveItems()->find($item['drive_item_id']);
@@ -124,6 +120,9 @@ class PledgeController extends Controller
         });
 
         $this->notificationService->sendPledgeAcknowledged($pledge);
+
+        // Notify donors who have pledged to this drive that an NGO is also supporting it
+        $this->notificationService->sendNgoPledgeAddedToDonors($pledge);
 
         return redirect()->route('ngo.pledges.show', $pledge)
             ->with('success', 'Pledge submitted successfully! Reference: ' . $pledge->reference_number);

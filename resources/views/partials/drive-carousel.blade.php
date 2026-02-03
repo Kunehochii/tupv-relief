@@ -66,18 +66,27 @@
                                         @if ($userType === 'ngo')
                                             @php
                                                 $isSupported = in_array($drive->id, $supportedDriveIds);
+                                                $isVerified = auth()->user()->isVerifiedNgo();
                                             @endphp
-                                            <form action="{{ route('ngo.drives.support', $drive) }}" method="POST"
-                                                class="d-inline support-form">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="btn btn-support {{ $isSupported ? 'supported' : '' }}"
-                                                    {{ $isSupported ? 'disabled' : '' }}>
-                                                    <i
-                                                        class="bi {{ $isSupported ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                                                    {{ $isSupported ? 'SUPPORTED' : 'SUPPORT' }}
+                                            @if ($isVerified)
+                                                <form action="{{ route('ngo.drives.support', $drive) }}" method="POST"
+                                                    class="d-inline support-form">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="btn btn-support {{ $isSupported ? 'supported' : '' }}"
+                                                        {{ $isSupported ? 'disabled' : '' }}>
+                                                        <i
+                                                            class="bi {{ $isSupported ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                                        {{ $isSupported ? 'SUPPORTED' : 'SUPPORT' }}
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <button type="button" class="btn btn-support-disabled" disabled
+                                                    title="NGO verification required to support drives">
+                                                    <i class="bi bi-lock"></i>
+                                                    SUPPORT
                                                 </button>
-                                            </form>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -315,6 +324,21 @@
         background-color: #8a95b6;
         border-color: #8a95b6;
         cursor: not-allowed;
+    }
+
+    .btn-support-disabled {
+        background-color: #c8c8c8;
+        border-color: #c8c8c8;
+        color: #888;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .btn-support-disabled:hover {
+        background-color: #c8c8c8;
+        border-color: #c8c8c8;
+        color: #888;
+        transform: none;
     }
 
     /* Carousel Controls */

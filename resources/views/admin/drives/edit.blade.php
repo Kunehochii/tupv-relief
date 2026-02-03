@@ -320,9 +320,6 @@
                     <label for="target_type" class="form-label-styled">Target Type *</label>
                     <select class="form-select form-select-styled @error('target_type') is-invalid @enderror"
                         id="target_type" name="target_type" required>
-                        <option value="financial"
-                            {{ old('target_type', $drive->target_type) === 'financial' ? 'selected' : '' }}>Financial (PHP)
-                        </option>
                         <option value="quantity"
                             {{ old('target_type', $drive->target_type) === 'quantity' ? 'selected' : '' }}>Quantity (Items)
                         </option>

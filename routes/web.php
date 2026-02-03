@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -35,10 +36,15 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    // OTP Verification Routes (accessible before OTP is verified)
+    Route::get('otp/verify', [OtpController::class, 'show'])->name('otp.verify');
+    Route::post('otp/verify', [OtpController::class, 'verify']);
+    Route::post('otp/send', [OtpController::class, 'send'])->name('otp.send');
 });
 
-// Admin Routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+// Admin Routes (with OTP verification)
+Route::middleware(['auth', 'otp.verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // Drive Management
@@ -72,8 +78,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('reports/donors', [\App\Http\Controllers\Admin\ReportController::class, 'donorStatistics'])->name('reports.donors');
 });
 
-// Donor Routes
-Route::middleware(['auth', 'donor'])->prefix('donor')->name('donor.')->group(function () {
+// Donor Routes (with OTP verification)
+Route::middleware(['auth', 'otp.verified', 'donor'])->prefix('donor')->name('donor.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Donor\DashboardController::class, 'index'])->name('dashboard');
     Route::get('map', [\App\Http\Controllers\Donor\DashboardController::class, 'map'])->name('map');
     Route::get('drives/fetch', [\App\Http\Controllers\Donor\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
@@ -90,8 +96,8 @@ Route::middleware(['auth', 'donor'])->prefix('donor')->name('donor.')->group(fun
     Route::post('notifications/read-all', [\App\Http\Controllers\Donor\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 });
 
-// NGO Routes
-Route::middleware(['auth', 'ngo'])->prefix('ngo')->name('ngo.')->group(function () {
+// NGO Routes (with OTP verification)
+Route::middleware(['auth', 'otp.verified', 'ngo'])->prefix('ngo')->name('ngo.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Ngo\DashboardController::class, 'index'])->name('dashboard');
     Route::get('map', [\App\Http\Controllers\Ngo\DashboardController::class, 'map'])->name('map');
     Route::get('drives/fetch', [\App\Http\Controllers\Ngo\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
@@ -106,7 +112,7 @@ Route::middleware(['auth', 'ngo'])->prefix('ngo')->name('ngo.')->group(function 
         Route::get('supports', [\App\Http\Controllers\Ngo\DriveSupportController::class, 'index'])->name('supports.index');
     });
 
-    // Pledges (same as donor, but for NGO)
+    // Pledges (verified NGOs only)
     Route::middleware('verified.ngo')->group(function () {
         Route::get('pledges', [\App\Http\Controllers\Ngo\PledgeController::class, 'index'])->name('pledges.index');
         Route::get('pledges/create', [\App\Http\Controllers\Ngo\PledgeController::class, 'create'])->name('pledges.create');
