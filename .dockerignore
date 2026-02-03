@@ -1,22 +1,53 @@
-/node_modules
-/vendor
-/.git
-/.idea
-/.vscode
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation (except README)
+docs/
+*.md
+!README.md
+
+# Environment files
 .env
 .env.local
 .env.*.local
 .env.backup
+
+# IDE
+.idea/
+.vscode/
+.fleet/
+*.swp
+*.swo
+
+# Dependencies (will be installed fresh in Docker)
+vendor/
+node_modules/
+
+# Testing
+tests/
+phpunit.xml
+.phpunit.result.cache
+.phpunit.cache
+
+# Storage artifacts (these are created at runtime)
 /storage/*.key
 /storage/logs/*
 /storage/framework/cache/*
 /storage/framework/sessions/*
 /storage/framework/views/*
 /bootstrap/cache/*
-.phpunit.result.cache
+
+# Build artifacts
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/.fleet
-/.phpunit.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
