@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Drive;
 use App\Models\Pledge;
 use App\Models\PledgeItem;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class PledgeController extends Controller
 
     public function index(): View
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $pledges = $user->pledges()

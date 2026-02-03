@@ -6,6 +6,36 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $role
+ * @property string|null $organization_name
+ * @property string|null $certificate_path
+ * @property string|null $external_donation_url
+ * @property string|null $verification_status
+ * @property string|null $google_id
+ * @property bool $otp_verified
+ * 
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Pledge[] $pledges
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Notification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LinkClick[] $linkClicks
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Drive[] $createdDrives
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Drive[] $supportedDrives
+ * 
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany pledges()
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany notifications()
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany linkClicks()
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany createdDrives()
+ * @method \Illuminate\Database\Eloquent\Relations\BelongsToMany supportedDrives()
+ * @method bool isAdmin()
+ * @method bool isDonor()
+ * @method bool isNgo()
+ * @method bool isVerified()
+ * @method bool isPending()
+ * @method bool isVerifiedNgo()
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -76,6 +106,11 @@ class User extends Authenticatable
     public function isPending(): bool
     {
         return $this->verification_status === self::STATUS_PENDING;
+    }
+
+    public function isVerifiedNgo(): bool
+    {
+        return $this->isNgo() && $this->isVerified();
     }
 
     /**

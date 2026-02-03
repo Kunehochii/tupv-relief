@@ -298,26 +298,6 @@
             min-width: 60px;
         }
 
-        /* Financial Section */
-        .financial-section {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .financial-section label {
-            color: var(--dark-blue);
-            font-weight: 600;
-        }
-
-        .amount-input {
-            font-size: 1.25rem;
-            padding: 1rem;
-            border: 2px solid var(--gray);
-            border-radius: 8px;
-        }
-
         .amount-input:focus {
             border-color: var(--vivid-orange);
             box-shadow: 0 0 0 3px rgba(234, 79, 45, 0.15);
@@ -858,33 +838,7 @@
                         <p>${description || 'Help us support those in need by pledging donations to this relief drive.'}</p>
                     </div>
 
-                    <!-- Pledge Type Toggle -->
-                    <div class="pledge-type-toggle">
-                        <label class="pledge-type-btn active" id="btn_inkind" onclick="selectPledgeType('in-kind')">
-                            <i class="bi bi-box-seam-fill"></i>
-                            <span>In-Kind Donation</span>
-                        </label>
-                        <label class="pledge-type-btn" id="btn_financial" onclick="selectPledgeType('financial')">
-                            <i class="bi bi-cash-stack"></i>
-                            <span>Financial Donation</span>
-                        </label>
-                    </div>
                     <input type="hidden" name="pledge_type" id="pledge_type" value="in-kind">
-
-                    <!-- Financial Section -->
-                    <div class="financial-section" id="financial_section" style="display: none;">
-                        <label for="financial_amount" class="form-label mb-2">Donation Amount (₱)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">₱</span>
-                            <input type="number" class="form-control amount-input" 
-                                   id="financial_amount" name="financial_amount" 
-                                   min="0" step="0.01" placeholder="Enter amount">
-                        </div>
-                        <small class="text-muted mt-2 d-block">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Financial pledges are coordinated with our NGO partners.
-                        </small>
-                    </div>
 
                     <!-- Items Section -->
                     <div id="items_section">
@@ -1042,31 +996,6 @@
             }, 50);
         }
 
-        function selectPledgeType(type) {
-            document.getElementById('pledge_type').value = type;
-
-            const btnInkind = document.getElementById('btn_inkind');
-            const btnFinancial = document.getElementById('btn_financial');
-            const financialSection = document.getElementById('financial_section');
-            const itemsSection = document.getElementById('items_section');
-
-            if (type === 'financial') {
-                btnFinancial.classList.add('active');
-                btnInkind.classList.remove('active');
-                financialSection.style.display = 'block';
-                itemsSection.style.display = 'none';
-            } else {
-                btnInkind.classList.add('active');
-                btnFinancial.classList.remove('active');
-                financialSection.style.display = 'none';
-                itemsSection.style.display = 'block';
-            }
-        }
-
-        function togglePledgeType() {
-            const type = document.getElementById('pledge_type')?.value || 'in-kind';
-            selectPledgeType(type);
-        }
 
         // Form validation
         function validateForm() {
@@ -1085,25 +1014,17 @@
                 errors.push('Contact number is required.');
             }
 
-            // Check pledge type specific requirements
-            if (pledgeType === 'financial') {
-                const amount = parseFloat(document.getElementById('financial_amount')?.value) || 0;
-                if (amount <= 0) {
-                    errors.push('Please enter a valid financial donation amount.');
+            // Check if at least one item has quantity > 0
+            const itemInputs = document.querySelectorAll('input[name^="items"][name$="[quantity]"]');
+            let hasItems = false;
+            itemInputs.forEach(input => {
+                if (parseFloat(input.value) > 0) {
+                    hasItems = true;
                 }
-            } else {
-                // In-kind: check if at least one item has quantity > 0
-                const itemInputs = document.querySelectorAll('input[name^="items"][name$="[quantity]"]');
-                let hasItems = false;
-                itemInputs.forEach(input => {
-                    if (parseFloat(input.value) > 0) {
-                        hasItems = true;
-                    }
-                });
+            });
 
-                if (!hasItems && itemInputs.length > 0) {
-                    errors.push('Please enter a quantity for at least one item.');
-                }
+            if (!hasItems && itemInputs.length > 0) {
+                errors.push('Please enter a quantity for at least one item.');
             }
 
             return errors;

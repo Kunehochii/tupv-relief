@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Drive;
 use App\Models\Pledge;
 use App\Models\PledgeItem;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,18 +22,20 @@ class PledgeController extends Controller
 
     public function index(): View
     {
-        $pledges = Auth::user()
+        /** @var User $user */
+        $user = Auth::user();
+        $pledges = $user
             ->pledges()
             ->with(['drive', 'pledgeItems'])
             ->latest()
             ->paginate(15);
 
         $impact = [
-            'families_helped' => Auth::user()->pledges()->sum('families_helped'),
-            'items_distributed' => Auth::user()->pledges()
+            'families_helped' => $user->pledges()->sum('families_helped'),
+            'items_distributed' => $user->pledges()
                 ->join('pledge_items', 'pledges.id', '=', 'pledge_items.pledge_id')
                 ->sum('pledge_items.quantity_distributed'),
-            'relief_packages' => Auth::user()->pledges()->sum('relief_packages'),
+            'relief_packages' => $user->pledges()->sum('relief_packages'),
         ];
 
         return view('donor.pledges.index', compact('pledges', 'impact'));

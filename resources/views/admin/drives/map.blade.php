@@ -352,7 +352,8 @@
             @foreach ($drives as $drive)
                 @if ($drive->latitude && $drive->longitude)
                     const marker{{ $drive->id }} = L.marker([{{ $drive->latitude }},
-                        {{ $drive->longitude }}], {
+                            {{ $drive->longitude }}
+                        ], {
                             icon: markerIcon
                         })
                         .addTo(map)
@@ -360,13 +361,7 @@
                         <div style="min-width: 200px;">
                             <div class="popup-title">{{ $drive->name }}</div>
                             <p class="popup-desc">{{ Str::limit($drive->description, 80) }}</p>
-                            <div class="popup-info"><strong>Target:</strong> 
-                                @if ($drive->target_type === 'financial')
-                                    ₱{{ number_format($drive->target_amount, 0) }}
-                                @else
-                                    {{ number_format($drive->target_amount) }} items
-                                @endif
-                            </div>
+                            <div class="popup-info"><strong>Target:</strong> {{ number_format($drive->target_amount) }} items</div>
                             <div class="popup-info"><strong>Progress:</strong> {{ $drive->progress_percentage }}%</div>
                             <div class="popup-info"><strong>Ends:</strong> {{ $drive->end_date->format('M d, Y') }}</div>
                             <a href="{{ route('admin.drives.show', $drive) }}" class="popup-btn">View Details</a>

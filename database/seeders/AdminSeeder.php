@@ -17,6 +17,17 @@ class AdminSeeder extends Seeder
             'role' => User::ROLE_ADMIN,
             'verification_status' => User::STATUS_VERIFIED,
             'email_verified_at' => now(),
+            'otp_verified' => true,
+        ]);
+
+        User::create([
+            'name' => 'DSWD Supervisor',
+            'email' => 'supervisor@relief.app',
+            'password' => Hash::make('password'),
+            'role' => User::ROLE_ADMIN,
+            'verification_status' => User::STATUS_VERIFIED,
+            'email_verified_at' => now(),
+            'otp_verified' => true,
         ]);
     }
 }

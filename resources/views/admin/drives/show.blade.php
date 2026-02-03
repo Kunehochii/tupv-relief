@@ -473,12 +473,7 @@
                                     </td>
                                     <td>{{ $pledge->user->name }}</td>
                                     <td>
-                                        @if ($pledge->pledge_type === 'financial')
-                                            <span
-                                                class="badge bg-success">₱{{ number_format($pledge->financial_amount, 2) }}</span>
-                                        @else
-                                            <span class="badge bg-primary">{{ $pledge->pledgeItems->count() }} items</span>
-                                        @endif
+                                        <span class="badge bg-primary">{{ $pledge->pledgeItems->count() }} items</span>
                                     </td>
                                     <td>
                                         <span

@@ -25,8 +25,7 @@
                     @endif
 
                     <p class="detail-item">
-                        <strong>Target:</strong> {{ number_format($drive->target_amount) }}
-                        {{ $drive->target_type === 'financial' ? 'PHP' : 'items' }}
+                        <strong>Target:</strong> {{ number_format($drive->target_amount) }} items
                     </p>
 
                     <p class="detail-item">
