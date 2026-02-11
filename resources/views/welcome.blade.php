@@ -426,7 +426,8 @@
     <!-- Navigation -->
     <nav class="navbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="navbar-brand-custom">TABANG</a>
+            <a href="{{ route('home') }}" class="navbar-brand-custom"><img src="/logos/tabang.png" alt="TABANG"
+                    style="height: 65px;"></a>
             <div class="d-flex align-items-center">
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
                 <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
@@ -447,6 +448,15 @@
                     <div class="hero-buttons">
                         <a href="{{ route('login') }}" class="btn-outline-custom">Sign In</a>
                         <a href="{{ route('register') }}" class="btn-primary-custom">Donate Now</a>
+                        @auth
+                            @if (auth()->user()->isNgo())
+                                <a href="{{ route('ngo.supports.index') }}" class="btn-outline-custom">NGO Support Drive</a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn-outline-custom">NGO Support Drive</a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="btn-outline-custom">NGO Support Drive</a>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -549,18 +559,25 @@
         <div class="container">
             <h2 class="section-title">Accomplishments</h2>
             <div class="row">
-                <div class="col-md-4 text-center text-md-start mb-4 mb-md-0">
+                <div
+                    class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center text-md-start mb-4 mb-md-0">
                     <div class="stat-number">{{ number_format($stats['relief_distributed']) }}</div>
-                    <p class="stat-label">relief packs and hot meals distributed</p>
+                    <p class="stat-label">relief packs and items distributed</p>
                 </div>
-                <div class="col-md-4 text-center mb-4 mb-md-0">
+                <div class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center mb-4 mb-md-0">
                     <div class="stat-number">{{ number_format($stats['drives_created']) }}</div>
                     <p class="stat-label">donation drives created</p>
                 </div>
-                <div class="col-md-4 text-center text-md-end">
+                <div class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center mb-4 mb-md-0">
                     <div class="stat-number">{{ number_format($stats['pledges_verified']) }}</div>
                     <p class="stat-label">total pledges made and verified</p>
                 </div>
+                @if ($stats['families_helped'] > 0)
+                    <div class="col-md-3 text-center text-md-end">
+                        <div class="stat-number">{{ number_format($stats['families_helped']) }}</div>
+                        <p class="stat-label">families helped</p>
+                    </div>
+                @endif
             </div>
         </div>
     </section>

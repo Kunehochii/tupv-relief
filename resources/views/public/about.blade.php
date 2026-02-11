@@ -219,7 +219,8 @@
     <!-- Navigation -->
     <nav class="navbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="navbar-brand-custom">TABANG</a>
+            <a href="{{ route('home') }}" class="navbar-brand-custom"><img src="/logos/tabang.png" alt="TABANG"
+                    style="height: 65px;"></a>
             <div class="d-flex align-items-center">
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
                 <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>

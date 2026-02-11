@@ -1,6 +1,7 @@
 <nav class="navbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
-        <a href="{{ url('/') }}" class="navbar-brand-custom">TABANG</a>
+        <a href="{{ url('/') }}" class="navbar-brand-custom"><img src="/logos/tabang.png" alt="TABANG"
+                style="height: 65px;"></a>
 
         <!-- Mobile Toggle Button (only visible on mobile) -->
         <button class="navbar-toggler-custom d-lg-none" type="button" id="navbarToggleBtn">

@@ -62,14 +62,18 @@ class HomeController extends Controller
      */
     private function getStatistics(): array
     {
-        // Total relief packs and items distributed (from verified/distributed pledges)
-        $reliefPacksDistributed = Pledge::where('status', Pledge::STATUS_DISTRIBUTED)
-            ->sum('relief_packages') ?? 0;
+        // Total relief items distributed from PledgeItems (most accurate source)
+        $pledgeItemsDistributed = \App\Models\PledgeItem::whereHas('pledge', function ($q) {
+            $q->where('status', Pledge::STATUS_DISTRIBUTED);
+        })->sum('quantity_distributed');
 
-        $itemsDistributed = Pledge::where('status', Pledge::STATUS_DISTRIBUTED)
-            ->sum('items_distributed') ?? 0;
+        // Fallback: also check pledge-level tracking fields
+        $pledgeLevelDistributed = Pledge::where('status', Pledge::STATUS_DISTRIBUTED)
+            ->selectRaw('COALESCE(SUM(relief_packages), 0) + COALESCE(SUM(items_distributed), 0) as total')
+            ->value('total');
 
-        $totalDistributed = $reliefPacksDistributed + $itemsDistributed;
+        // Use whichever source has data (prefer pledge items as more granular)
+        $totalDistributed = max((int) $pledgeItemsDistributed, (int) $pledgeLevelDistributed);
 
         // Total donation drives created
         $totalDrives = Drive::count();
@@ -80,10 +84,15 @@ class HomeController extends Controller
             Pledge::STATUS_DISTRIBUTED
         ])->count();
 
+        // Total families helped
+        $familiesHelped = Pledge::where('status', Pledge::STATUS_DISTRIBUTED)
+            ->sum('families_helped');
+
         return [
             'relief_distributed' => $totalDistributed > 0 ? $totalDistributed : 1000,
             'drives_created' => $totalDrives > 0 ? $totalDrives : 13252,
             'pledges_verified' => $totalPledges > 0 ? $totalPledges : 4568,
+            'families_helped' => (int) $familiesHelped,
         ];
     }
 }
