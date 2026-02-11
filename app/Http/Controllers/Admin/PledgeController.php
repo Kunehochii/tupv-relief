@@ -19,13 +19,23 @@ class PledgeController extends Controller
         protected NotificationService $notificationService
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $pledges = Pledge::with(['user', 'drive', 'pledgeItems'])
-            ->latest()
-            ->paginate(20);
+        $query = Pledge::with(['user', 'drive', 'pledgeItems']);
 
-        return view('admin.pledges.index', compact('pledges'));
+        if ($request->filled('drive_id')) {
+            $query->where('drive_id', $request->drive_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $pledges = $query->latest()->paginate(20)->appends($request->query());
+
+        $drives = \App\Models\Drive::orderBy('name')->get();
+
+        return view('admin.pledges.index', compact('pledges', 'drives'));
     }
 
     public function pending(): View
@@ -41,7 +51,7 @@ class PledgeController extends Controller
     public function show(Pledge $pledge): View
     {
         $pledge->load(['user', 'drive', 'verifier', 'pledgeItems.driveItem']);
-        
+
         return view('admin.pledges.show', compact('pledge'));
     }
 
@@ -85,16 +95,16 @@ class PledgeController extends Controller
 
             foreach ($validated['items'] as $itemData) {
                 $pledgeItem = PledgeItem::find($itemData['id']);
-                
+
                 if ($pledgeItem && $pledgeItem->pledge_id === $pledge->id) {
                     $quantityDistributed = min($itemData['quantity_distributed'], $pledgeItem->remaining_to_distribute);
-                    
+
                     // Calculate families helped using mother formula
                     $reliefItem = ReliefPackItem::where('item_name', $pledgeItem->item_name)
                         ->where('unit', $pledgeItem->unit)
                         ->first();
-                    
-                    $familiesHelped = $reliefItem 
+
+                    $familiesHelped = $reliefItem
                         ? $reliefItem->calculateFamiliesHelped($quantityDistributed)
                         : 0;
 
@@ -127,6 +137,9 @@ class PledgeController extends Controller
                     'distributed_at' => now(),
                     'families_helped' => $pledge->total_families_helped,
                 ]);
+
+                // Send distribution notification with email
+                $this->notificationService->sendDonationDistributed($pledge);
             }
         });
 
@@ -149,5 +162,25 @@ class PledgeController extends Controller
 
         return redirect()->back()
             ->with('success', 'Feedback saved successfully.');
+    }
+
+    public function reject(Request $request, Pledge $pledge): RedirectResponse
+    {
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($pledge, $validated) {
+            $pledge->update([
+                'status' => Pledge::STATUS_EXPIRED,
+                'expired_at' => now(),
+                'admin_feedback' => $validated['rejection_reason'],
+            ]);
+        });
+
+        $this->notificationService->sendPledgeExpired($pledge);
+
+        return redirect()->route('admin.pledges.pending')
+            ->with('success', 'Pledge rejected successfully.');
     }
 }

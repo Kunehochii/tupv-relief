@@ -30,7 +30,8 @@
                     @forelse($ngos as $ngo)
                         <tr>
                             <td>
-                                <span class="ngo-name">{{ $ngo->organization_name ?? $ngo->name }}</span>
+                                <a href="{{ route('admin.ngos.show', $ngo) }}"
+                                    class="ngo-name text-decoration-none">{{ $ngo->organization_name ?? $ngo->name }}</a>
                             </td>
                             <td>{{ $ngo->email }}</td>
                             <td>{{ $ngo->created_at->format('M j, g:i A') }}</td>

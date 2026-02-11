@@ -18,6 +18,21 @@
     </div>
 
     <div class="content-card">
+        <div class="content-card-header">
+            <form action="{{ route('admin.drives.index') }}" method="GET" class="d-flex gap-2">
+                <select name="status" class="form-select form-select-sm" style="width: auto;"
+                    onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>Closed</option>
+                </select>
+                @if (request()->has('status'))
+                    <a href="{{ route('admin.drives.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                @endif
+            </form>
+        </div>
         <div class="content-card-body">
             <table class="admin-table">
                 <thead>

@@ -18,7 +18,8 @@ class NotificationMail extends Mailable
         public string $emailSubject,
         public string $notificationMessage,
         public string $type,
-        public User $user
+        public User $user,
+        public ?string $link = null
     ) {}
 
     public function envelope(): Envelope
@@ -30,9 +31,19 @@ class NotificationMail extends Mailable
 
     public function content(): Content
     {
+        // Build a notification-like object for the template
+        $notification = (object) [
+            'type' => $this->type,
+            'title' => $this->emailSubject,
+            'message' => $this->notificationMessage,
+            'link' => $this->link,
+            'created_at' => now(),
+        ];
+
         return new Content(
             view: 'emails.notification',
             with: [
+                'notification' => $notification,
                 'notificationMessage' => $this->notificationMessage,
                 'type' => $this->type,
                 'color' => Notification::getColor($this->type),

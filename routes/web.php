@@ -61,6 +61,7 @@ Route::middleware(['auth', 'otp.verified', 'admin'])->prefix('admin')->name('adm
     Route::post('pledges/{pledge}/verify', [\App\Http\Controllers\Admin\PledgeController::class, 'verify'])->name('pledges.verify');
     Route::post('pledges/{pledge}/distribute', [\App\Http\Controllers\Admin\PledgeController::class, 'distribute'])->name('pledges.distribute');
     Route::post('pledges/{pledge}/feedback', [\App\Http\Controllers\Admin\PledgeController::class, 'feedback'])->name('pledges.feedback');
+    Route::post('pledges/{pledge}/reject', [\App\Http\Controllers\Admin\PledgeController::class, 'reject'])->name('pledges.reject');
 
     // NGO Verification
     Route::get('ngos/pending', [\App\Http\Controllers\Admin\NgoVerificationController::class, 'index'])->name('ngos.pending');

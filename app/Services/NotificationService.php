@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Mail\NotificationMail;
+use App\Mail\PledgeSubmittedMail;
 use App\Models\Notification;
 use App\Models\Pledge;
 use App\Models\PledgeItem;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class NotificationService
@@ -20,7 +22,8 @@ class NotificationService
         string $title,
         string $message,
         array $data = [],
-        bool $sendEmail = true
+        bool $sendEmail = true,
+        ?string $link = null
     ): Notification {
         $notification = Notification::create([
             'user_id' => $user->id,
@@ -31,7 +34,7 @@ class NotificationService
         ]);
 
         if ($sendEmail) {
-            $this->sendEmail($user, $title, $message, $type);
+            $this->sendEmail($user, $title, $message, $type, $link);
             $notification->update(['emailed_at' => now()]);
         }
 
@@ -41,35 +44,64 @@ class NotificationService
     /**
      * Send email notification via SendGrid
      */
-    protected function sendEmail(User $user, string $subject, string $message, string $type): void
+    protected function sendEmail(User $user, string $subject, string $message, string $type, ?string $link = null): void
     {
         try {
-            Mail::to($user->email)->send(new NotificationMail($subject, $message, $type, $user));
+            Mail::to($user->email)->send(new NotificationMail($subject, $message, $type, $user, $link));
         } catch (\Exception $e) {
-            \Log::error('Failed to send notification email: ' . $e->getMessage());
+            Log::error('Failed to send notification email: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send a dedicated pledge email (with full pledge details)
+     */
+    protected function sendPledgeEmail(Pledge $pledge): void
+    {
+        try {
+            Mail::to($pledge->user->email)->send(new PledgeSubmittedMail($pledge));
+        } catch (\Exception $e) {
+            Log::error('Failed to send pledge submitted email: ' . $e->getMessage());
         }
     }
 
     public function sendPledgeAcknowledged(Pledge $pledge): void
     {
-        $this->createNotification(
+        $notification = $this->createNotification(
             $pledge->user,
             Notification::TYPE_PLEDGE_ACKNOWLEDGED,
             'Pledge Received',
             "Your pledge (Ref: {$pledge->reference_number}) for {$pledge->drive->name} has been received and is pending verification.",
             ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number],
-            false // Don't email for acknowledgements
+            false // Email is sent separately with detailed template
         );
+
+        // Send dedicated pledge details email
+        $this->sendPledgeEmail($pledge);
+        $notification->update(['emailed_at' => now()]);
     }
 
     public function sendPledgeVerified(Pledge $pledge): void
     {
+        $pledge->load(['drive', 'pledgeItems']);
+
+        $itemsList = $pledge->pledgeItems->map(function ($item) {
+            return "• {$item->item_name}: {$item->quantity} {$item->unit}";
+        })->implode("\n");
+
+        $message = "Your pledge (Ref: {$pledge->reference_number}) for \"{$pledge->drive->name}\" has been verified. Thank you for your contribution!\n\nItems verified:\n{$itemsList}";
+
+        if ($pledge->drive->address) {
+            $message .= "\n\nDrop-off location: {$pledge->drive->address}";
+        }
+
         $this->createNotification(
             $pledge->user,
             Notification::TYPE_PLEDGE_VERIFIED,
             'Pledge Verified',
-            "Your pledge (Ref: {$pledge->reference_number}) has been verified. Thank you for your contribution!",
-            ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number]
+            $message,
+            ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number],
+            true // Send email
         );
     }
 
@@ -97,12 +129,24 @@ class NotificationService
 
     public function sendDonationDistributed(Pledge $pledge): void
     {
+        $pledge->load(['drive', 'pledgeItems']);
+
+        $message = "Great news! Your donation (Ref: {$pledge->reference_number}) for \"{$pledge->drive->name}\" has been fully distributed to beneficiaries.";
+
+        if ($pledge->total_families_helped > 0) {
+            $message .= " Your contribution helped {$pledge->total_families_helped} " .
+                ($pledge->total_families_helped === 1 ? 'family' : 'families') . "!";
+        }
+
+        $message .= " Thank you for making a difference!";
+
         $this->createNotification(
             $pledge->user,
             Notification::TYPE_DONATION_DISTRIBUTED,
             'Donation Distributed',
-            "Your donation (Ref: {$pledge->reference_number}) has been distributed to beneficiaries. Thank you for making a difference!",
-            ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number]
+            $message,
+            ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number],
+            true // Send email for distribution
         );
     }
 
@@ -179,12 +223,15 @@ class NotificationService
 
     public function sendNgoRejected(User $user): void
     {
+        $reason = $user->rejection_reason ?? 'No reason provided';
+
         $this->createNotification(
             $user,
             Notification::TYPE_NGO_REJECTED,
             'Verification Rejected',
-            "Your NGO verification was rejected. Reason: {$user->rejection_reason}. Please contact support for assistance.",
-            ['rejection_reason' => $user->rejection_reason]
+            "Your NGO verification was rejected. Reason: {$reason}. You may update your details and resubmit for verification, or contact support for assistance.",
+            ['rejection_reason' => $reason],
+            true // Send email for rejection
         );
     }
 

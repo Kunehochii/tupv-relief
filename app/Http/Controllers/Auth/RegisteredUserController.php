@@ -22,12 +22,21 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
             'role' => ['required', 'in:donor,ngo'],
-        ]);
+        ];
+
+        // Add NGO-specific validation rules before validating
+        if ($request->role === User::ROLE_NGO) {
+            $rules['organization_name'] = ['required', 'string', 'max:255'];
+            $rules['certificate'] = ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'];
+            $rules['organization_logo'] = ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'];
+        }
+
+        $request->validate($rules);
 
         $userData = [
             'name' => $request->name,
@@ -40,11 +49,6 @@ class RegisteredUserController extends Controller
 
         // Handle NGO specific fields
         if ($request->role === User::ROLE_NGO) {
-            $request->validate([
-                'organization_name' => ['required', 'string', 'max:255'],
-                'certificate' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
-                'organization_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            ]);
 
             $userData['organization_name'] = $request->organization_name;
             $userData['verification_status'] = User::STATUS_PENDING;

@@ -14,12 +14,15 @@ use Illuminate\View\View;
 
 class DriveController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $drives = Drive::with('creator')
-            ->withCount('pledges')
-            ->latest()
-            ->paginate(15);
+        $query = Drive::with('creator')->withCount('pledges');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $drives = $query->latest()->paginate(15)->appends($request->query());
 
         return view('admin.drives.index', compact('drives'));
     }
