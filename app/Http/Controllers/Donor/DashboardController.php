@@ -34,7 +34,14 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('donor.dashboard', compact('stats', 'activeDrives'));
+        // Get completed drives for the completed section
+        $completedDrives = Drive::completed()
+            ->with(['creator', 'driveItems'])
+            ->latest()
+            ->take(6)
+            ->get();
+
+        return view('donor.dashboard', compact('stats', 'activeDrives', 'completedDrives'));
     }
 
     /**

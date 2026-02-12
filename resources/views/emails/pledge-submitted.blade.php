@@ -170,12 +170,6 @@
                 <th>Date Submitted</th>
                 <td>{{ $pledge->created_at->format('F j, Y \a\t g:i A') }}</td>
             </tr>
-            @if ($pledge->contact_number)
-                <tr>
-                    <th>Contact Number</th>
-                    <td>{{ $pledge->contact_number }}</td>
-                </tr>
-            @endif
             <tr>
                 <th>Status</th>
                 <td><span class="badge badge-warning">Pending Verification</span></td>

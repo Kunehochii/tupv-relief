@@ -808,17 +808,7 @@
 
                             <!-- Contact Section -->
                             <div class="contact-section">
-                                <div class="mb-3">
-                                    <label for="contact_number" class="form-label">Contact Number *</label>
-                                    <input type="text"
-                                        class="form-control @error('contact_number') is-invalid @enderror"
-                                        id="contact_number" name="contact_number"
-                                        value="{{ old('contact_number', auth()->user()->phone) }}"
-                                        placeholder="09XX XXX XXXX" required>
-                                    @error('contact_number')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                <input type="hidden" name="contact_number" value="N/A">
 
                                 <div class="mb-3">
                                     <label for="details" class="form-label">Additional Details</label>
@@ -980,14 +970,8 @@
 
                     <!-- Contact Section -->
                     <div class="contact-section">
-                        <div class="mb-3">
-                            <label for="contact_number" class="form-label">Contact Number *</label>
-                            <input type="text" class="form-control" 
-                                id="contact_number" name="contact_number" 
-                                value="{{ old('contact_number', auth()->user()->phone ?? '') }}" 
-                                placeholder="09XX XXX XXXX" required>
-                        </div>
-                        
+                        <input type="hidden" name="contact_number" id="contact_number" value="N/A">
+
                         <div class="mb-3">
                             <label for="details" class="form-label">Additional Details</label>
                             <textarea class="form-control" id="details" name="details" rows="2" 
@@ -1132,16 +1116,10 @@
             const errors = [];
             const pledgeType = document.getElementById('pledge_type')?.value || 'in-kind';
             const driveId = document.getElementById('drive_id')?.value;
-            const contactNumber = document.getElementById('contact_number')?.value?.trim();
 
             // Check drive selection
             if (!driveId) {
                 errors.push('Please select a relief drive.');
-            }
-
-            // Check contact number
-            if (!contactNumber) {
-                errors.push('Contact number is required.');
             }
 
             // Check if at least one item has quantity > 0

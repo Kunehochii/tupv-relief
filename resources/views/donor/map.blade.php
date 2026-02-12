@@ -12,7 +12,7 @@
             </a>
         </div>
 
-        <div class="card mb-3 mb-md-4">
+        <div class="card mb-3 mb-md-4 border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-body p-0">
                 <div id="map" style="height: 350px;"></div>
             </div>
@@ -22,14 +22,18 @@
             <h5 class="mb-3">Active Drives</h5>
             <div class="row g-2 g-md-3">
                 @foreach ($drives as $drive)
-                    <div class="col-6 col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body p-2 p-md-3">
-                                <h6 class="mb-1" style="font-size: 0.85rem;">{{ Str::limit($drive->name, 30) }}</h6>
-                                <p class="small text-muted mb-2 d-none d-sm-block">{{ Str::limit($drive->address, 50) }}</p>
-                                <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}"
-                                    class="btn btn-sm btn-primary w-100">
-                                    Pledge
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 10px;">
+                            <div class="card-body p-3">
+                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">{{ Str::limit($drive->name, 35) }}</h6>
+                                <p class="small text-muted mb-1"><i
+                                        class="bi bi-geo-alt me-1"></i>{{ Str::limit($drive->address, 50) }}</p>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar"
+                                        style="width: {{ $drive->progress_percentage }}%; background: #e51d00;"></div>
+                                </div>
+                                <a href="{{ route('drive.donate', $drive) }}" class="btn btn-sm btn-primary w-100">
+                                    <i class="bi bi-eye me-1"></i>View Drive
                                 </a>
                             </div>
                         </div>
@@ -64,9 +68,11 @@
             if (drive.latitude && drive.longitude) {
                 const marker = L.marker([drive.latitude, drive.longitude]).addTo(map);
                 marker.bindPopup(`
-                <strong>${drive.name}</strong><br>
-                ${drive.address || ''}<br>
-                <a href="{{ url(auth()->user()->role . '/pledges/create') }}?drive_id=${drive.id}" class="btn btn-sm btn-primary mt-2">Pledge to Drive</a>
+                <div style="min-width: 200px;">
+                    <strong>${drive.name}</strong><br>
+                    <span class="text-muted">${drive.address || ''}</span><br>
+                    <a href="/drive/${drive.id}/donate" class="btn btn-sm btn-primary mt-2 w-100"><i class="bi bi-eye me-1"></i>View Drive</a>
+                </div>
             `);
                 markers.push(marker);
             }

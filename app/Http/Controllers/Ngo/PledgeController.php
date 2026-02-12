@@ -62,7 +62,7 @@ class PledgeController extends Controller
             'items.*.drive_item_id' => ['required_with:items.*.quantity', 'exists:drive_items,id'],
             'items.*.quantity' => ['nullable', 'integer', 'min:1'],
             'details' => ['nullable', 'string', 'max:1000'],
-            'contact_number' => ['required', 'string', 'max:20'],
+            'contact_number' => ['nullable', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
@@ -95,7 +95,7 @@ class PledgeController extends Controller
                 'drive_id' => $validated['drive_id'],
                 'pledge_type' => 'in-kind',
                 'details' => $validated['details'] ?? null,
-                'contact_number' => $validated['contact_number'],
+                'contact_number' => $validated['contact_number'] ?? 'N/A',
                 'notes' => $validated['notes'] ?? null,
                 'status' => Pledge::STATUS_PENDING,
             ]);

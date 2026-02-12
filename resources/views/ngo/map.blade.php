@@ -6,9 +6,33 @@
     <div class="container-fluid py-3 py-md-4 px-3 px-md-4">
         <h4 class="mb-3 mb-md-4">Active Donation Drives Map</h4>
 
-        <div class="card">
+        <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-body p-0">
                 <div id="map" style="height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="mt-3 mt-md-4">
+            <h5 class="mb-3">Active Drives</h5>
+            <div class="row g-2 g-md-3">
+                @foreach ($drives as $drive)
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 10px;">
+                            <div class="card-body p-3">
+                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">{{ Str::limit($drive->name, 35) }}</h6>
+                                <p class="small text-muted mb-1"><i
+                                        class="bi bi-geo-alt me-1"></i>{{ Str::limit($drive->address, 50) }}</p>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar"
+                                        style="width: {{ $drive->progress_percentage }}%; background: #e51d00;"></div>
+                                </div>
+                                <a href="{{ route('drive.donate', $drive) }}" class="btn btn-sm btn-primary w-100">
+                                    <i class="bi bi-eye me-1"></i>View Drive
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -17,7 +41,7 @@
     <style>
         @media (min-width: 768px) {
             #map {
-                height: 600px !important;
+                height: 500px !important;
             }
         }
     </style>
@@ -46,7 +70,7 @@
                         <div class="progress-bar" style="width: ${progress}%"></div>
                     </div>
                     <p class="small text-muted mb-2">Progress: ${progress}%</p>
-                    <a href="/ngo/pledges/create?drive_id=${drive.id}" class="btn btn-sm btn-primary">Pledge Now</a>
+                    <a href="/drive/${drive.id}/donate" class="btn btn-sm btn-primary w-100"><i class="bi bi-eye me-1"></i>View Drive</a>
                 </div>
             `;
 
