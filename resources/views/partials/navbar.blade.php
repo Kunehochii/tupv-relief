@@ -23,9 +23,9 @@
                     <a href="{{ route('donor.map') }}" class="nav-link-custom">Drive Map</a>
                 @elseif(auth()->user()->isNgo())
                     <a href="{{ route('ngo.dashboard') }}" class="nav-link-custom">Dashboard</a>
-                    <a href="{{ route('ngo.pledges.index') }}" class="nav-link-custom">Your Pledges</a>
-                    <a href="{{ route('ngo.supports.index') }}" class="nav-link-custom">Drive Support</a>
-                    <a href="{{ route('ngo.donation-link.index') }}" class="nav-link-custom">Donation Link</a>
+                    <a href="{{ route('ngo.pledges.index') }}" class="nav-link-custom">My Pledges</a>
+                    <a href="{{ route('ngo.supports.index') }}" class="nav-link-custom">Supported Drives</a>
+                    <a href="{{ route('ngo.profile.index') }}" class="nav-link-custom">My Profile</a>
                     <a href="{{ route('ngo.map') }}" class="nav-link-custom">Drive Map</a>
                 @endif
 
@@ -93,9 +93,9 @@
             <a href="{{ route('donor.map') }}" class="nav-link-mobile">Drive Map</a>
         @elseif(auth()->user()->isNgo())
             <a href="{{ route('ngo.dashboard') }}" class="nav-link-mobile">Dashboard</a>
-            <a href="{{ route('ngo.pledges.index') }}" class="nav-link-mobile">Your Pledges</a>
-            <a href="{{ route('ngo.supports.index') }}" class="nav-link-mobile">Drive Support</a>
-            <a href="{{ route('ngo.donation-link.index') }}" class="nav-link-mobile">Donation Link</a>
+            <a href="{{ route('ngo.pledges.index') }}" class="nav-link-mobile">My Pledges</a>
+            <a href="{{ route('ngo.supports.index') }}" class="nav-link-mobile">Supported Drives</a>
+            <a href="{{ route('ngo.profile.index') }}" class="nav-link-mobile">My Profile</a>
             <a href="{{ route('ngo.map') }}" class="nav-link-mobile">Drive Map</a>
         @endif
 

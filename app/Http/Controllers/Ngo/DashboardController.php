@@ -97,12 +97,20 @@ class DashboardController extends Controller
 
     public function map(): View
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $drives = Drive::active()
             ->with('driveItems')
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->get();
 
-        return view('ngo.map', compact('drives'));
+        $supportedDriveIds = $user->driveSupports()
+            ->where('is_active', true)
+            ->pluck('drive_id')
+            ->toArray();
+
+        return view('ngo.map', compact('drives', 'supportedDriveIds'));
     }
 }

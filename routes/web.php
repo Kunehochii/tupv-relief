@@ -104,8 +104,12 @@ Route::middleware(['auth', 'otp.verified', 'ngo'])->prefix('ngo')->name('ngo.')-
     Route::get('drives/fetch', [\App\Http\Controllers\Ngo\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
 
     // Donation Link
-    Route::get('donation-link', [\App\Http\Controllers\Ngo\DonationLinkController::class, 'index'])->name('donation-link.index');
-    Route::put('donation-link', [\App\Http\Controllers\Ngo\DonationLinkController::class, 'update'])->name('donation-link.update');
+    Route::get('donation-link', fn() => redirect()->route('ngo.profile.index'))->name('donation-link.index');
+    Route::put('donation-link', [\App\Http\Controllers\Ngo\ProfileController::class, 'update'])->name('donation-link.update');
+
+    // NGO Profile
+    Route::get('profile', [\App\Http\Controllers\Ngo\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('profile', [\App\Http\Controllers\Ngo\ProfileController::class, 'update'])->name('profile.update');
 
     // Drive Support (verified NGOs only)
     Route::middleware('verified.ngo')->group(function () {
@@ -126,3 +130,6 @@ Route::middleware(['auth', 'otp.verified', 'ngo'])->prefix('ngo')->name('ngo.')-
     Route::post('notifications/{notification}/read', [\App\Http\Controllers\Donor\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('notifications/read-all', [\App\Http\Controllers\Donor\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 });
+
+// Public NGO Profile
+Route::get('/ngo/{ngoId}/profile', [\App\Http\Controllers\Ngo\ProfileController::class, 'show'])->name('ngo.profile.public');

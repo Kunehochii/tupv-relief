@@ -49,6 +49,9 @@ class User extends Authenticatable
         'avatar',
         'phone',
         'organization_name',
+        'bio',
+        'contact_numbers',
+        'qr_channels',
         'certificate_path',
         'external_donation_url',
         'logo_url',
@@ -70,6 +73,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'verified_at' => 'datetime',
             'password' => 'hashed',
+            'qr_channels' => 'array',
         ];
     }
 
