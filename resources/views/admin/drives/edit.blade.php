@@ -370,6 +370,7 @@
                     @include('partials.progress-bar-3color', [
                         'distributed' => $drive->distributed_percentage,
                         'pledged' => $drive->pledged_percentage,
+                        'showLegend' => false,
                     ])
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="d-flex gap-4">

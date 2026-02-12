@@ -433,6 +433,7 @@
                                                 'distributed' => $item->distributed_percentage,
                                                 'pledged' => $item->pledged_percentage,
                                                 'height' => '10px',
+                                                'showLegend' => false,
                                             ])
                                         </td>
                                     </tr>
@@ -501,6 +502,7 @@
                 @include('partials.progress-bar-3color', [
                     'distributed' => $drive->distributed_percentage,
                     'pledged' => $drive->pledged_percentage,
+                    'showLegend' => false,
                 ])
                 <div class="progress-stats">
                     <div class="progress-stat">

@@ -162,11 +162,13 @@
         left: 0;
         top: 0;
         transition: opacity 0.5s ease-in-out;
+        pointer-events: none;
     }
 
     .carousel-slide.active {
         opacity: 1;
         position: relative;
+        pointer-events: auto;
     }
 
     .drive-card {

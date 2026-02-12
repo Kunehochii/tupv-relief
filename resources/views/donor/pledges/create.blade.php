@@ -58,6 +58,11 @@
             .pledge-grid {
                 grid-template-columns: 1fr;
             }
+
+            .map-section {
+                position: relative;
+                top: auto;
+            }
         }
 
         /* Map Section */

@@ -45,8 +45,9 @@ class PledgeController extends Controller
     {
         // NGOs can see exact quantities
         $drives = Drive::active()->with('driveItems')->get();
-        $selectedDrive = $request->get('drive_id')
-            ? Drive::with('driveItems')->find($request->get('drive_id'))
+        $driveId = $request->get('drive') ?? $request->get('drive_id');
+        $selectedDrive = $driveId
+            ? Drive::with('driveItems')->find($driveId)
             : null;
 
         return view('ngo.pledges.create', compact('drives', 'selectedDrive'));

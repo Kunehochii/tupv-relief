@@ -178,7 +178,7 @@ class PledgeController extends Controller
             ]);
         });
 
-        $this->notificationService->sendPledgeExpired($pledge);
+        $this->notificationService->sendPledgeRejected($pledge, $validated['rejection_reason']);
 
         return redirect()->route('admin.pledges.pending')
             ->with('success', 'Pledge rejected successfully.');

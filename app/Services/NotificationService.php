@@ -127,6 +127,22 @@ class NotificationService
         );
     }
 
+    public function sendPledgeRejected(Pledge $pledge, string $reason): void
+    {
+        $pledge->load('drive');
+
+        $message = "Your pledge (Ref: {$pledge->reference_number}) for \"{$pledge->drive->name}\" has been rejected.\n\nReason: {$reason}\n\nIf you believe this was in error, please contact DSWD support or submit a new pledge.";
+
+        $this->createNotification(
+            $pledge->user,
+            Notification::TYPE_PLEDGE_EXPIRED,
+            'Pledge Rejected',
+            $message,
+            ['pledge_id' => $pledge->id, 'reference_number' => $pledge->reference_number, 'rejection_reason' => $reason],
+            true // Send email
+        );
+    }
+
     public function sendDonationDistributed(Pledge $pledge): void
     {
         $pledge->load(['drive', 'pledgeItems']);

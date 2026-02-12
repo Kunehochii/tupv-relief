@@ -44,8 +44,9 @@ class PledgeController extends Controller
     public function create(Request $request): View
     {
         $drives = Drive::active()->with('driveItems')->get();
-        $selectedDrive = $request->get('drive_id')
-            ? Drive::with('driveItems')->find($request->get('drive_id'))
+        $driveId = $request->get('drive') ?? $request->get('drive_id');
+        $selectedDrive = $driveId
+            ? Drive::with('driveItems')->find($driveId)
             : null;
 
         return view('donor.pledges.create', compact('drives', 'selectedDrive'));

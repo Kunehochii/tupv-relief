@@ -50,10 +50,14 @@
                                         <form method="POST" action="{{ route('admin.ngos.approve', $ngo) }}"
                                             class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn-status btn-status-pending">
-                                                Pending
+                                            <button type="submit" class="btn-status btn-status-approve">
+                                                <i class="bi bi-check-circle me-1"></i>Approve
                                             </button>
                                         </form>
+                                        <button type="button" class="btn-status btn-status-reject-action"
+                                            data-bs-toggle="modal" data-bs-target="#rejectNgoModal-{{ $ngo->id }}">
+                                            <i class="bi bi-x-circle me-1"></i>Reject
+                                        </button>
                                     @elseif ($ngo->verification_status === 'verified')
                                         <form method="POST" action="{{ route('admin.ngos.destroy', $ngo) }}"
                                             class="d-inline"
@@ -104,6 +108,42 @@
             {{ $ngos->links() }}
         </div>
     @endif
+
+    {{-- Reject NGO Modals --}}
+    @foreach ($ngos as $ngo)
+        @if ($ngo->verification_status === 'pending')
+            <div class="modal fade" id="rejectNgoModal-{{ $ngo->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="POST" action="{{ route('admin.ngos.reject', $ngo) }}">
+                            @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reject NGO</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to reject
+                                    <strong>{{ $ngo->organization_name ?? $ngo->name }}</strong>?</p>
+                                <div class="mb-3">
+                                    <label for="rejection_reason_{{ $ngo->id }}" class="form-label">Reason for
+                                        Rejection <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="rejection_reason_{{ $ngo->id }}" name="rejection_reason" rows="3"
+                                        placeholder="Provide a reason for rejecting this NGO..." required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle me-2"></i>Reject NGO
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
 @endsection
 
 @section('styles')
@@ -149,6 +189,24 @@
 
         .btn-status-pending:hover {
             background-color: var(--relief-vivid-red);
+        }
+
+        .btn-status-approve {
+            background-color: #198754;
+            color: #ffffff;
+        }
+
+        .btn-status-approve:hover {
+            background-color: #157347;
+        }
+
+        .btn-status-reject-action {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .btn-status-reject-action:hover {
+            background-color: #bb2d3b;
         }
 
         .btn-status-verified {
