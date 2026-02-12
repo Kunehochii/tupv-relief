@@ -184,6 +184,59 @@
     font-size: 12px;
     font-weight: 600;
     }
+
+    @media (max-width: 768px) {
+    .edit-drive-form {
+    padding: 20px;
+    border-radius: 12px;
+    }
+
+    #map {
+    height: 220px;
+    }
+
+    .d-flex.gap-3.mt-4 {
+    flex-direction: column;
+    }
+
+    .btn-save-drive,
+    .btn-cancel {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    }
+
+    .cover-upload-area {
+    padding: 16px;
+    }
+
+    .progress-section .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 12px;
+    }
+
+    .progress-section .d-flex.gap-4 {
+    flex-direction: column;
+    gap: 4px !important;
+    }
+
+    .items-table td,
+    .items-table th {
+    padding: 6px 8px;
+    font-size: 12px;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+    }
+
+    .btn-header-action {
+    padding: 8px 12px;
+    font-size: 13px;
+    }
+    }
 @endsection
 
 @section('content')

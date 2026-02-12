@@ -476,4 +476,50 @@
     width: 100%;
     }
     }
+
+    @media (max-width: 768px) {
+    .filter-card-body {
+    padding: 14px;
+    }
+
+    .filter-input,
+    .filter-select {
+    padding: 8px 12px;
+    font-size: 13px;
+    }
+
+    .filter-actions {
+    flex-direction: row;
+    }
+
+    .btn-filter {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 14px;
+    }
+
+    .content-card-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+    min-width: 520px;
+    }
+
+    .export-card-body {
+    padding: 12px;
+    gap: 8px;
+    }
+
+    .export-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+    }
+
+    .btn-export {
+    padding: 5px 10px;
+    font-size: 12px;
+    }
+    }
 @endsection

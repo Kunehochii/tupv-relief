@@ -314,6 +314,96 @@
     color: #666;
     text-transform: uppercase;
     }
+
+    @media (max-width: 992px) {
+    .content-grid {
+    grid-template-columns: 1fr;
+    }
+    }
+
+    @media (max-width: 768px) {
+    .drive-header {
+    padding: 16px;
+    margin-bottom: 16px;
+    }
+
+    .drive-header-content {
+    flex-direction: column;
+    gap: 16px;
+    }
+
+    .drive-cover,
+    .drive-cover-placeholder {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    }
+
+    .drive-title {
+    font-size: 20px;
+    }
+
+    .drive-description {
+    font-size: 13px;
+    }
+
+    .drive-meta {
+    gap: 12px;
+    }
+
+    .drive-meta-item {
+    font-size: 12px;
+    }
+
+    .content-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    }
+
+    .items-table,
+    .pledges-table {
+    min-width: 500px;
+    }
+
+    .detail-card-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    }
+
+    .stat-card-mini .value {
+    font-size: 20px;
+    }
+
+    .progress-percentage {
+    font-size: 36px;
+    }
+
+    .d-flex.gap-2 {
+    flex-wrap: wrap;
+    }
+
+    .btn-header-action {
+    padding: 8px 12px;
+    font-size: 13px;
+    }
+    }
+
+    @media (max-width: 480px) {
+    .drive-meta {
+    flex-direction: column;
+    gap: 8px;
+    }
+
+    .d-flex.align-items-center.gap-3.mb-2 {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    }
+    }
 @endsection
 
 @section('content')

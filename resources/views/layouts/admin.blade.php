@@ -463,6 +463,58 @@
         }
 
         /* ========================================
+           Sidebar Toggle Button
+        ======================================== */
+
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            padding: 4px 8px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .topbar-title {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ========================================
+           Sidebar Overlay (mobile)
+        ======================================== */
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ========================================
+           Responsive Table Wrapper
+        ======================================== */
+
+        .table-responsive-mobile {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ========================================
            Responsive
         ======================================== */
 
@@ -492,6 +544,10 @@
                 padding: 16px;
             }
 
+            .sidebar-badge {
+                display: none;
+            }
+
             .admin-wrapper {
                 margin-left: 70px;
             }
@@ -502,13 +558,168 @@
         }
 
         @media (max-width: 768px) {
-            .stat-cards-row {
-                grid-template-columns: 1fr;
+
+            /* --- Sidebar: off-canvas overlay --- */
+            .admin-sidebar {
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
 
-            .topbar-nav {
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .admin-sidebar.open .sidebar-link span,
+            .admin-sidebar.open .sidebar-avatar,
+            .admin-sidebar.open .sidebar-footer {
+                display: flex;
+            }
+
+            .admin-sidebar.open .sidebar-badge {
+                display: inline-block;
+            }
+
+            .admin-sidebar.open .sidebar-link {
+                justify-content: flex-start;
+                padding: 14px 24px;
+            }
+
+            :root {
+                --sidebar-width: 240px;
+            }
+
+            .admin-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                display: inline-flex;
+            }
+
+            /* --- Topbar --- */
+            .admin-topbar {
+                padding: 0 16px;
+                gap: 12px;
+            }
+
+            /* --- Content --- */
+            .admin-content {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 16px;
+            }
+
+            /* --- Stat Cards --- */
+            .stat-cards-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 14px;
+                gap: 10px;
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .stat-icon i {
+                font-size: 18px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+
+            /* --- Content Cards --- */
+            .content-row {
+                grid-template-columns: 1fr;
                 gap: 16px;
+            }
+
+            /* --- Tables: scrollable --- */
+            .content-card-body {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .admin-table {
+                min-width: 560px;
+            }
+
+            .admin-table thead th,
+            .admin-table tbody td {
+                padding: 10px 12px;
                 font-size: 13px;
+                white-space: nowrap;
+            }
+
+            /* --- Header action buttons --- */
+            .d-flex.gap-2 {
+                flex-wrap: wrap;
+            }
+
+            .btn-header-action {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            /* --- Breadcrumbs --- */
+            .breadcrumb {
+                font-size: 12px !important;
+                flex-wrap: wrap;
+            }
+
+            /* --- Alerts --- */
+            .alert {
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-cards-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                flex-direction: row;
+                align-items: center;
+                padding: 12px 14px;
+            }
+
+            .stat-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .page-title {
+                font-size: 18px;
+            }
+
+            .admin-content {
+                padding: 12px;
+            }
+
+            .content-card-header {
+                padding: 12px 14px;
+                flex-wrap: wrap;
+                gap: 8px;
             }
         }
 
@@ -519,10 +730,16 @@
 <body>
     @include('admin.partials.sidebar', ['currentPage' => View::yieldContent('page', '')])
 
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="admin-wrapper">
-        <!-- Top Bar (solid color, no navigation items) -->
+        <!-- Top Bar -->
         <header class="admin-topbar">
-            {{-- Empty topbar - just a solid red accent bar --}}
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="topbar-title d-md-none">@yield('title', 'Dashboard')</span>
         </header>
 
         <!-- Main Content -->
@@ -549,6 +766,42 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Mobile sidebar toggle
+        (function() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebarToggle');
+
+            function openSidebar() {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (toggle) toggle.addEventListener('click', openSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // Close sidebar on nav link click (mobile)
+            document.querySelectorAll('.sidebar-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) closeSidebar();
+                });
+            });
+
+            // Close on resize to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) closeSidebar();
+            });
+        })();
+    </script>
 
     @yield('scripts')
 </body>

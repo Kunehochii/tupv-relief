@@ -41,11 +41,12 @@ php artisan view:clear 2>/dev/null || true
 php artisan config:clear 2>/dev/null || true
 php artisan route:clear 2>/dev/null || true
 
-# Create storage symlink if it doesn't exist
-if [ ! -L /var/www/html/public/storage ]; then
-    echo "📁 Creating storage symlink..."
-    php artisan storage:link || true
-fi
+# Force-recreate storage symlink on every deploy
+# Docker COPY can bake a broken symlink or directory into the image,
+# so we remove whatever is there and re-link cleanly.
+echo "📁 Re-creating storage symlink..."
+rm -rf /var/www/html/public/storage
+php artisan storage:link
 
 # Cache configuration for production (AFTER directories are confirmed)
 echo "⚙️ Caching configuration..."

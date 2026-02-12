@@ -5,7 +5,7 @@
 @section('content')
     <div class="container py-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">
                         <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
@@ -14,7 +14,7 @@
                 @endif
 
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h5 class="mb-0">Pledge Details</h5>
                         @if ($pledge->isPending())
                             <span class="badge bg-warning">Pending Verification</span>
@@ -26,22 +26,22 @@
                             <span class="badge bg-danger">Expired</span>
                         @endif
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-3 p-md-4">
                         <!-- Reference Number Card -->
-                        <div class="bg-light rounded p-4 text-center mb-4">
-                            <p class="text-muted mb-1">Reference Number</p>
-                            <h2 class="mb-0">{{ $pledge->reference_number }}</h2>
+                        <div class="bg-light rounded p-3 p-md-4 text-center mb-4">
+                            <p class="text-muted mb-1" style="font-size: 0.85rem;">Reference Number</p>
+                            <h2 class="mb-0 fs-3 fs-md-2">{{ $pledge->reference_number }}</h2>
                             <small class="text-muted">Show this at the donation point</small>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row mb-3 g-2">
+                            <div class="col-sm-6">
                                 <label class="text-muted small">Drive</label>
-                                <p class="fw-medium">{{ $pledge->drive->name }}</p>
+                                <p class="fw-medium mb-1">{{ $pledge->drive->name }}</p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <label class="text-muted small">Submitted On</label>
-                                <p>{{ $pledge->created_at->format('M d, Y h:i A') }}</p>
+                                <p class="mb-1">{{ $pledge->created_at->format('M d, Y h:i A') }}</p>
                             </div>
                         </div>
 
@@ -153,31 +153,35 @@
                                 <div class="card-body">
                                     <h6 class="fw-bold"><i class="bi bi-heart-fill text-danger me-2"></i>Your Impact</h6>
 
-                                    <div class="row g-3 mt-1">
+                                    <div class="row g-2 g-md-3 mt-1">
                                         @if ($pledge->total_families_helped > 0)
-                                            <div class="col-sm-4">
-                                                <div class="text-center p-3 bg-white rounded shadow-sm">
-                                                    <div class="fs-3 fw-bold text-success">
+                                            <div class="col-4">
+                                                <div class="text-center p-2 p-md-3 bg-white rounded shadow-sm">
+                                                    <div class="fs-4 fs-md-3 fw-bold text-success">
                                                         {{ number_format($pledge->total_families_helped) }}</div>
-                                                    <small class="text-muted">Families Helped</small>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Families
+                                                        Helped</small>
                                                 </div>
                                             </div>
                                         @endif
                                         @if ($pledge->total_distributed > 0)
-                                            <div class="col-sm-4">
-                                                <div class="text-center p-3 bg-white rounded shadow-sm">
-                                                    <div class="fs-3 fw-bold text-primary">
+                                            <div class="col-4">
+                                                <div class="text-center p-2 p-md-3 bg-white rounded shadow-sm">
+                                                    <div class="fs-4 fs-md-3 fw-bold text-primary">
                                                         {{ number_format($pledge->total_distributed) }}</div>
-                                                    <small class="text-muted">Items Distributed</small>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Items
+                                                        Distributed</small>
                                                 </div>
                                             </div>
                                         @endif
                                         @if ($pledge->relief_packages)
-                                            <div class="col-sm-4">
-                                                <div class="text-center p-3 bg-white rounded shadow-sm">
-                                                    <div class="fs-3 fw-bold" style="color: var(--relief-purple, #7c3aed);">
+                                            <div class="col-4">
+                                                <div class="text-center p-2 p-md-3 bg-white rounded shadow-sm">
+                                                    <div class="fs-4 fs-md-3 fw-bold"
+                                                        style="color: var(--relief-purple, #7c3aed);">
                                                         {{ number_format($pledge->relief_packages) }}</div>
-                                                    <small class="text-muted">Relief Packages</small>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Relief
+                                                        Packages</small>
                                                 </div>
                                             </div>
                                         @endif
@@ -194,9 +198,11 @@
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer">
-                        <a href="{{ route(auth()->user()->role . '.pledges.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Back to My Pledges
+                    <div class="card-footer p-3">
+                        <a href="{{ route(auth()->user()->role . '.pledges.index') }}"
+                            class="btn btn-outline-secondary btn-sm btn-md-normal">
+                            <i class="bi bi-arrow-left me-1 me-md-2"></i><span class="d-none d-sm-inline">Back to My
+                                Pledges</span><span class="d-sm-none">Back</span>
                         </a>
                     </div>
                 </div>

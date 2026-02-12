@@ -198,4 +198,25 @@
     background-color: var(--relief-dark-blue);
     color: #ffffff;
     }
+
+    @media (max-width: 768px) {
+    .content-card-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+    min-width: 640px;
+    }
+
+    .btn-action {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: 70px;
+    }
+
+    .d-flex.gap-1 {
+    flex-wrap: nowrap;
+    }
+    }
 @endsection

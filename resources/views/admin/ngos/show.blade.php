@@ -98,7 +98,7 @@
                         </div>
                     @endif
                 </div>
-                <div class="content-card-footer p-3 d-flex gap-2">
+                <div class="content-card-footer p-3 d-flex gap-2 flex-wrap">
                     @if ($user->verification_status === 'pending')
                         <form method="POST" action="{{ route('admin.ngos.approve', $user) }}" class="d-inline">
                             @csrf
@@ -170,7 +170,8 @@
                         </div>
                         <div class="modal-body">
                             <p>Are you sure you want to reject
-                                <strong>{{ $user->organization_name ?? $user->name }}</strong>?</p>
+                                <strong>{{ $user->organization_name ?? $user->name }}</strong>?
+                            </p>
                             <div class="mb-3">
                                 <label for="rejection_reason" class="form-label">Reason for Rejection <span
                                         class="text-danger">*</span></label>

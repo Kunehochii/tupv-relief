@@ -412,46 +412,97 @@
     /* Responsive */
     @media (max-width: 768px) {
         .drive-card {
-            padding: 15px;
+            padding: 10px;
         }
 
         .drive-map-wrapper {
             padding-right: 0;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
         .drive-map-container {
-            min-height: 300px;
+            min-height: 200px;
         }
 
         .drive-cover {
-            height: 200px;
+            height: 180px;
         }
 
         .drive-name {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .drive-name-overlay {
+            padding: 8px 24px 8px 16px;
+            bottom: 12px;
         }
 
         .drive-help-text {
-            font-size: 1.2rem;
-            padding: 15px 16px 5px;
+            font-size: 1.1rem;
+            padding: 12px 12px 4px;
         }
 
         .drive-description {
-            padding: 0 16px 15px;
+            padding: 0 12px 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .drive-actions {
             flex-direction: column;
-            align-items: center;
-            padding: 15px 16px 25px;
+            align-items: stretch;
+            padding: 10px 12px 20px;
+            gap: 10px;
         }
 
         .btn-donate,
         .btn-pledge,
-        .btn-support {
+        .btn-support,
+        .btn-support-disabled {
             width: 100%;
-            max-width: 280px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+
+        .carousel-controls {
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .carousel-btn {
+            width: 34px;
+            height: 34px;
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+        }
+    }
+
+    /* Very small screens */
+    @media (max-width: 375px) {
+        .drive-cover {
+            height: 150px;
+        }
+
+        .drive-name {
+            font-size: 1rem;
+        }
+
+        .drive-help-text {
+            font-size: 1rem;
+            padding: 10px 10px 2px;
+        }
+
+        .drive-description {
+            padding: 0 10px 10px;
+            font-size: 0.85rem;
+        }
+
+        .drive-actions {
+            padding: 8px 10px 16px;
         }
     }
 

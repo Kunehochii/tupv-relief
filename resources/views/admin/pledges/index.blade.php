@@ -174,4 +174,35 @@
     background-color: var(--relief-gray-blue);
     color: #ffffff;
     }
+
+    @media (max-width: 768px) {
+    .content-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    }
+
+    .content-card-header .d-flex.gap-2 {
+    flex-direction: column;
+    width: 100%;
+    }
+
+    .content-card-header .form-select {
+    width: 100% !important;
+    }
+
+    .content-card-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+    min-width: 640px;
+    }
+
+    .btn-action {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: 80px;
+    }
+    }
 @endsection

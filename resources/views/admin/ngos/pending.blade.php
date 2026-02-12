@@ -124,7 +124,8 @@
                             </div>
                             <div class="modal-body">
                                 <p>Are you sure you want to reject
-                                    <strong>{{ $ngo->organization_name ?? $ngo->name }}</strong>?</p>
+                                    <strong>{{ $ngo->organization_name ?? $ngo->name }}</strong>?
+                                </p>
                                 <div class="mb-3">
                                     <label for="rejection_reason_{{ $ngo->id }}" class="form-label">Reason for
                                         Rejection <span class="text-danger">*</span></label>
@@ -256,6 +257,28 @@
         .empty-state p {
             margin: 0;
             font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .content-card-body {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .admin-table {
+                min-width: 580px;
+            }
+
+            .action-buttons {
+                flex-wrap: nowrap;
+                gap: 6px;
+            }
+
+            .btn-status {
+                padding: 5px 10px;
+                font-size: 12px;
+                min-width: 80px;
+            }
         }
     </style>
 @endsection

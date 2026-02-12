@@ -471,6 +471,131 @@
             background: transparent;
             border: none;
         }
+
+        /* Mobile Responsive Enhancements */
+        @media (max-width: 767.98px) {
+            .pledge-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .drive-select-section {
+                padding: 1rem;
+            }
+
+            .drive-select-section .row {
+                flex-direction: column;
+            }
+
+            .drive-cover,
+            .drive-cover-placeholder {
+                height: 150px;
+            }
+
+            .drive-title {
+                font-size: 1.35rem;
+            }
+
+            .drive-meta {
+                gap: 0.75rem;
+            }
+
+            .drive-meta-item {
+                font-size: 0.8rem;
+            }
+
+            .items-section-title {
+                font-size: 1.05rem;
+            }
+
+            .pack-type-header {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .pack-type-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .pack-type-name {
+                font-size: 0.9rem;
+            }
+
+            /* Item rows: stack on very small screens */
+            .item-row {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding: 0.65rem 0;
+            }
+
+            .item-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            .item-name {
+                font-size: 0.82rem;
+            }
+
+            .item-progress-container {
+                gap: 0.5rem;
+            }
+
+            .item-quantity-input {
+                width: 65px;
+            }
+
+            .item-quantity-input input {
+                padding: 0.4rem;
+                font-size: 0.85rem;
+            }
+
+            .item-unit {
+                font-size: 0.75rem;
+                min-width: 40px;
+            }
+
+            .contact-section {
+                padding: 1rem;
+            }
+
+            .btn-pledge {
+                padding: 1rem 2rem;
+                font-size: 0.95rem;
+            }
+
+            .btn-cancel {
+                padding: 0.85rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .map-container {
+                height: 250px;
+            }
+
+            .no-drive-selected {
+                padding: 2rem 1rem;
+            }
+
+            .no-drive-selected i {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .item-details {
+                flex: 1 1 calc(100% - 100px);
+            }
+
+            .item-quantity-input {
+                width: 55px;
+            }
+
+            .item-unit {
+                min-width: 35px;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 @endsection
 

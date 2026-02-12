@@ -430,8 +430,19 @@
                     style="height: 65px;"></a>
             <div class="d-flex align-items-center">
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
-                <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
-                <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                @auth
+                    @php
+                        $dashboardRoute = match (auth()->user()->role) {
+                            'admin' => route('admin.dashboard'),
+                            'ngo' => route('ngo.dashboard'),
+                            default => route('donor.dashboard'),
+                        };
+                    @endphp
+                    <a href="{{ $dashboardRoute }}" class="nav-link-custom">DASHBOARD</a>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
+                    <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -446,15 +457,23 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-buttons">
-                        <a href="{{ route('login') }}" class="btn-outline-custom">Sign In</a>
-                        <a href="{{ route('register') }}" class="btn-primary-custom">Donate Now</a>
                         @auth
-                            @if (auth()->user()->isNgo())
+                            @php
+                                $heroDashboard = match (auth()->user()->role) {
+                                    'admin' => route('admin.dashboard'),
+                                    'ngo' => route('ngo.dashboard'),
+                                    default => route('donor.dashboard'),
+                                };
+                            @endphp
+                            <a href="{{ $heroDashboard }}" class="btn-outline-custom">Go to Dashboard</a>
+                            @if (auth()->user()->isDonor())
+                                <a href="{{ route('donor.pledges.create') }}" class="btn-primary-custom">Donate Now</a>
+                            @elseif (auth()->user()->isNgo())
                                 <a href="{{ route('ngo.supports.index') }}" class="btn-outline-custom">NGO Support Drive</a>
-                            @else
-                                <a href="{{ route('login') }}" class="btn-outline-custom">NGO Support Drive</a>
                             @endif
                         @else
+                            <a href="{{ route('login') }}" class="btn-outline-custom">Sign In</a>
+                            <a href="{{ route('register') }}" class="btn-primary-custom">Donate Now</a>
                             <a href="{{ route('login') }}" class="btn-outline-custom">NGO Support Drive</a>
                         @endauth
                     </div>

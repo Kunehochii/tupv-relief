@@ -300,6 +300,117 @@
             }
         }
 
+        /* ===== Mobile-First Responsive Utilities ===== */
+
+        /* Container padding adjustments for mobile */
+        @media (max-width: 767.98px) {
+
+            .container,
+            .container-fluid {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .container-fluid.px-md-5 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            /* Tighter vertical spacing on mobile */
+            .py-4 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            /* Page headings */
+            h4,
+            .h4 {
+                font-size: 1.15rem;
+            }
+
+            .section-title {
+                font-size: 1.35rem;
+                margin-bottom: 1.25rem;
+            }
+
+            /* Stat cards - compact on mobile */
+            .stat-number {
+                font-size: 1.75rem;
+            }
+
+            .stat-card .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            /* Cards - reduce shadow & hover effect on mobile (no hover on touch) */
+            .card {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+
+            .card:hover {
+                transform: none;
+            }
+
+            /* Tables: tighter cells on mobile */
+            .table th,
+            .table td {
+                padding: 0.5rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            /* Buttons in flex headers */
+            .d-flex.justify-content-between.align-items-center.mb-4 {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 1rem !important;
+            }
+
+            /* Quick stats bar */
+            .quick-stats-bar {
+                padding: 12px;
+            }
+
+            .quick-stat .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .quick-stat .stat-label {
+                font-size: 0.75rem;
+            }
+
+            /* Alert compact on mobile */
+            .alert {
+                padding: 0.65rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Map height - shorter on mobile */
+            #map {
+                height: 300px !important;
+            }
+        }
+
+        /* Small phone adjustments (375px and below) */
+        @media (max-width: 375px) {
+
+            .container,
+            .container-fluid {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .btn {
+                font-size: 0.85rem;
+                padding: 0.35rem 0.75rem;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+            }
+        }
+
         @yield('styles')
     </style>
 </head>

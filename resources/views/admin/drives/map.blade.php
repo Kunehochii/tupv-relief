@@ -298,6 +298,62 @@
     padding: 8px 14px;
     background-color: var(--relief-dark-blue);
     color: #ffffff;
+
+    }
+
+    @media (max-width: 992px) {
+    .map-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    }
+
+    .map-main .content-card {
+    height: auto;
+    }
+
+    #map {
+    min-height: 400px;
+    }
+
+    .map-sidebar .content-card {
+    height: auto;
+    max-height: 400px;
+    }
+    }
+
+    @media (max-width: 768px) {
+    .map-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 12px;
+    }
+
+    #map {
+    min-height: 300px;
+    }
+
+    .map-sidebar .content-card {
+    max-height: 350px;
+    }
+
+    .drive-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    }
+
+    .drive-name {
+    font-size: 13px;
+    }
+
+    .btn-header-action {
+    padding: 8px 12px;
+    font-size: 13px;
+    }
+
+    .d-flex.gap-2 {
+    flex-wrap: wrap;
+    }
+    }
     border-radius: 6px;
     text-decoration: none;
     font-size: 12px;

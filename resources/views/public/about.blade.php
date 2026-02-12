@@ -223,8 +223,19 @@
                     style="height: 65px;"></a>
             <div class="d-flex align-items-center">
                 <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
-                <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
-                <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                @auth
+                    @php
+                        $dashboardRoute = match (auth()->user()->role) {
+                            'admin' => route('admin.dashboard'),
+                            'ngo' => route('ngo.dashboard'),
+                            default => route('donor.dashboard'),
+                        };
+                    @endphp
+                    <a href="{{ $dashboardRoute }}" class="nav-link-custom">DASHBOARD</a>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
+                    <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                @endauth
             </div>
         </div>
     </nav>

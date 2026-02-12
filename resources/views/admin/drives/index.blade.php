@@ -219,4 +219,35 @@
     border-color: var(--relief-red);
     color: #ffffff;
     }
+
+    @media (max-width: 768px) {
+    .btn-header-action {
+    padding: 8px 12px;
+    font-size: 13px;
+    }
+
+    .d-flex.gap-2 {
+    flex-wrap: wrap;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+    }
+
+    .content-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    }
+
+    .content-card-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+    min-width: 640px;
+    }
+    }
 @endsection

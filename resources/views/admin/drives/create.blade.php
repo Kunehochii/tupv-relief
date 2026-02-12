@@ -134,6 +134,32 @@
     .pack-type-card input {
     display: none;
     }
+
+    @media (max-width: 768px) {
+    .create-drive-form {
+    padding: 20px;
+    border-radius: 12px;
+    }
+
+    #map {
+    height: 220px;
+    }
+
+    .d-flex.gap-3.mt-4 {
+    flex-direction: column;
+    }
+
+    .btn-create-drive,
+    .btn-cancel {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    }
+
+    .cover-upload-area {
+    padding: 16px;
+    }
+    }
 @endsection
 
 @section('content')

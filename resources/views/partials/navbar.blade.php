@@ -136,7 +136,7 @@
     .navbar-mobile-menu {
         display: none;
         background: var(--vivid-orange);
-        padding: 1rem;
+        padding: 0.75rem 1rem;
     }
 
     .navbar-mobile-menu.show {
@@ -147,9 +147,14 @@
         display: block;
         color: #ffffff;
         font-weight: 500;
-        padding: 0.75rem 0;
+        padding: 0.65rem 0;
         text-decoration: none;
         transition: opacity 0.3s;
+        font-size: 0.95rem;
+        /* Minimum touch target */
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 
     .nav-link-mobile:hover {
@@ -172,8 +177,11 @@
         cursor: pointer;
         width: 100%;
         text-align: left;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-family: inherit;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 </style>
 
