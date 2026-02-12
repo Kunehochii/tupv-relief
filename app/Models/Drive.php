@@ -93,8 +93,21 @@ class Drive extends Model
 
     public function getProgressPercentageAttribute()
     {
-        if ($this->target_amount <= 0) return 0;
-        return min(100, round(($this->collected_amount / $this->target_amount) * 100, 2));
+        $totalNeeded = $this->total_items_needed;
+        if ($totalNeeded <= 0) {
+            if ($this->target_amount <= 0) return 0;
+            return min(100, round(($this->collected_amount / $this->target_amount) * 100, 2));
+        }
+        $totalPledged = $this->pledged_amount > 0
+            ? $this->pledged_amount
+            : $this->driveItems()->sum('quantity_pledged');
+        return min(100, round(($totalPledged / $totalNeeded) * 100, 2));
+    }
+
+    public function getTotalItemsNeededAttribute(): float
+    {
+        $fromItems = $this->driveItems()->sum('quantity_needed');
+        return $fromItems > 0 ? $fromItems : $this->target_amount;
     }
 
     public function scopeActive($query)
@@ -112,8 +125,9 @@ class Drive extends Model
      */
     public function getPledgedPercentageAttribute(): float
     {
-        if ($this->target_amount <= 0) return 0;
-        return min(100, round(($this->pledged_amount / $this->target_amount) * 100, 2));
+        $target = $this->total_items_needed;
+        if ($target <= 0) return 0;
+        return min(100, round(($this->pledged_amount / $target) * 100, 2));
     }
 
     /**
@@ -121,8 +135,9 @@ class Drive extends Model
      */
     public function getDistributedPercentageAttribute(): float
     {
-        if ($this->target_amount <= 0) return 0;
-        return min(100, round(($this->distributed_amount / $this->target_amount) * 100, 2));
+        $target = $this->total_items_needed;
+        if ($target <= 0) return 0;
+        return min(100, round(($this->distributed_amount / $target) * 100, 2));
     }
 
     /**

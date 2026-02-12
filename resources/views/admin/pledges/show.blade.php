@@ -20,7 +20,7 @@
         @endif
 
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Pledge Details</h5>
@@ -214,6 +214,17 @@
                                     </div>
                                 @endforeach
 
+                                <hr class="my-3">
+
+                                <div class="mb-3">
+                                    <label for="admin_feedback" class="form-label fw-semibold">Feedback Message <span
+                                            class="text-muted fw-normal">(optional)</span></label>
+                                    <textarea class="form-control" id="admin_feedback" name="admin_feedback" rows="3"
+                                        placeholder="Add a personal message to the donor about this distribution...">{{ $pledge->admin_feedback }}</textarea>
+                                    <div class="form-text">This message will be sent to the donor as part of the
+                                        distribution notification.</div>
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check2-all me-2"></i>Record Distribution
                                 </button>
@@ -221,51 +232,28 @@
                         </div>
                     </div>
                 @endif
-            </div>
 
-            <!-- Impact Feedback -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0">Impact Feedback</h6>
+                {{-- Feedback form for already-distributed pledges --}}
+                @if ($pledge->status === 'distributed')
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="bi bi-chat-left-text me-2"></i>Distribution Feedback</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('admin.pledges.feedback', $pledge) }}">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="admin_feedback" class="form-label fw-semibold">Feedback Message</label>
+                                    <textarea class="form-control" id="admin_feedback" name="admin_feedback" rows="3"
+                                        placeholder="Add or update a personal message to the donor...">{{ $pledge->admin_feedback }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save me-2"></i>Save Feedback
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('admin.pledges.feedback', $pledge) }}">
-                            @csrf
-
-                            <div class="mb-3">
-                                <label for="families_helped" class="form-label">Families Helped</label>
-                                <input type="number" class="form-control" id="families_helped" name="families_helped"
-                                    value="{{ $pledge->families_helped ?? $pledge->total_families_helped }}"
-                                    min="0">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="relief_packages" class="form-label">Relief Packages</label>
-                                <input type="number" class="form-control" id="relief_packages" name="relief_packages"
-                                    value="{{ $pledge->relief_packages }}" min="0">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="items_distributed" class="form-label">Items Distributed</label>
-                                <input type="number" class="form-control" id="items_distributed"
-                                    name="items_distributed"
-                                    value="{{ $pledge->items_distributed ?? (int) $pledge->total_distributed }}"
-                                    min="0">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="admin_feedback" class="form-label">Feedback Message</label>
-                                <textarea class="form-control" id="admin_feedback" name="admin_feedback" rows="3"
-                                    placeholder="Add a personal message to the donor...">{{ $pledge->admin_feedback }}</textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-save me-2"></i>Save Feedback
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

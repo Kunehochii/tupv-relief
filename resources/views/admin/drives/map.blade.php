@@ -28,7 +28,7 @@
         <div class="map-sidebar">
             <div class="content-card">
                 <div class="content-card-header">
-                    <h5 class="content-card-title">Active Drives</h5>
+                    <h5 class="content-card-title">Active Drives on Map</h5>
                     <span class="drives-count">{{ $drives->count() }}</span>
                 </div>
                 <div class="drives-list">

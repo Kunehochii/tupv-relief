@@ -25,7 +25,7 @@
                     @endif
 
                     <p class="detail-item">
-                        <strong>Target:</strong> {{ number_format($drive->target_amount) }} items
+                        <strong>Target:</strong> {{ number_format($drive->total_items_needed) }} items
                     </p>
 
                     <p class="detail-item">
@@ -78,8 +78,7 @@
                     <div class="row g-4">
                         @foreach ($supportingNgos as $ngo)
                             <div class="col-md-4 col-6">
-                                <a href="{{ route('ngo.external-link', $ngo->id) }}" target="_blank"
-                                    rel="noopener noreferrer" class="ngo-logo-card d-block">
+                                <a href="{{ route('ngo.profile.public', $ngo->id) }}" class="ngo-logo-card d-block">
                                     <div class="logo-wrapper">
                                         <img src="{{ $ngo->logo ?? 'https://placehold.co/800x800?text=' . urlencode(Str::limit($ngo->organization_name ?? $ngo->name, 10)) }}"
                                             alt="{{ $ngo->organization_name ?? $ngo->name }}" class="ngo-logo">

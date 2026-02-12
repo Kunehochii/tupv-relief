@@ -587,8 +587,8 @@
         <div class="sidebar-content">
             {{-- Progress Card --}}
             <div class="detail-card mb-4 progress-card">
-                <div class="progress-percentage">{{ $drive->distributed_percentage }}%</div>
-                <div class="progress-label">Distributed</div>
+                <div class="progress-percentage">{{ $drive->progress_percentage }}%</div>
+                <div class="progress-label">Overall Progress</div>
                 @include('partials.progress-bar-3color', [
                     'distributed' => $drive->distributed_percentage,
                     'pledged' => $drive->pledged_percentage,
@@ -605,7 +605,7 @@
                     </div>
                     <div class="progress-stat">
                         <span class="stat-dot target"></span>
-                        <span>Target: {{ number_format($drive->target_amount) }}</span>
+                        <span>Target: {{ number_format($drive->total_items_needed) }}</span>
                     </div>
                 </div>
             </div>
@@ -620,9 +620,10 @@
                             <div class="label">Total Pledges</div>
                         </div>
                         <div class="stat-card-mini">
-                            <div class="value text-warning">{{ $drive->pledges()->where('status', 'pending')->count() }}
+                            <div class="value text-warning">
+                                {{ $drive->pledges()->whereIn('status', ['pending', 'verified'])->count() }}
                             </div>
-                            <div class="label">Pending</div>
+                            <div class="label">Pledged</div>
                         </div>
                         <div class="stat-card-mini">
                             <div class="value text-success">{{ $drive->pledges()->where('status', 'verified')->count() }}

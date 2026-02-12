@@ -87,11 +87,17 @@ class PledgeController extends Controller
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'exists:pledge_items,id'],
             'items.*.quantity_distributed' => ['required', 'numeric', 'min:0'],
+            'admin_feedback' => ['nullable', 'string', 'max:1000'],
         ]);
 
         DB::transaction(function () use ($validated, $pledge) {
             $totalDistributed = 0;
             $totalFamiliesHelped = 0;
+
+            // Save admin feedback if provided
+            if (isset($validated['admin_feedback'])) {
+                $pledge->update(['admin_feedback' => $validated['admin_feedback']]);
+            }
 
             foreach ($validated['items'] as $itemData) {
                 $pledgeItem = PledgeItem::find($itemData['id']);
@@ -150,15 +156,10 @@ class PledgeController extends Controller
     public function feedback(Request $request, Pledge $pledge): RedirectResponse
     {
         $validated = $request->validate([
-            'families_helped' => ['nullable', 'integer', 'min:0'],
-            'relief_packages' => ['nullable', 'integer', 'min:0'],
-            'items_distributed' => ['nullable', 'integer', 'min:0'],
             'admin_feedback' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $pledge->update($validated);
-
-        $this->notificationService->sendImpactFeedback($pledge);
 
         return redirect()->back()
             ->with('success', 'Feedback saved successfully.');
