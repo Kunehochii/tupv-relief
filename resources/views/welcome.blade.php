@@ -19,8 +19,6 @@
     <style>
         :root {
             --dark-blue: #000167;
-            --red: #dd3319;
-            --vivid-red: #e51d00;
             --orange: #ffae44;
             --gray-blue: #8a95b6;
             --gray: #e6e6e4;
@@ -38,20 +36,31 @@
             overflow-x: hidden;
         }
 
-        /* Navigation */
+        /* ===== Navigation ===== */
         .navbar-custom {
-            background: #ea4f2d;
-            padding: 1rem 2rem;
+            background: var(--dark-blue);
+            padding: 0.75rem 2rem;
             position: absolute;
             width: 100%;
             z-index: 100;
         }
 
         .navbar-brand-custom {
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--dark-blue) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             text-decoration: none;
+        }
+
+        .navbar-brand-custom img {
+            height: 40px;
+        }
+
+        .navbar-brand-custom span {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 1px;
         }
 
         .nav-link-custom {
@@ -60,17 +69,41 @@
             margin-left: 1.5rem;
             text-decoration: none;
             transition: opacity 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .nav-link-custom:hover {
             opacity: 0.8;
+            color: var(--orange) !important;
         }
 
-        /* Hero Section */
+        .btn-signup {
+            background: var(--orange);
+            color: var(--dark-blue);
+            font-weight: 600;
+            padding: 0.4rem 1.25rem;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 2px solid var(--orange);
+        }
+
+        .btn-signup:hover {
+            background: transparent;
+            color: var(--orange);
+        }
+
+        /* ===== Hero Section ===== */
         .hero-section {
             position: relative;
             min-height: 100vh;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
         }
 
         .hero-bg {
@@ -79,104 +112,266 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/landing-bg.png');
+            background-image: url('/landing-bg2.png');
             background-size: cover;
-            background-position: center top;
+            background-position: center;
             background-repeat: no-repeat;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 1, 103, 0.7) 0%, rgba(0, 1, 103, 0.3) 100%);
         }
 
         .hero-content {
             position: relative;
             z-index: 10;
-            padding-top: calc(100vh - 600px);
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-end;
+            padding-top: 120px;
             padding-bottom: 3rem;
         }
 
-        .hero-content .row {
-            width: 100%;
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--orange);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .hero-logo {
-            max-width: 400px;
+        .hero-subtitle {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero-desc {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 500px;
             margin-bottom: 2rem;
         }
 
         .hero-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-width: 420px;
-            margin-left: auto;
-            margin-top: 0;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
 
-        .btn-outline-custom {
-            background: transparent;
-            border: 2px solid var(--gray-blue);
-            color: var(--gray-blue);
-            padding: 1.25rem 3rem;
-            font-weight: 600;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn-outline-custom:hover {
-            background: var(--gray-blue);
-            color: #ffffff;
-        }
-
-        .btn-primary-custom {
-            background: var(--dark-blue);
-            border: 2px solid var(--dark-blue);
-            color: #ffffff;
-            padding: 1.25rem 3rem;
-            font-weight: 600;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn-primary-custom:hover {
-            background: #000050;
-            color: #ffffff;
-        }
-
-        /* Section Titles */
-        .section-title {
-            color: var(--vivid-red);
+        .btn-hero-primary {
+            background: var(--orange);
+            color: var(--dark-blue);
             font-weight: 700;
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: 2px solid var(--orange);
+            transition: all 0.3s;
+            text-align: center;
         }
 
-        /* Drives Section */
+        .btn-hero-primary:hover {
+            background: transparent;
+            color: var(--orange);
+        }
+
+        .btn-hero-outline {
+            background: #ffffff;
+            color: var(--dark-blue);
+            font-weight: 700;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: 2px solid #ffffff;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn-hero-outline:hover {
+            background: transparent;
+            color: #ffffff;
+        }
+
+        /* ===== How It Works ===== */
+        .how-it-works-section {
+            padding: 5rem 0;
+            background: #ffffff;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-heading h2 {
+            color: var(--dark-blue);
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-heading .underline {
+            width: 60px;
+            height: 4px;
+            background: var(--orange);
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--dark-blue);
+            color: #ffffff;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+        }
+
+        .step-card h5 {
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card p {
+            color: var(--gray-blue);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        /* ===== Our Impact ===== */
+        .impact-section {
+            padding: 5rem 0;
+            background: #f5f6fa;
+        }
+
+        .impact-section .section-heading p {
+            color: var(--gray-blue);
+            font-size: 0.95rem;
+        }
+
+        .impact-card {
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+            border: none;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .impact-card.card-green {
+            background: linear-gradient(135deg, #d4edda 0%, #b8e6c8 100%);
+        }
+
+        .impact-card.card-blue {
+            background: linear-gradient(135deg, #cce5ff 0%, #a8d4ff 100%);
+        }
+
+        .impact-card.card-teal {
+            background: linear-gradient(135deg, #d1ecf1 0%, #a8dce3 100%);
+        }
+
+        .impact-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .impact-card.card-green .impact-icon {
+            background: #28a745;
+            color: #ffffff;
+        }
+
+        .impact-card.card-blue .impact-icon {
+            background: #007bff;
+            color: #ffffff;
+        }
+
+        .impact-card.card-teal .impact-icon {
+            background: #17a2b8;
+            color: #ffffff;
+        }
+
+        .impact-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .impact-label {
+            color: var(--gray-blue);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* ===== Active Donation Drives ===== */
         .drives-section {
-            padding: 2rem 0 4rem 0;
+            padding: 5rem 0;
             background: #ffffff;
         }
 
         .drive-card {
             position: relative;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
         }
 
         .drive-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         .drive-card-img {
@@ -200,7 +395,7 @@
         }
 
         .drive-card-body {
-            padding: 1rem;
+            padding: 1rem 1.25rem;
             background: #ffffff;
         }
 
@@ -221,7 +416,7 @@
 
         .drive-progress-fill {
             height: 100%;
-            background: var(--vivid-red);
+            background: var(--orange);
             border-radius: 4px;
             transition: width 0.5s ease;
         }
@@ -233,191 +428,69 @@
 
         .drive-progress-percent {
             font-size: 0.75rem;
-            color: var(--vivid-red);
+            color: var(--orange);
             font-weight: 600;
         }
 
-        /* Accomplishments Section */
-        .accomplishments-section {
-            padding: 4rem 0;
-            background: #ffffff;
-        }
-
-        .stat-number {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--dark-blue);
-            line-height: 1;
-        }
-
-        .stat-label {
-            color: var(--gray-blue);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Quote Section */
-        .quote-section {
-            padding: 3rem 0;
-            background: #ffffff;
-        }
-
-        .quote-card {
-            background: var(--vivid-red);
-            border-radius: 20px;
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            overflow: hidden;
-        }
-
-        .quote-image {
-            width: 200px;
-            height: 150px;
-            border-radius: 15px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .quote-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .quote-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #87CEEB 0%, #90EE90 50%, #98FB98 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .quote-placeholder::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(to top, #228B22 0%, transparent 100%);
-            border-radius: 0 0 15px 15px;
-        }
-
-        .quote-text {
-            color: #ffffff;
-            font-style: italic;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        /* Footer */
+        /* ===== Footer ===== */
         .footer-custom {
-            background: var(--vivid-red);
-            padding: 1.5rem 0;
+            background: var(--dark-blue);
+            padding: 2.5rem 0 1.5rem;
             color: #ffffff;
         }
 
         .footer-logo {
-            height: 40px;
-            margin-right: 1rem;
+            height: 45px;
+            margin-right: 0.75rem;
         }
 
         .footer-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin: 0;
+            opacity: 0.7;
         }
 
         .footer-note {
-            font-size: 0.7rem;
-            opacity: 0.9;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--orange);
+            font-weight: 500;
         }
 
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.5rem 0 1rem;
         }
 
-        .scroll-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--gray);
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .scroll-dot.active {
-            background: var(--vivid-red);
-        }
-
-        /* Responsive */
+        /* ===== Responsive ===== */
         @media (max-width: 768px) {
-            .hero-buttons {
-                margin-right: auto;
-                margin-left: auto;
-                margin-top: 40px;
-            }
-
-            .hero-logo {
-                max-width: 200px;
-            }
-
-            .quote-card {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .quote-image {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .stat-number {
+            .hero-title {
                 font-size: 2.5rem;
             }
 
-            .navbar-custom {
-                padding: 1rem;
+            .hero-subtitle {
+                font-size: 1.3rem;
             }
-        }
 
-        /* Carousel navigation arrows */
-        .carousel-nav {
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+            .hero-buttons {
+                flex-direction: column;
+            }
 
-        .carousel-arrow {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--gray);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+            .impact-card {
+                margin-bottom: 1rem;
+            }
 
-        .carousel-arrow:hover {
-            background: var(--vivid-red);
-            color: #ffffff;
+            .navbar-custom {
+                padding: 0.75rem 1rem;
+            }
+
+            .section-heading h2 {
+                font-size: 1.6rem;
+            }
+
+            .impact-number {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -426,10 +499,14 @@
     <!-- Navigation -->
     <nav class="navbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="navbar-brand-custom"><img src="/logos/tabang.png" alt="TABANG"
-                    style="height: 65px;"></a>
+            <a href="{{ route('home') }}" class="navbar-brand-custom">
+                <img src="/logos/logo.png" alt="TABANG Logo">
+                <span>TABANG</span>
+            </a>
             <div class="d-flex align-items-center">
-                <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
+                <a href="{{ route('home') }}" class="nav-link-custom">Home</a>
+                <a href="{{ route('about') }}" class="nav-link-custom">About Us</a>
+                <a href="{{ route('support') }}" class="nav-link-custom">Contact</a>
                 @auth
                     @php
                         $dashboardRoute = match (auth()->user()->role) {
@@ -438,10 +515,9 @@
                             default => route('donor.dashboard'),
                         };
                     @endphp
-                    <a href="{{ $dashboardRoute }}" class="nav-link-custom">DASHBOARD</a>
+                    <a href="{{ $dashboardRoute }}" class="btn-signup">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
-                    <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                    <a href="{{ route('register') }}" class="btn-signup">Sign up</a>
                 @endauth
             </div>
         </div>
@@ -450,12 +526,17 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <div class="row align-items-end justify-content-between">
-                <div class="col-lg-5">
-                    <img src="/logos/tabang.png" alt="TABANG Logo" class="hero-logo">
-                </div>
-                <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">TABANG</h1>
+                    <h2 class="hero-subtitle">Make a Difference<br>Today</h2>
+                    <p class="hero-desc">
+                        Join our mission to create a positive change in communities
+                        and worldwide. Donate and pledge, and track your
+                        contributions and impact of what you gave.
+                    </p>
                     <div class="hero-buttons">
                         @auth
                             @php
@@ -465,16 +546,16 @@
                                     default => route('donor.dashboard'),
                                 };
                             @endphp
-                            <a href="{{ $heroDashboard }}" class="btn-outline-custom">Go to Dashboard</a>
+                            <a href="{{ $heroDashboard }}" class="btn-hero-primary">Go to Dashboard</a>
                             @if (auth()->user()->isDonor())
-                                <a href="{{ route('donor.pledges.create') }}" class="btn-primary-custom">Donate Now</a>
+                                <a href="{{ route('donor.pledges.create') }}" class="btn-hero-primary">Donate Now</a>
                             @elseif (auth()->user()->isNgo())
-                                <a href="{{ route('ngo.supports.index') }}" class="btn-outline-custom">NGO Support Drive</a>
+                                <a href="{{ route('ngo.supports.index') }}" class="btn-hero-primary">NGO Support Drive</a>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="btn-outline-custom">Sign In</a>
-                            <a href="{{ route('register') }}" class="btn-primary-custom">Donate Now</a>
-                            <a href="{{ route('login') }}" class="btn-outline-custom">NGO Support Drive</a>
+                            <a href="{{ route('login') }}" class="btn-hero-primary">Donate Now</a>
+                            <a href="{{ route('login') }}" class="btn-hero-outline">Sign In</a>
+                            <a href="{{ route('support') }}" class="btn-hero-primary">NGO Support Drive</a>
                         @endauth
                     </div>
                 </div>
@@ -482,145 +563,120 @@
         </div>
     </section>
 
-    <!-- On-going Donation Drives -->
+    <!-- How It Works -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>How It Works</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon"><i class="bi bi-search"></i></div>
+                        <h5>Browse Drive</h5>
+                        <p>Explore various donation drives and find causes that resonate with you</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon"><i class="bi bi-globe2"></i></div>
+                        <h5>Make Your Contribution</h5>
+                        <p>Support the causes you care about with secure and transparent donations</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon"><i class="bi bi-people-fill"></i></div>
+                        <h5>Track Impact</h5>
+                        <p>See the impact of your contributions and how they help communities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Impact -->
+    <section class="impact-section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Our Impact</h2>
+                <div class="underline"></div>
+                <p class="mt-2">Together, we're creating meaningful change across communities</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="impact-card card-green">
+                        <div class="impact-icon"><i class="bi bi-box-seam-fill"></i></div>
+                        <div class="impact-number">{{ number_format($stats['drives_created']) }}</div>
+                        <div class="impact-label">Total drives created</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="impact-card card-blue">
+                        <div class="impact-icon"><i class="bi bi-people-fill"></i></div>
+                        <div class="impact-number">
+                            {{ number_format($stats['families_helped'] > 0 ? $stats['families_helped'] : $stats['pledges_verified']) }}
+                        </div>
+                        <div class="impact-label">Family helped</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="impact-card card-teal">
+                        <div class="impact-icon"><i class="bi bi-globe2"></i></div>
+                        <div class="impact-number">{{ number_format($stats['pledges_verified']) }}</div>
+                        <div class="impact-label">Active donors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Donation Drives -->
     <section class="drives-section">
         <div class="container">
-            <h2 class="section-title">On-going donation drives</h2>
-            <div class="position-relative">
-                <div class="row g-4">
-                    @forelse($drives as $drive)
-                        <div class="col-md-4">
-                            <a href="{{ route('drive.donate', $drive) }}" class="text-decoration-none">
-                                <div class="drive-card">
-                                    @if ($drive->cover_photo)
-                                        <img src="{{ asset('storage/' . $drive->cover_photo) }}"
-                                            alt="{{ $drive->name }}" class="drive-card-img">
-                                    @else
-                                        <div class="drive-card-placeholder">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </div>
-                                    @endif
-                                    <div class="drive-card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <h5 class="drive-card-title mb-0">{{ Str::limit($drive->name, 25) }}</h5>
-                                            <span
-                                                class="drive-progress-percent">{{ $drive->progress_percentage }}%</span>
-                                        </div>
-                                        <div class="drive-progress-bar">
-                                            <div class="drive-progress-fill"
-                                                style="width: {{ $drive->progress_percentage }}%"></div>
-                                        </div>
-                                        <p class="drive-card-info mb-0">{{ Str::limit($drive->description, 30) }}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @empty
-                        <div class="col-md-4">
-                            <div class="drive-card">
-                                <div class="drive-card-placeholder">
-                                    <i class="bi bi-heart-fill"></i>
-                                </div>
-                                <div class="drive-card-body">
-                                    <h5 class="drive-card-title">Manapla Flooding</h5>
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="drive-progress-bar flex-grow-1 me-2">
-                                            <div class="drive-progress-fill" style="width: 55%"></div>
-                                        </div>
-                                        <span class="drive-progress-percent">55%</span>
-                                    </div>
-                                    <p class="drive-card-info mb-0">Short information</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="drive-card">
-                                <div class="drive-card-placeholder">
-                                    <i class="bi bi-heart-fill"></i>
-                                </div>
-                                <div class="drive-card-body">
-                                    <h5 class="drive-card-title">Manapla Flooding</h5>
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="drive-progress-bar flex-grow-1 me-2">
-                                            <div class="drive-progress-fill" style="width: 55%"></div>
-                                        </div>
-                                        <span class="drive-progress-percent">55%</span>
-                                    </div>
-                                    <p class="drive-card-info mb-0">Short information</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="drive-card">
-                                <div class="drive-card-placeholder">
-                                    <i class="bi bi-heart-fill"></i>
-                                </div>
-                                <div class="drive-card-body">
-                                    <h5 class="drive-card-title">Manapla Flooding</h5>
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="drive-progress-bar flex-grow-1 me-2">
-                                            <div class="drive-progress-fill" style="width: 55%"></div>
-                                        </div>
-                                        <span class="drive-progress-percent">55%</span>
-                                    </div>
-                                    <p class="drive-card-info mb-0">Short information</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforelse
-                </div>
+            <div class="section-heading">
+                <h2>Active Donation Drives</h2>
+                <div class="underline"></div>
+                <p class="mt-2" style="color: var(--gray-blue);">Support ongoing drives and help communities in need
+                </p>
             </div>
-        </div>
-    </section>
-
-    <!-- Accomplishments -->
-    <section class="accomplishments-section">
-        <div class="container">
-            <h2 class="section-title">Accomplishments</h2>
-            <div class="row">
-                <div
-                    class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center text-md-start mb-4 mb-md-0">
-                    <div class="stat-number">{{ number_format($stats['relief_distributed']) }}</div>
-                    <p class="stat-label">relief packs and items distributed</p>
-                </div>
-                <div class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center mb-4 mb-md-0">
-                    <div class="stat-number">{{ number_format($stats['drives_created']) }}</div>
-                    <p class="stat-label">donation drives created</p>
-                </div>
-                <div class="col-md-{{ $stats['families_helped'] > 0 ? '3' : '4' }} text-center mb-4 mb-md-0">
-                    <div class="stat-number">{{ number_format($stats['pledges_verified']) }}</div>
-                    <p class="stat-label">total pledges made and verified</p>
-                </div>
-                @if ($stats['families_helped'] > 0)
-                    <div class="col-md-3 text-center text-md-end">
-                        <div class="stat-number">{{ number_format($stats['families_helped']) }}</div>
-                        <p class="stat-label">families helped</p>
+            <div class="row g-4">
+                @forelse($drives as $drive)
+                    <div class="col-md-4">
+                        <a href="{{ route('drive.donate', $drive) }}" class="text-decoration-none">
+                            <div class="drive-card">
+                                @if ($drive->cover_photo)
+                                    <img src="{{ asset('storage/' . $drive->cover_photo) }}"
+                                        alt="{{ $drive->name }}" class="drive-card-img">
+                                @else
+                                    <div class="drive-card-placeholder">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </div>
+                                @endif
+                                <div class="drive-card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="drive-card-title mb-0">{{ Str::limit($drive->name, 25) }}</h5>
+                                        <span class="drive-progress-percent">{{ $drive->progress_percentage }}%</span>
+                                    </div>
+                                    <div class="drive-progress-bar">
+                                        <div class="drive-progress-fill"
+                                            style="width: {{ $drive->progress_percentage }}%"></div>
+                                    </div>
+                                    <p class="drive-card-info mb-0">{{ Str::limit($drive->description, 30) }}</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                @endif
-            </div>
-        </div>
-    </section>
-
-    <!-- Quote Section -->
-    <section class="quote-section">
-        <div class="container">
-            <div class="quote-card">
-                <div class="quote-image">
-                    @if ($featuredDrive && $featuredDrive->cover_photo)
-                        <img src="{{ asset('storage/' . $featuredDrive->cover_photo) }}" alt="Featured Drive">
-                    @else
-                        <div class="quote-placeholder">
-                            <i class="bi bi-image"
-                                style="font-size: 3rem; color: rgba(255,255,255,0.5); z-index: 1;"></i>
-                        </div>
-                    @endif
-                </div>
-                <div class="quote-text">
-                    TABANG brings donors, NGOs, and responders together in one transparent
-                    platform for disaster relief coordination. By showing verified needs and tracking
-                    donations and pledges, it helps ensure that every contribution is purposeful,
-                    accountable, and directed where it is needed most.
-                </div>
+                @empty
+                    <div class="col-12 text-center py-4">
+                        <i class="bi bi-heart" style="font-size: 3rem; color: var(--gray);"></i>
+                        <p class="text-muted mt-2">No active donation drives at the moment. Check back soon!</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -628,18 +684,20 @@
     <!-- Footer -->
     <footer class="footer-custom">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 d-flex align-items-center mb-3 mb-md-0">
+            <div class="row align-items-start">
+                <div class="col-md-4 d-flex align-items-center mb-3 mb-md-0">
                     <img src="/logos/tupvlogo.png" alt="TUPV Logo" class="footer-logo">
                     <img src="/logos/dswdlogo.png" alt="DSWD Logo" class="footer-logo">
-                    <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
+                <div class="col-md-8">
                     <p class="footer-note mb-0">This website was developed as an academic project in coordination with
-                        the
-                        Department of Social Welfare and Development (DSWD) to support disaster relief
+                        the Department of Social Welfare and Development (DSWD) to support disaster relief
                         donation and distribution processes.</p>
                 </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
             </div>
         </div>
     </footer>

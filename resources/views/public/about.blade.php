@@ -41,18 +41,29 @@
 
         /* Navigation */
         .navbar-custom {
-            background: var(--vivid-orange);
-            padding: 1rem 2rem;
+            background: var(--dark-blue);
+            padding: 0.75rem 2rem;
             position: absolute;
             width: 100%;
             z-index: 100;
         }
 
         .navbar-brand-custom {
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--dark-blue) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             text-decoration: none;
+        }
+
+        .navbar-brand-custom img {
+            height: 40px;
+        }
+
+        .navbar-brand-custom span {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 1px;
         }
 
         .nav-link-custom {
@@ -61,6 +72,36 @@
             margin-left: 1.5rem;
             text-decoration: none;
             transition: opacity 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .nav-link-custom:hover {
+            opacity: 0.8;
+            color: var(--orange) !important;
+        }
+
+        .btn-signup {
+            background: var(--orange);
+            color: var(--dark-blue);
+            font-weight: 600;
+            padding: 0.4rem 1.25rem;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 2px solid var(--orange);
+        }
+
+        .btn-signup:hover {
+            background: transparent;
+            color: var(--orange);
+        }
+
+        margin-left: 1.5rem;
+        text-decoration: none;
+        transition: opacity 0.3s;
         }
 
         .nav-link-custom:hover {
@@ -173,24 +214,32 @@
 
         /* Footer */
         .footer-custom {
-            background: var(--vivid-orange);
-            padding: 1.5rem 0;
+            background: var(--dark-blue);
+            padding: 2.5rem 0 1.5rem;
             color: #ffffff;
         }
 
         .footer-logo {
-            height: 40px;
-            margin-right: 1rem;
+            height: 45px;
+            margin-right: 0.75rem;
         }
 
         .footer-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin: 0;
+            opacity: 0.7;
         }
 
         .footer-note {
-            font-size: 0.7rem;
-            opacity: 0.9;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--orange);
+            font-weight: 500;
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.5rem 0 1rem;
         }
 
         /* Responsive */
@@ -219,10 +268,14 @@
     <!-- Navigation -->
     <nav class="navbar-custom">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="navbar-brand-custom"><img src="/logos/tabang.png" alt="TABANG"
-                    style="height: 65px;"></a>
+            <a href="{{ route('home') }}" class="navbar-brand-custom">
+                <img src="/logos/logo.png" alt="TABANG Logo">
+                <span>TABANG</span>
+            </a>
             <div class="d-flex align-items-center">
-                <a href="{{ route('about') }}" class="nav-link-custom">About us</a>
+                <a href="{{ route('home') }}" class="nav-link-custom">Home</a>
+                <a href="{{ route('about') }}" class="nav-link-custom">About Us</a>
+                <a href="{{ route('support') }}" class="nav-link-custom">Contact</a>
                 @auth
                     @php
                         $dashboardRoute = match (auth()->user()->role) {
@@ -231,10 +284,9 @@
                             default => route('donor.dashboard'),
                         };
                     @endphp
-                    <a href="{{ $dashboardRoute }}" class="nav-link-custom">DASHBOARD</a>
+                    <a href="{{ $dashboardRoute }}" class="btn-signup">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="nav-link-custom">Sign In</a>
-                    <a href="{{ route('register') }}" class="nav-link-custom">SIGN UP</a>
+                    <a href="{{ route('register') }}" class="btn-signup">Sign up</a>
                 @endauth
             </div>
         </div>
@@ -342,18 +394,20 @@
     <!-- Footer -->
     <footer class="footer-custom">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 d-flex align-items-center mb-3 mb-md-0">
+            <div class="row align-items-start">
+                <div class="col-md-4 d-flex align-items-center mb-3 mb-md-0">
                     <img src="/logos/tupvlogo.png" alt="TUPV Logo" class="footer-logo">
                     <img src="/logos/dswdlogo.png" alt="DSWD Logo" class="footer-logo">
-                    <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
+                <div class="col-md-8">
                     <p class="footer-note mb-0">This website was developed as an academic project in coordination with
-                        the
-                        Department of Social Welfare and Development (DSWD) to support disaster relief
+                        the Department of Social Welfare and Development (DSWD) to support disaster relief
                         donation and distribution processes.</p>
                 </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">Copyright 2026. All rights reserved.</p>
             </div>
         </div>
     </footer>

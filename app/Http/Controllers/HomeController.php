@@ -50,6 +50,25 @@ class HomeController extends Controller
     }
 
     /**
+     * Show the NGO support page with all verified NGOs
+     */
+    public function support(): View
+    {
+        $ngos = \App\Models\User::where('role', 'ngo')
+            ->where('verification_status', 'verified')
+            ->withCount([
+                'driveSupports as supported_drives_count' => function ($query) {
+                    $query->where('is_active', true);
+                },
+                'pledges as pledges_count',
+            ])
+            ->orderBy('organization_name')
+            ->get();
+
+        return view('public.support', compact('ngos'));
+    }
+
+    /**
      * Get platform statistics
      */
     public function statistics(): JsonResponse

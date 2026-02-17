@@ -51,21 +51,32 @@
 
         /* Custom Navbar - TABANG Style */
         .navbar-custom {
-            background: var(--vivid-orange);
-            padding: 1rem 2rem;
+            background: var(--dark-blue);
+            padding: 0.75rem 2rem;
             width: 100%;
             z-index: 100;
         }
 
         .navbar-brand-custom {
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--dark-blue) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             text-decoration: none;
         }
 
-        .navbar-brand-custom:hover {
-            color: var(--dark-blue) !important;
+        .navbar-brand-custom img {
+            height: 40px;
+        }
+
+        .navbar-brand-custom span {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .navbar-brand-custom:hover span {
+            color: #ffffff;
         }
 
         .nav-link-custom {
@@ -80,7 +91,7 @@
 
         .nav-link-custom:hover {
             opacity: 0.8;
-            color: #ffffff !important;
+            color: var(--orange) !important;
         }
 
         .nav-link-custom .badge {
