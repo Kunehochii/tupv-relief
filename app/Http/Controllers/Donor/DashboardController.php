@@ -27,21 +27,50 @@ class DashboardController extends Controller
             'items_distributed' => $user->pledges()->sum('items_distributed'),
         ];
 
-        // Get initial drives for carousel
+        // Get initial drives for carousel (featured / hero)
         $activeDrives = Drive::active()
             ->with(['creator', 'driveItems'])
             ->latest()
             ->take(10)
             ->get();
 
+        // Ending soon – active drives ordered by end_date ascending (soonest first)
+        $endingSoonDrives = Drive::active()
+            ->with(['creator', 'driveItems'])
+            ->orderBy('end_date', 'asc')
+            ->take(10)
+            ->get();
+
+        // Recently added – newest first
+        $recentDrives = Drive::active()
+            ->with(['creator', 'driveItems'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Most needed – lowest progress percentage (most help needed)
+        $mostNeededDrives = Drive::active()
+            ->with(['creator', 'driveItems'])
+            ->get()
+            ->sortBy('progress_percentage')
+            ->take(10)
+            ->values();
+
         // Get completed drives for the completed section
         $completedDrives = Drive::completed()
             ->with(['creator', 'driveItems'])
             ->latest()
-            ->take(6)
+            ->take(10)
             ->get();
 
-        return view('donor.dashboard', compact('stats', 'activeDrives', 'completedDrives'));
+        return view('donor.dashboard', compact(
+            'stats',
+            'activeDrives',
+            'endingSoonDrives',
+            'recentDrives',
+            'mostNeededDrives',
+            'completedDrives',
+        ));
     }
 
     /**

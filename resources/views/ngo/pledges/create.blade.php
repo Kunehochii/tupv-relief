@@ -199,6 +199,68 @@
             letter-spacing: 0.5px;
         }
 
+        /* Group Quantity Controls */
+        .group-quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: auto;
+        }
+
+        .group-qty-label {
+            font-size: 0.8rem;
+            color: var(--gray-blue);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .group-qty-input {
+            width: 80px;
+        }
+
+        .group-qty-input input {
+            width: 100%;
+            padding: 0.4rem 0.5rem;
+            border: 2px solid var(--vivid-orange);
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: #fff8f5;
+            color: var(--dark-blue);
+        }
+
+        .group-qty-input input:focus {
+            border-color: var(--vivid-red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(229, 29, 0, 0.15);
+        }
+
+        .group-qty-input input::placeholder {
+            color: #ccc;
+            font-weight: 400;
+        }
+
+        .btn-apply-group {
+            padding: 0.35rem 0.75rem;
+            background: var(--vivid-orange);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-apply-group:hover {
+            background: var(--vivid-red);
+            transform: translateY(-1px);
+        }
+
         /* Item Row */
         .item-row {
             display: flex;
@@ -539,6 +601,30 @@
                 font-size: 0.9rem;
             }
 
+            /* Group qty on mobile */
+            .pack-type-header {
+                flex-wrap: wrap;
+            }
+
+            .group-quantity-controls {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .group-qty-label {
+                font-size: 0.75rem;
+            }
+
+            .group-qty-input {
+                width: 65px;
+            }
+
+            .group-qty-input input {
+                padding: 0.35rem;
+                font-size: 0.8rem;
+            }
+
             .item-row {
                 flex-wrap: wrap;
                 gap: 0.5rem;
@@ -765,13 +851,22 @@
 
                                 @if ($groupedItems->count() > 0)
                                     @foreach ($groupedItems as $packType => $items)
-                                        <div class="pack-type-group">
+                                        <div class="pack-type-group" data-pack-type="{{ $packType }}">
                                             <div class="pack-type-header">
                                                 <div class="pack-type-icon">
                                                     <i class="bi {{ $packTypeIcons[$packType] ?? 'bi-box' }}"></i>
                                                 </div>
                                                 <span
                                                     class="pack-type-name">{{ $packTypeNames[$packType] ?? strtoupper($packType) }}</span>
+                                                <div class="group-quantity-controls">
+                                                    <span class="group-qty-label">Group Qty:</span>
+                                                    <div class="group-qty-input">
+                                                        <input type="number" min="0" step="1" placeholder="All"
+                                                            class="group-qty-field" data-pack-type="{{ $packType }}"
+                                                            aria-label="Set quantity for all {{ $packTypeNames[$packType] ?? $packType }} items">
+                                                    </div>
+                                                    <button type="button" class="btn-apply-group" data-pack-type="{{ $packType }}">Apply</button>
+                                                </div>
                                             </div>
                                             <div class="pack-type-items">
                                                 @foreach ($items as $item)
@@ -1049,10 +1144,19 @@
                 const typeName = packTypeNames[packType] || packType.toUpperCase();
 
                 html += `
-                <div class="pack-type-group">
+                <div class="pack-type-group" data-pack-type="${packType}">
                     <div class="pack-type-header">
                         <div class="pack-type-icon"><i class="bi ${icon}"></i></div>
                         <span class="pack-type-name">${typeName}</span>
+                        <div class="group-quantity-controls">
+                            <span class="group-qty-label">Group Qty:</span>
+                            <div class="group-qty-input">
+                                <input type="number" min="0" step="1" placeholder="All"
+                                    class="group-qty-field" data-pack-type="${packType}"
+                                    aria-label="Set quantity for all ${typeName} items">
+                            </div>
+                            <button type="button" class="btn-apply-group" data-pack-type="${packType}">Apply</button>
+                        </div>
                     </div>
                     <div class="pack-type-items">
             `;
@@ -1189,6 +1293,44 @@
             if (pledgeType) {
                 togglePledgeType();
             }
+
+            // ===== Group Quantity Feature =====
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-apply-group');
+                if (!btn) return;
+
+                const group = btn.closest('.pack-type-group');
+                if (!group) return;
+
+                const groupInput = group.querySelector('.group-qty-field');
+                const qty = groupInput ? groupInput.value : '';
+
+                if (qty === '' || parseFloat(qty) < 0) return;
+
+                const itemInputs = group.querySelectorAll('.pack-type-items input[type="number"][name*="[quantity]"]');
+                itemInputs.forEach(input => {
+                    input.value = qty;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
+                btn.textContent = 'Applied!';
+                btn.style.background = '#16a34a';
+                setTimeout(() => {
+                    btn.textContent = 'Apply';
+                    btn.style.background = '';
+                }, 1200);
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.target.classList.contains('group-qty-field')) {
+                    e.preventDefault();
+                    const group = e.target.closest('.pack-type-group');
+                    if (group) {
+                        const btn = group.querySelector('.btn-apply-group');
+                        if (btn) btn.click();
+                    }
+                }
+            });
 
             // Form submission handler
             const form = document.getElementById('pledgeForm');
