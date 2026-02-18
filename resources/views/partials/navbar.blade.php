@@ -1,7 +1,7 @@
 <nav class="navbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ url('/') }}" class="navbar-brand-custom">
-            <img src="/logos/tabang.png" alt="TABANG Logo">
+            <img src="/logos/tabang-new.png" alt="TABANG Logo">
             <span>TABANG</span>
         </a>
 
