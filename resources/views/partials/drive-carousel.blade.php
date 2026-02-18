@@ -670,7 +670,7 @@
             slide.dataset.driveId = drive.id;
 
             const donateButtonHtml = userType !== 'ngo' ?
-                `<a href="${drive.preview_url}" class="btn btn-donate">DONATE</a>` :
+                `<a href="${drive.donate_url}" class="btn btn-donate">DONATE</a>` :
                 '';
 
             const isSupported = supportedIds.includes(drive.id);
