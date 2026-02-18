@@ -56,6 +56,9 @@
 
                                     {{-- Action Buttons --}}
                                     <div class="drive-actions">
+                                        <a href="{{ route('drive.donate', $drive) }}" class="btn btn-donate">
+                                            DONATE
+                                        </a>
                                         <a href="{{ $userType === 'ngo' ? route('ngo.pledges.create', ['drive' => $drive->id]) : route('donor.pledges.create', ['drive' => $drive->id]) }}"
                                             class="btn btn-pledge">
                                             PLEDGE
@@ -706,6 +709,7 @@
                                 <p>${drive.description ? drive.description.substring(0, 200) : ''}</p>
                             </div>
                             <div class="drive-actions">
+                                <a href="${drive.preview_url}" class="btn btn-donate">DONATE</a>
                                 <a href="${drive.pledge_url}" class="btn btn-pledge">PLEDGE</a>
                                 ${supportButtonHtml}
                             </div>
