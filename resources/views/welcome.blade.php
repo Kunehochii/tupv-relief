@@ -84,7 +84,7 @@
             color: var(--dark-blue);
             font-weight: 600;
             padding: 0.4rem 1.25rem;
-            border-radius: 20px;
+            border-radius: 999px;
             text-decoration: none;
             margin-left: 1.5rem;
             font-size: 0.9rem;
@@ -137,7 +137,7 @@
         .hero-title {
             font-size: 4.5rem;
             font-weight: 800;
-            color: var(--orange);
+            color: #ffffff;
             line-height: 1;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
@@ -171,7 +171,7 @@
             color: var(--dark-blue);
             font-weight: 700;
             padding: 0.75rem 2rem;
-            border-radius: 4px;
+            border-radius: 999px;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 0.9rem;
@@ -191,7 +191,7 @@
             color: var(--dark-blue);
             font-weight: 700;
             padding: 0.75rem 2rem;
-            border-radius: 4px;
+            border-radius: 999px;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 0.9rem;
@@ -241,7 +241,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: var(--orange);
+            background: #e51d00;
             color: #ffffff;
             font-weight: 700;
             font-size: 0.85rem;
@@ -256,7 +256,7 @@
             height: 80px;
             border-radius: 50%;
             background: var(--dark-blue);
-            color: #ffffff;
+            color: var(--orange);
             font-size: 2rem;
             display: flex;
             align-items: center;
@@ -282,11 +282,19 @@
         /* ===== Our Impact ===== */
         .impact-section {
             padding: 5rem 0;
-            background: #f5f6fa;
+            background: var(--dark-blue);
+        }
+
+        .impact-section .section-heading h2 {
+            color: #ffffff;
+        }
+
+        .impact-section .section-heading .underline {
+            background: var(--orange);
         }
 
         .impact-section .section-heading p {
-            color: var(--gray-blue);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.95rem;
         }
 
@@ -295,29 +303,20 @@
             padding: 2rem 1.5rem;
             text-align: center;
             transition: transform 0.3s;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .impact-card:hover {
             transform: translateY(-5px);
         }
 
-        .impact-card.card-green {
-            background: linear-gradient(135deg, #d4edda 0%, #b8e6c8 100%);
-        }
-
-        .impact-card.card-blue {
-            background: linear-gradient(135deg, #cce5ff 0%, #a8d4ff 100%);
-        }
-
-        .impact-card.card-teal {
-            background: linear-gradient(135deg, #d1ecf1 0%, #a8dce3 100%);
-        }
-
         .impact-icon {
             width: 56px;
             height: 56px;
             border-radius: 50%;
+            background: var(--orange);
+            color: var(--dark-blue);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -325,31 +324,16 @@
             font-size: 1.5rem;
         }
 
-        .impact-card.card-green .impact-icon {
-            background: #28a745;
-            color: #ffffff;
-        }
-
-        .impact-card.card-blue .impact-icon {
-            background: #007bff;
-            color: #ffffff;
-        }
-
-        .impact-card.card-teal .impact-icon {
-            background: #17a2b8;
-            color: #ffffff;
-        }
-
         .impact-number {
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--dark-blue);
+            color: var(--orange);
             line-height: 1;
             margin-bottom: 0.25rem;
         }
 
         .impact-label {
-            color: var(--gray-blue);
+            color: #ffffff;
             font-size: 0.85rem;
             font-weight: 500;
         }
@@ -357,32 +341,42 @@
         /* ===== Active Donation Drives ===== */
         .drives-section {
             padding: 5rem 0;
-            background: #ffffff;
+            background: #efefef;
+        }
+
+        .drives-section .section-heading .underline {
+            background: #e51d00;
+        }
+
+        .drives-section .section-heading p {
+            color: var(--dark-blue) !important;
         }
 
         .drive-card {
             position: relative;
-            border-radius: 12px;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #eee;
+            box-shadow: none;
+            transition: transform 0.3s;
+            border: 1.5px solid rgba(0, 0, 0, 0.45);
+            background: #f8f8f8;
         }
 
         .drive-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
         .drive-card-img {
             width: 100%;
-            height: 180px;
+            height: 200px;
             object-fit: cover;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
         }
 
         .drive-card-placeholder {
             width: 100%;
-            height: 180px;
+            height: 200px;
             background: linear-gradient(135deg, var(--gray-blue) 0%, var(--dark-blue) 100%);
             display: flex;
             align-items: center;
@@ -395,41 +389,53 @@
         }
 
         .drive-card-body {
-            padding: 1rem 1.25rem;
-            background: #ffffff;
+            padding: 0.75rem 0.75rem 0.9rem;
+            background: #f8f8f8;
         }
 
         .drive-card-title {
             font-weight: 700;
-            font-size: 1rem;
-            color: #333;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            color: var(--dark-blue);
+            line-height: 1.05;
+            margin-bottom: 0.45rem;
         }
 
         .drive-progress-bar {
-            height: 8px;
-            background: var(--gray);
-            border-radius: 4px;
+            height: 10px;
+            background: #f1dddd;
+            border-radius: 999px;
             overflow: hidden;
             margin-bottom: 0.25rem;
         }
 
         .drive-progress-fill {
             height: 100%;
-            background: var(--orange);
-            border-radius: 4px;
+            background: linear-gradient(90deg, #e51d00 0%, #e54a3a 100%);
+            border-radius: 999px;
             transition: width 0.5s ease;
         }
 
         .drive-card-info {
-            font-size: 0.75rem;
-            color: var(--gray-blue);
+            font-size: 0.85rem;
+            color: #6d6d73;
         }
 
         .drive-progress-percent {
-            font-size: 0.75rem;
-            color: var(--orange);
+            font-size: 1.2rem;
+            color: #6d6d73;
+            line-height: 1;
             font-weight: 600;
+        }
+
+        @media (max-width: 992px) {
+            .drive-card-title {
+                font-size: 1.5rem;
+            }
+
+            .drive-progress-percent {
+                font-size: 1rem;
+            }
         }
 
         /* ===== Footer ===== */
@@ -447,13 +453,14 @@
         .footer-text {
             font-size: 0.8rem;
             margin: 0;
-            opacity: 0.7;
+            color: #ffffff;
+            opacity: 1;
         }
 
         .footer-note {
             font-size: 0.8rem;
             line-height: 1.6;
-            color: var(--orange);
+            color: #ffffff;
             font-weight: 500;
         }
 
