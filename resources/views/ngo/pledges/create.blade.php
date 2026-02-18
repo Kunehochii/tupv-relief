@@ -330,7 +330,8 @@
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--dark-blue);
-            min-width: 45px;
+            min-width: 150px;
+            white-space: nowrap;
             text-align: right;
         }
 
@@ -861,11 +862,13 @@
                                                 <div class="group-quantity-controls">
                                                     <span class="group-qty-label">Group Qty:</span>
                                                     <div class="group-qty-input">
-                                                        <input type="number" min="0" step="1" placeholder="All"
-                                                            class="group-qty-field" data-pack-type="{{ $packType }}"
+                                                        <input type="number" min="0" step="1"
+                                                            placeholder="All" class="group-qty-field"
+                                                            data-pack-type="{{ $packType }}"
                                                             aria-label="Set quantity for all {{ $packTypeNames[$packType] ?? $packType }} items">
                                                     </div>
-                                                    <button type="button" class="btn-apply-group" data-pack-type="{{ $packType }}">Apply</button>
+                                                    <button type="button" class="btn-apply-group"
+                                                        data-pack-type="{{ $packType }}">Apply</button>
                                                 </div>
                                             </div>
                                             <div class="pack-type-items">
@@ -879,6 +882,15 @@
                                                                         100,
                                                                 )
                                                                 : 0;
+                                                        $availableForPledge = max(
+                                                            0,
+                                                            (float) ($item->available_for_pledge ??
+                                                                $item->quantity_needed - $item->quantity_pledged),
+                                                        );
+                                                        $currentReserved = max(
+                                                            0,
+                                                            (float) $item->quantity_needed - $availableForPledge,
+                                                        );
                                                     @endphp
                                                     <div class="item-row">
                                                         <div class="item-icon">
@@ -891,15 +903,23 @@
                                                                     <div class="item-progress-fill"
                                                                         style="width: {{ $pledgedPct }}%"></div>
                                                                 </div>
-                                                                <span
-                                                                    class="item-progress-percent">{{ number_format($pledgedPct, 0) }}%</span>
+                                                                <span class="item-progress-percent"
+                                                                    title="Current / Goal (Limit)">
+                                                                    {{ rtrim(rtrim(number_format($currentReserved, 2, '.', ''), '0'), '.') }}
+                                                                    /
+                                                                    {{ rtrim(rtrim(number_format((float) $item->quantity_needed, 2, '.', ''), '0'), '.') }}
+                                                                    (Limit)
+                                                                </span>
                                                             </div>
                                                         </div>
                                                         <div class="item-quantity-input">
                                                             <input type="number"
                                                                 name="items[{{ $itemIndex }}][quantity]"
                                                                 placeholder="Qty" min="0" step="0.01"
+                                                                max="{{ $availableForPledge }}"
+                                                                data-max="{{ $availableForPledge }}"
                                                                 value="{{ old('items.' . $itemIndex . '.quantity') }}"
+                                                                {{ $availableForPledge <= 0 ? 'disabled' : '' }}
                                                                 aria-label="Quantity for {{ $item->item_name }}">
                                                             <input type="hidden"
                                                                 name="items[{{ $itemIndex }}][drive_item_id]"
@@ -997,6 +1017,11 @@
         let currentMap = null;
         let currentMarker = null;
 
+        function formatQty(value) {
+            const num = Number(value) || 0;
+            return num % 1 === 0 ? String(num) : num.toFixed(2).replace(/\.00$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+        }
+
         function loadDriveDetails() {
             const select = document.getElementById('drive_id');
             const container = document.getElementById('driveContent');
@@ -1030,9 +1055,6 @@
             if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
                 initMap(lat, lng, name, address);
             }
-
-            // Initialize pledge type toggle
-            togglePledgeType();
         }
 
         function buildPledgeFormContent(name, description, cover, address, lat, lng, endDate, families, itemsGrouped) {
@@ -1165,6 +1187,12 @@
                     const pledgedPct = item.quantity_needed > 0 ?
                         Math.min(100, (item.quantity_pledged / item.quantity_needed) * 100) :
                         0;
+                    const availableForPledge = Math.max(
+                        0,
+                        Number(item.available_for_pledge ?? ((Number(item.quantity_needed) || 0) - (Number(item
+                            .quantity_pledged) || 0)))
+                    );
+                    const currentReserved = Math.max(0, (Number(item.quantity_needed) || 0) - availableForPledge);
 
                     html += `
                     <div class="item-row">
@@ -1177,12 +1205,16 @@
                                 <div class="item-progress-bar">
                                     <div class="item-progress-fill" style="width: ${pledgedPct}%"></div>
                                 </div>
-                                <span class="item-progress-percent">${pledgedPct.toFixed(0)}%</span>
+                                <span class="item-progress-percent" title="Current / Goal (Limit)">
+                                    ${formatQty(currentReserved)} / ${formatQty(item.quantity_needed)} (Limit)
+                                </span>
                             </div>
                         </div>
                         <div class="item-quantity-input">
                             <input type="number" name="items[${itemIndex}][quantity]" 
-                                   placeholder="Qty" min="0" step="0.01"
+                                   placeholder="Qty" min="0" step="0.01" max="${availableForPledge}"
+                                   data-max="${availableForPledge}"
+                                   ${availableForPledge <= 0 ? 'disabled' : ''}
                                    aria-label="Quantity for ${item.item_name}">
                             <input type="hidden" name="items[${itemIndex}][drive_item_id]" value="${item.id}">
                         </div>
@@ -1257,6 +1289,14 @@
                 if (parseFloat(input.value) > 0) {
                     hasItems = true;
                 }
+
+                const max = parseFloat(input.dataset.max || input.max || '');
+                const current = parseFloat(input.value || '0');
+                if (!isNaN(max) && current > max) {
+                    const itemName = input.closest('.item-row')?.querySelector('.item-name')?.textContent?.trim() ||
+                        'Item';
+                    errors.push(`${itemName}: quantity cannot be greater than ${max}.`);
+                }
             });
 
             if (!hasItems && itemInputs.length > 0) {
@@ -1289,11 +1329,6 @@
                     '{{ $selectedDrive->name }}', '{{ $selectedDrive->address ?? '' }}');
             @endif
 
-            const pledgeType = document.getElementById('pledge_type');
-            if (pledgeType) {
-                togglePledgeType();
-            }
-
             // ===== Group Quantity Feature =====
             document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.btn-apply-group');
@@ -1303,14 +1338,22 @@
                 if (!group) return;
 
                 const groupInput = group.querySelector('.group-qty-field');
-                const qty = groupInput ? groupInput.value : '';
+                if (!groupInput || groupInput.value.trim() === '') return;
+                const qty = Number(groupInput.value);
 
-                if (qty === '' || parseFloat(qty) < 0) return;
+                if (!Number.isFinite(qty) || qty <= 0) return;
 
-                const itemInputs = group.querySelectorAll('.pack-type-items input[type="number"][name*="[quantity]"]');
+                const itemInputs = group.querySelectorAll(
+                    '.pack-type-items input[name^="items"][name$="[quantity]"]');
                 itemInputs.forEach(input => {
-                    input.value = qty;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    if (input.disabled) return;
+
+                    const max = parseFloat(input.dataset.max || input.max || '');
+                    const cappedQty = !isNaN(max) ? Math.min(qty, max) : qty;
+                    input.value = Number.isFinite(cappedQty) ? cappedQty : '';
+                    input.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
                 });
 
                 btn.textContent = 'Applied!';
@@ -1329,6 +1372,19 @@
                         const btn = group.querySelector('.btn-apply-group');
                         if (btn) btn.click();
                     }
+                }
+            });
+
+            // Clamp manual inputs to max available quantity
+            document.addEventListener('input', function(e) {
+                if (!e.target.matches('input[name^="items"][name$="[quantity]"]')) return;
+
+                const input = e.target;
+                const max = parseFloat(input.dataset.max || input.max || '');
+                const current = parseFloat(input.value);
+
+                if (!isNaN(max) && !isNaN(current) && current > max) {
+                    input.value = max;
                 }
             });
 

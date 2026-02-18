@@ -40,9 +40,11 @@
                 @enderror
             </div>
 
-            <div class="forgot-password">
-                <a href="#">Forgot Password?</a>
-            </div>
+            @if (Route::has('password.request'))
+                <div class="forgot-password">
+                    <a href="{{ route('password.request') }}">Forgot Password?</a>
+                </div>
+            @endif
 
             <button type="submit" class="btn-auth-primary mb-3">Sign In</button>
         </form>

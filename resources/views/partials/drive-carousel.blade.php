@@ -56,9 +56,11 @@
 
                                     {{-- Action Buttons --}}
                                     <div class="drive-actions">
-                                        <a href="{{ route('drive.donate', $drive) }}" class="btn btn-donate">
-                                            DONATE
-                                        </a>
+                                        @if ($userType !== 'ngo')
+                                            <a href="{{ route('drive.donate', $drive) }}" class="btn btn-donate">
+                                                DONATE
+                                            </a>
+                                        @endif
                                         <a href="{{ $userType === 'ngo' ? route('ngo.pledges.create', ['drive' => $drive->id]) : route('donor.pledges.create', ['drive' => $drive->id]) }}"
                                             class="btn btn-pledge">
                                             PLEDGE
@@ -667,6 +669,10 @@
             slide.className = 'carousel-slide';
             slide.dataset.driveId = drive.id;
 
+            const donateButtonHtml = userType !== 'ngo' ?
+                `<a href="${drive.preview_url}" class="btn btn-donate">DONATE</a>` :
+                '';
+
             const isSupported = supportedIds.includes(drive.id);
             const supportButtonHtml = userType === 'ngo' ? `
             <form action="${drive.support_url}" method="POST" class="d-inline support-form">
@@ -709,7 +715,7 @@
                                 <p>${drive.description ? drive.description.substring(0, 200) : ''}</p>
                             </div>
                             <div class="drive-actions">
-                                <a href="${drive.preview_url}" class="btn btn-donate">DONATE</a>
+                                ${donateButtonHtml}
                                 <a href="${drive.pledge_url}" class="btn btn-pledge">PLEDGE</a>
                                 ${supportButtonHtml}
                             </div>

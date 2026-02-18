@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -44,12 +46,48 @@ class PledgeController extends Controller
     public function create(Request $request): View
     {
         $drives = Drive::active()->with('driveItems')->get();
+        $this->attachAvailablePledgeQuantities($drives);
+
         $driveId = $request->get('drive') ?? $request->get('drive_id');
         $selectedDrive = $driveId
             ? Drive::with('driveItems')->find($driveId)
             : null;
 
+        if ($selectedDrive) {
+            $this->attachAvailablePledgeQuantities(collect([$selectedDrive]));
+        }
+
         return view('donor.pledges.create', compact('drives', 'selectedDrive'));
+    }
+
+    private function attachAvailablePledgeQuantities(Collection $drives): void
+    {
+        $driveItemIds = $drives
+            ->flatMap(fn($drive) => $drive->driveItems->pluck('id'))
+            ->unique()
+            ->values();
+
+        if ($driveItemIds->isEmpty()) {
+            return;
+        }
+
+        $pendingByDriveItem = PledgeItem::query()
+            ->selectRaw('drive_item_id, COALESCE(SUM(quantity), 0) as pending_quantity')
+            ->whereIn('drive_item_id', $driveItemIds)
+            ->whereHas('pledge', fn($query) => $query->where('status', Pledge::STATUS_PENDING))
+            ->groupBy('drive_item_id')
+            ->pluck('pending_quantity', 'drive_item_id');
+
+        $drives->each(function ($drive) use ($pendingByDriveItem) {
+            $drive->driveItems->each(function ($item) use ($pendingByDriveItem) {
+                $pendingQuantity = (float) ($pendingByDriveItem[$item->id] ?? 0);
+                $alreadyReserved = (float) $item->quantity_pledged + $pendingQuantity;
+                $availableForPledge = max(0, (float) $item->quantity_needed - $alreadyReserved);
+
+                $item->setAttribute('pending_quantity', $pendingQuantity);
+                $item->setAttribute('available_for_pledge', $availableForPledge);
+            });
+        });
     }
 
     public function store(Request $request): RedirectResponse
@@ -82,13 +120,70 @@ class PledgeController extends Controller
                 ->withErrors(['items' => 'Please enter a quantity for at least one item.']);
         }
 
-        $drive = Drive::findOrFail($validated['drive_id']);
+        $requestedItems = collect($validated['items'] ?? [])
+            ->filter(fn($item) => isset($item['quantity']) && (int) $item['quantity'] > 0)
+            ->values();
 
-        if (!$drive->isActive()) {
-            return back()->with('error', 'This drive is no longer accepting pledges.');
-        }
+        $pledge = DB::transaction(function () use ($validated, $requestedItems) {
+            $drive = Drive::query()
+                ->with('driveItems')
+                ->lockForUpdate()
+                ->findOrFail($validated['drive_id']);
 
-        $pledge = DB::transaction(function () use ($validated, $drive) {
+            if (!$drive->isActive()) {
+                throw ValidationException::withMessages([
+                    'drive_id' => 'This drive is no longer accepting pledges.',
+                ]);
+            }
+
+            $requestedDriveItemIds = $requestedItems
+                ->pluck('drive_item_id')
+                ->unique()
+                ->values();
+
+            $driveItems = $drive->driveItems()
+                ->whereIn('id', $requestedDriveItemIds)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            $pendingByDriveItem = PledgeItem::query()
+                ->selectRaw('drive_item_id, COALESCE(SUM(quantity), 0) as pending_quantity')
+                ->whereIn('drive_item_id', $requestedDriveItemIds)
+                ->whereHas('pledge', fn($query) => $query->where('status', Pledge::STATUS_PENDING))
+                ->groupBy('drive_item_id')
+                ->pluck('pending_quantity', 'drive_item_id');
+
+            $itemErrors = [];
+
+            foreach ($requestedItems as $item) {
+                $driveItem = $driveItems->get($item['drive_item_id']);
+                $requestedQuantity = (float) $item['quantity'];
+
+                if (!$driveItem) {
+                    $itemErrors[] = 'One or more selected items do not belong to this drive.';
+                    continue;
+                }
+
+                $alreadyReserved = (float) $driveItem->quantity_pledged + (float) ($pendingByDriveItem[$driveItem->id] ?? 0);
+                $remainingCapacity = max(0, (float) $driveItem->quantity_needed - $alreadyReserved);
+
+                if ($requestedQuantity > $remainingCapacity) {
+                    $itemErrors[] = sprintf(
+                        '%s: only %s %s remaining for new pledges.',
+                        $driveItem->item_name,
+                        rtrim(rtrim(number_format($remainingCapacity, 2, '.', ''), '0'), '.'),
+                        $driveItem->unit
+                    );
+                }
+            }
+
+            if (!empty($itemErrors)) {
+                throw ValidationException::withMessages([
+                    'items' => array_values(array_unique($itemErrors)),
+                ]);
+            }
+
             $pledge = Pledge::create([
                 'user_id' => Auth::id(),
                 'drive_id' => $validated['drive_id'],
@@ -100,21 +195,17 @@ class PledgeController extends Controller
             ]);
 
             // Create pledge items for in-kind pledges
-            if ($validated['pledge_type'] === 'in-kind' && !empty($validated['items'])) {
-                foreach ($validated['items'] as $item) {
-                    if (isset($item['quantity']) && $item['quantity'] > 0) {
-                        $driveItem = $drive->driveItems()->find($item['drive_item_id']);
+            if ($validated['pledge_type'] === 'in-kind' && $requestedItems->isNotEmpty()) {
+                foreach ($requestedItems as $item) {
+                    $driveItem = $driveItems->get($item['drive_item_id']);
 
-                        if ($driveItem) {
-                            PledgeItem::create([
-                                'pledge_id' => $pledge->id,
-                                'drive_item_id' => $driveItem->id,
-                                'item_name' => $driveItem->item_name,
-                                'quantity' => $item['quantity'],
-                                'unit' => $driveItem->unit,
-                            ]);
-                        }
-                    }
+                    PledgeItem::create([
+                        'pledge_id' => $pledge->id,
+                        'drive_item_id' => $driveItem->id,
+                        'item_name' => $driveItem->item_name,
+                        'quantity' => $item['quantity'],
+                        'unit' => $driveItem->unit,
+                    ]);
                 }
             }
 
