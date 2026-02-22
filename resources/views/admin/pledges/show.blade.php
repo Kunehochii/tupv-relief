@@ -160,7 +160,7 @@
                             <form method="POST" action="{{ route('admin.pledges.verify', $pledge) }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-check-circle me-2"></i>Verify Pledge
+                                    <i class="bi bi-check-circle me-2"></i>Receive Pledge
                                 </button>
                             </form>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal"

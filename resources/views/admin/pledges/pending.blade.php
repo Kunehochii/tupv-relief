@@ -5,7 +5,7 @@
 @section('page', 'pledges')
 
 @section('content')
-    <h1 class="page-title">Pending Pledge Verifications</h1>
+    <h1 class="page-title">Pending Pledge Receipts</h1>
 
     <div class="content-card">
         <div class="content-card-body">
@@ -66,7 +66,7 @@
                                             class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn-action btn-action-verify">
-                                                <i class="bi bi-check-circle me-1"></i>Verify
+                                                <i class="bi bi-check-circle me-1"></i>Receive
                                             </button>
                                         </form>
                                         <button type="button" class="btn-action btn-action-reject" data-bs-toggle="modal"

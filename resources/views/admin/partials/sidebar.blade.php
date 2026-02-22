@@ -20,19 +20,19 @@
         <a class="sidebar-link {{ ($currentPage ?? '') === 'create-drive' ? 'active' : '' }}"
             href="{{ route('admin.drives.create') }}">
             <i class="bi bi-plus-lg"></i>
-            <span>Create Drive</span>
+            <span>Create Donation Drive</span>
         </a>
 
         <a class="sidebar-link {{ ($currentPage ?? '') === 'drives' ? 'active' : '' }}"
             href="{{ route('admin.drives.index') }}">
             <i class="bi bi-folder-fill"></i>
-            <span>Manage Drives</span>
+            <span>Manage Donation Drives</span>
         </a>
 
         <a class="sidebar-link {{ ($currentPage ?? '') === 'pledges' ? 'active' : '' }}"
             href="{{ route('admin.pledges.pending') }}">
             <i class="bi bi-patch-check-fill"></i>
-            <span>Verify Pledges</span>
+            <span>Receive Pledges</span>
             @if (isset($pendingPledgesCount) && $pendingPledgesCount > 0)
                 <span class="sidebar-badge">{{ $pendingPledgesCount }}</span>
             @endif

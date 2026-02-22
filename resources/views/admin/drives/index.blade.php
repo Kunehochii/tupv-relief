@@ -12,7 +12,7 @@
                 <i class="bi bi-geo-alt me-1"></i>Map View
             </a>
             <a href="{{ route('admin.drives.create') }}" class="btn-header-action btn-header-primary">
-                <i class="bi bi-plus-lg me-1"></i>Create Drive
+                <i class="bi bi-plus-lg me-1"></i>Create Donation Drive
             </a>
         </div>
     </div>
@@ -37,7 +37,7 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Drive Name</th>
+                        <th>Donation Drive Name</th>
                         <th>Status</th>
                         <th>End Date</th>
                         <th>Pledges</th>
@@ -100,10 +100,10 @@
                             <td colspan="6" class="text-center py-4">
                                 <div class="empty-state">
                                     <i class="bi bi-folder"></i>
-                                    <p>No drives found</p>
+                                    <p>No donation drives found</p>
                                     <a href="{{ route('admin.drives.create') }}"
                                         class="btn-relief-primary btn btn-sm mt-2">
-                                        <i class="bi bi-plus-lg me-1"></i>Create Drive
+                                        <i class="bi bi-plus-lg me-1"></i>Create Donation Drive
                                     </a>
                                 </div>
                             </td>

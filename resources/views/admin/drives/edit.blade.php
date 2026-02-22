@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Drive')
+@section('title', 'Edit Donation Drive')
 
 @section('page', 'drives')
 
@@ -245,16 +245,16 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0" style="font-size: 13px;">
                     <li class="breadcrumb-item"><a href="{{ route('admin.drives.index') }}"
-                            class="text-decoration-none">Drives</a></li>
+                            class="text-decoration-none">Donation Drives</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.drives.show', $drive) }}"
                             class="text-decoration-none">{{ Str::limit($drive->name, 20) }}</a></li>
                     <li class="breadcrumb-item active">Edit</li>
                 </ol>
             </nav>
-            <h1 class="page-title mb-0">Edit Drive</h1>
+            <h1 class="page-title mb-0">Edit Donation Drive</h1>
         </div>
         <a href="{{ route('admin.drives.show', $drive) }}" class="btn-header-action">
-            <i class="bi bi-arrow-left me-1"></i>Back to Drive
+            <i class="bi bi-arrow-left me-1"></i>Back to Donation Drive
         </a>
     </div>
 
@@ -290,9 +290,9 @@
 
             {{-- Drive Name --}}
             <div class="mb-4">
-                <label for="name" class="form-label-styled">Drive Name *</label>
+                <label for="name" class="form-label-styled">Donation Drive Name *</label>
                 <input type="text" class="form-control form-control-styled @error('name') is-invalid @enderror"
-                    id="name" name="name" value="{{ old('name', $drive->name) }}" placeholder="Enter drive name"
+                    id="name" name="name" value="{{ old('name', $drive->name) }}" placeholder="Enter donation drive name"
                     required>
                 @error('name')
                     <div class="text-danger small mt-1">{{ $message }}</div>

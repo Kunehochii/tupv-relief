@@ -60,9 +60,9 @@
                     <input type="date" name="date_to" class="filter-input" value="{{ request('date_to') }}">
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Drive</label>
+                    <label class="filter-label">Donation Drive</label>
                     <select name="drive_id" class="filter-select">
-                        <option value="">All Drives</option>
+                        <option value="">All Donation Drives</option>
                         @foreach ($drives as $drive)
                             <option value="{{ $drive->id }}" {{ request('drive_id') == $drive->id ? 'selected' : '' }}>
                                 {{ $drive->name }}
@@ -85,7 +85,7 @@
         <div class="reports-main">
             <div class="content-card">
                 <div class="content-card-header">
-                    <h5 class="content-card-title">Drive Performance</h5>
+                    <h5 class="content-card-title">Donation Drive Performance</h5>
                     <a href="{{ route('admin.reports.export', ['type' => 'drives']) }}" class="btn-export">
                         <i class="bi bi-download me-1"></i>Export
                     </a>
@@ -94,7 +94,7 @@
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Drive</th>
+                                <th>Donation Drive</th>
                                 <th>Status</th>
                                 <th>Pledges</th>
                                 <th>Collected</th>
@@ -141,7 +141,7 @@
                                     <td colspan="5" class="text-center py-4">
                                         <div class="empty-state">
                                             <i class="bi bi-folder"></i>
-                                            <p>No drive data available</p>
+                                            <p>No donation drive data available</p>
                                         </div>
                                     </td>
                                 </tr>

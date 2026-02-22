@@ -20,7 +20,7 @@
                 </select>
                 <select name="drive_id" class="form-select form-select-sm" style="width: auto;"
                     onchange="this.form.submit()">
-                    <option value="">All Drives</option>
+                    <option value="">All Donation Drives</option>
                     @foreach ($drives as $drive)
                         <option value="{{ $drive->id }}" {{ request('drive_id') == $drive->id ? 'selected' : '' }}>
                             {{ $drive->name }}

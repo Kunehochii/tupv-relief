@@ -82,10 +82,13 @@
                         <div class="mb-3">
                             <label class="text-muted small">Certificate of Authenticity</label>
                             <p>
+                                <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary"
+                                    onclick="openLightbox('{{ asset('storage/' . $user->certificate_path) }}', '{{ basename($user->certificate_path) }}')">
+                                    <i class="bi bi-eye me-1"></i>View Certificate
+                                </a>
                                 <a href="{{ route('admin.ngos.certificate', $user) }}"
-                                    class="btn btn-sm btn-outline-primary" target="_blank">
-                                    <i
-                                        class="bi bi-file-earmark-arrow-down me-1"></i>{{ basename($user->certificate_path) }}
+                                    class="btn btn-sm btn-outline-secondary ms-1" target="_blank">
+                                    <i class="bi bi-download me-1"></i>Download
                                 </a>
                             </p>
                         </div>
@@ -190,4 +193,189 @@
             </div>
         </div>
     @endif
+@endsection
+
+@section('styles')
+    <style>
+        /* Lightbox Styles */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        .lightbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 90vw;
+            padding: 12px 16px;
+            color: #ffffff;
+        }
+
+        .lightbox-filename {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .lightbox-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lightbox-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .lightbox-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .lightbox-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 90vw;
+            max-height: calc(100vh - 120px);
+            padding: 0 16px 16px;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .lightbox-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .lightbox-content .unsupported-file {
+            text-align: center;
+            color: #ffffff;
+            padding: 40px;
+        }
+
+        .lightbox-content .unsupported-file i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            display: block;
+            opacity: 0.7;
+        }
+
+        .lightbox-content .unsupported-file p {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .lightbox-content .unsupported-file a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+    </style>
+@endsection
+
+@section('scripts')
+    {{-- Certificate Lightbox --}}
+    <div class="lightbox-overlay" id="certificateLightbox">
+        <div class="lightbox-header">
+            <span class="lightbox-filename" id="lightboxFilename"></span>
+            <div class="lightbox-actions">
+                <a href="#" class="lightbox-btn" id="lightboxDownload" title="Download" target="_blank">
+                    <i class="bi bi-download"></i>
+                </a>
+                <button class="lightbox-btn" onclick="closeLightbox()" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="lightbox-content" id="lightboxContent"></div>
+    </div>
+
+    <script>
+        function openLightbox(fileUrl, filename) {
+            const overlay = document.getElementById('certificateLightbox');
+            const content = document.getElementById('lightboxContent');
+            const filenameEl = document.getElementById('lightboxFilename');
+            const downloadBtn = document.getElementById('lightboxDownload');
+
+            filenameEl.textContent = filename;
+            downloadBtn.href = fileUrl;
+
+            const ext = filename.split('.').pop().toLowerCase();
+            const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+            const pdfExts = ['pdf'];
+
+            if (imageExts.includes(ext)) {
+                content.innerHTML = '<img src="' + fileUrl + '" alt="' + filename + '">';
+            } else if (pdfExts.includes(ext)) {
+                content.innerHTML = '<iframe src="' + fileUrl + '#toolbar=1" style="width:100%;height:100%;"></iframe>';
+            } else {
+                content.innerHTML = '<div class="unsupported-file">' +
+                    '<i class="bi bi-file-earmark"></i>' +
+                    '<p>Preview not available for this file type.</p>' +
+                    '<a href="' + fileUrl + '" target="_blank">Download to view</a>' +
+                    '</div>';
+            }
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const overlay = document.getElementById('certificateLightbox');
+            overlay.classList.remove('active');
+            document.getElementById('lightboxContent').innerHTML = '';
+            document.body.style.overflow = '';
+        }
+
+        // Close on overlay click (not on content)
+        document.getElementById('certificateLightbox').addEventListener('click', function(e) {
+            if (e.target === this || e.target.classList.contains('lightbox-content')) {
+                closeLightbox();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
 @endsection

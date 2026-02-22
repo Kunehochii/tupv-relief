@@ -15,7 +15,7 @@
             </div>
             <div class="stat-content">
                 <span class="stat-value">{{ $metrics['total_drives'] }}</span>
-                <span class="stat-label">Total Drives</span>
+                <span class="stat-label">Total Donation Drives</span>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
             </div>
             <div class="stat-content">
                 <span class="stat-value">{{ $metrics['active_drives'] }}</span>
-                <span class="stat-label">Active Drives</span>
+                <span class="stat-label">Active Donation Drives</span>
             </div>
         </div>
 
@@ -55,14 +55,14 @@
         <!-- Active Drives -->
         <div class="content-card">
             <div class="content-card-header">
-                <h2 class="content-card-title">Active Drives</h2>
+                <h2 class="content-card-title">Active Donation Drives</h2>
                 <a href="{{ route('admin.drives.index') }}" class="view-all-link">View All</a>
             </div>
             <div class="content-card-body">
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Drive Name</th>
+                            <th>Donation Drive Name</th>
                             <th>Date Started</th>
                             <th>Progress</th>
                         </tr>
@@ -85,7 +85,7 @@
                                 <td colspan="3">
                                     <div class="empty-state">
                                         <i class="bi bi-inbox"></i>
-                                        <p>No active drives</p>
+                                        <p>No active donation drives</p>
                                     </div>
                                 </td>
                             </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', $drive->name . ' - Drive Details')
+@section('title', $drive->name . ' - Donation Drive Details')
 
 @section('page', 'drives')
 
@@ -411,7 +411,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 13px;">
-                <li class="breadcrumb-item"><a href="{{ route('admin.drives.index') }}" class="text-decoration-none">Drives</a>
+                <li class="breadcrumb-item"><a href="{{ route('admin.drives.index') }}" class="text-decoration-none">Donation Drives</a>
                 </li>
                 <li class="breadcrumb-item active">{{ Str::limit($drive->name, 30) }}</li>
             </ol>
@@ -421,7 +421,7 @@
                 <i class="bi bi-eye me-1"></i>Public Page
             </a>
             <a href="{{ route('admin.drives.edit', $drive) }}" class="btn-header-action btn-header-primary">
-                <i class="bi bi-pencil me-1"></i>Edit Drive
+                <i class="bi bi-pencil me-1"></i>Edit Donation Drive
             </a>
         </div>
     </div>
@@ -661,7 +661,7 @@
                 <div class="detail-card-header">Actions</div>
                 <div class="detail-card-body">
                     <a href="{{ route('admin.drives.edit', $drive) }}" class="btn-action btn-action-primary">
-                        <i class="bi bi-pencil"></i>Edit Drive
+                        <i class="bi bi-pencil"></i>Edit Donation Drive
                     </a>
                     <a href="{{ route('drive.preview', $drive) }}" class="btn-action btn-action-outline"
                         target="_blank">

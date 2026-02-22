@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'Drive Locations Map')
+@section('title', 'Donation Drive Locations Map')
 
 @section('page', 'map')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="page-title mb-0">Drive Locations</h1>
+        <h1 class="page-title mb-0">Donation Drive Locations</h1>
         <div class="d-flex gap-2">
             <a href="{{ route('admin.drives.index') }}" class="btn-header-action">
                 <i class="bi bi-list me-1"></i>List View
             </a>
             <a href="{{ route('admin.drives.create') }}" class="btn-header-action btn-header-primary">
-                <i class="bi bi-plus-lg me-1"></i>Create Drive
+                <i class="bi bi-plus-lg me-1"></i>Create Donation Drive
             </a>
         </div>
     </div>
@@ -28,7 +28,7 @@
         <div class="map-sidebar">
             <div class="content-card">
                 <div class="content-card-header">
-                    <h5 class="content-card-title">Active Drives on Map</h5>
+                    <h5 class="content-card-title">Active Donation Drives on Map</h5>
                     <span class="drives-count">{{ $drives->count() }}</span>
                 </div>
                 <div class="drives-list">
@@ -62,7 +62,7 @@
                     @empty
                         <div class="empty-state py-5">
                             <i class="bi bi-geo-alt"></i>
-                            <p>No drives with locations</p>
+                            <p>No donation drives with locations</p>
                         </div>
                     @endforelse
                 </div>

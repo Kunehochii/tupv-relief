@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Drive')
+@section('title', 'Create Donation Drive')
 
 @section('page', 'create-drive')
 
@@ -163,7 +163,7 @@
 @endsection
 
 @section('content')
-    <h1 class="page-title">Create New Drive</h1>
+    <h1 class="page-title">Create New Donation Drive</h1>
 
     <div class="create-drive-form">
         <form method="POST" action="{{ route('admin.drives.store') }}" enctype="multipart/form-data">
@@ -190,9 +190,9 @@
 
             {{-- Drive Name --}}
             <div class="mb-4">
-                <label for="name" class="form-label-styled">Drive Name *</label>
+                <label for="name" class="form-label-styled">Donation Drive Name *</label>
                 <input type="text" class="form-control form-control-styled @error('name') is-invalid @enderror"
-                    id="name" name="name" value="{{ old('name') }}" placeholder="Enter drive name" required>
+                    id="name" name="name" value="{{ old('name') }}" placeholder="Enter donation drive name" required>
                 @error('name')
                     <div class="text-danger small mt-1">{{ $message }}</div>
                 @enderror
@@ -281,7 +281,7 @@
             {{-- Action Buttons --}}
             <div class="d-flex gap-3 mt-4">
                 <button type="submit" class="btn btn-create-drive">
-                    <i class="bi bi-plus-circle me-2"></i>Create Drive
+                    <i class="bi bi-plus-circle me-2"></i>Create Donation Drive
                 </button>
                 <a href="{{ route('admin.drives.index') }}" class="btn btn-cancel">Cancel</a>
             </div>
