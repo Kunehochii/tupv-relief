@@ -734,38 +734,8 @@
         <form method="POST" action="{{ route('ngo.pledges.store') }}" id="pledgeForm" novalidate>
             @csrf
 
-            {{-- Drive Selection --}}
-            <div class="drive-select-section">
-                <div class="row align-items-end">
-                    <div class="col-md-8">
-                        <label for="drive_id">Select a Relief Drive</label>
-                        <select class="form-select @error('drive_id') is-invalid @enderror" id="drive_id" name="drive_id"
-                            required onchange="loadDriveDetails()">
-                            <option value="">Choose a drive to support...</option>
-                            @foreach ($drives as $drive)
-                                <option value="{{ $drive->id }}" data-name="{{ $drive->name }}"
-                                    data-description="{{ $drive->description }}" data-cover="{{ $drive->cover_photo_url }}"
-                                    data-address="{{ $drive->address }}" data-lat="{{ $drive->latitude }}"
-                                    data-lng="{{ $drive->longitude }}" data-end="{{ $drive->end_date->format('M d, Y') }}"
-                                    data-families="{{ $drive->families_affected }}"
-                                    data-items='@json($drive->driveItems->groupBy('pack_type'))'
-                                    {{ ($selectedDrive && $selectedDrive->id == $drive->id) || old('drive_id') == $drive->id ? 'selected' : '' }}>
-                                    {{ $drive->name }} — Ends {{ $drive->end_date->format('M d, Y') }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('drive_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <span class="text-muted">
-                            <i class="bi bi-heart-fill text-danger me-1"></i>
-                            {{ $drives->count() }} active {{ Str::plural('drive', $drives->count()) }} available
-                        </span>
-                    </div>
-                </div>
-            </div>
+            {{-- Drive ID (hidden) --}}
+            <input type="hidden" name="drive_id" id="drive_id" value="{{ $selectedDrive->id }}">
 
             {{-- Main Content --}}
             <div id="driveContent">
@@ -983,12 +953,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @else
-                    <div class="no-drive-selected">
-                        <i class="bi bi-hand-index-thumb"></i>
-                        <h4>Select a Relief Drive</h4>
-                        <p>Choose a drive from the dropdown above to see what items are needed and make your pledge.</p>
                     </div>
                 @endif
             </div>

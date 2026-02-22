@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Drive;
 use App\Models\Pledge;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -41,7 +42,17 @@ class HomeController extends Controller
             ->where('verification_status', 'verified')
             ->get();
 
-        return view('public.drive-donate', compact('drive', 'supportingNgos'));
+        $isSupporting = false;
+        /** @var \App\Models\User|null $authUser */
+        $authUser = Auth::user();
+        if ($authUser && $authUser->isNgo()) {
+            $isSupporting = \App\Models\NgoDriveSupport::where('user_id', $authUser->id)
+                ->where('drive_id', $drive->id)
+                ->where('is_active', true)
+                ->exists();
+        }
+
+        return view('public.drive-donate', compact('drive', 'supportingNgos', 'isSupporting'));
     }
 
     public function about(): View

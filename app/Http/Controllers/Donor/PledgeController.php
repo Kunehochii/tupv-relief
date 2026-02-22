@@ -43,19 +43,25 @@ class PledgeController extends Controller
         return view('donor.pledges.index', compact('pledges', 'impact'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request): View|RedirectResponse
     {
+        $driveId = $request->get('drive') ?? $request->get('drive_id');
+
+        if (!$driveId) {
+            return redirect()->route('donor.dashboard')
+                ->with('warning', 'Please select a drive from the list below to make a pledge.');
+        }
+
+        $selectedDrive = Drive::with('driveItems')->find($driveId);
+
+        if (!$selectedDrive || !$selectedDrive->isActive()) {
+            return redirect()->route('donor.dashboard')
+                ->with('warning', 'The selected drive is no longer available. Please choose another drive.');
+        }
+
         $drives = Drive::active()->with('driveItems')->get();
         $this->attachAvailablePledgeQuantities($drives);
-
-        $driveId = $request->get('drive') ?? $request->get('drive_id');
-        $selectedDrive = $driveId
-            ? Drive::with('driveItems')->find($driveId)
-            : null;
-
-        if ($selectedDrive) {
-            $this->attachAvailablePledgeQuantities(collect([$selectedDrive]));
-        }
+        $this->attachAvailablePledgeQuantities(collect([$selectedDrive]));
 
         return view('donor.pledges.create', compact('drives', 'selectedDrive'));
     }

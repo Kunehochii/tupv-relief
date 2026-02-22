@@ -62,6 +62,21 @@
                                 <i class="bi bi-gear-fill me-2"></i>MANAGE DRIVE
                             </a>
                         @endif
+
+                        @if (auth()->user()->isNgo() && auth()->user()->isVerifiedNgo())
+                            <form action="{{ route('ngo.drives.support', $drive) }}" method="POST" class="mt-3">
+                                @csrf
+                                @if ($isSupporting ?? false)
+                                    <button type="submit" class="btn-support-custom btn-supporting-custom">
+                                        <i class="bi bi-heart-fill me-2"></i>SUPPORTING THIS DRIVE
+                                    </button>
+                                @else
+                                    <button type="submit" class="btn-support-custom">
+                                        <i class="bi bi-heart me-2"></i>SUPPORT THIS DRIVE
+                                    </button>
+                                @endif
+                            </form>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="btn-pledge-custom">
                             <i class="bi bi-box-arrow-in-right me-2"></i>LOGIN TO PLEDGE
@@ -195,6 +210,38 @@
             padding: 3rem;
             background: #f8f9fa;
             border-radius: 12px;
+        }
+
+        .btn-support-custom {
+            display: inline-block;
+            background: var(--dark-blue);
+            color: #ffffff;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--dark-blue);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-support-custom:hover {
+            background: #000050;
+            border-color: #000050;
+        }
+
+        .btn-supporting-custom {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+        }
+
+        .btn-supporting-custom:hover {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #c62828;
         }
 
         @media (max-width: 768px) {
