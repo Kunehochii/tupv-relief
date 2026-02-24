@@ -28,6 +28,7 @@
                     <a href="{{ route('ngo.pledges.index') }}" class="nav-link-custom">My Pledges</a>
                     <a href="{{ route('ngo.supports.index') }}" class="nav-link-custom">Supported Drives</a>
                     <a href="{{ route('ngo.profile.index') }}" class="nav-link-custom">My Profile</a>
+                    <a href="{{ route('ngo.receipts.index') }}" class="nav-link-custom">Receipts</a>
                     <a href="{{ route('ngo.map') }}" class="nav-link-custom">Drive Map</a>
                 @endif
 
@@ -98,6 +99,7 @@
             <a href="{{ route('ngo.pledges.index') }}" class="nav-link-mobile">My Pledges</a>
             <a href="{{ route('ngo.supports.index') }}" class="nav-link-mobile">Supported Drives</a>
             <a href="{{ route('ngo.profile.index') }}" class="nav-link-mobile">My Profile</a>
+            <a href="{{ route('ngo.receipts.index') }}" class="nav-link-mobile">Receipts</a>
             <a href="{{ route('ngo.map') }}" class="nav-link-mobile">Drive Map</a>
         @endif
 

@@ -29,6 +29,8 @@ use Illuminate\Notifications\Notifiable;
  * @method \Illuminate\Database\Eloquent\Relations\HasMany linkClicks()
  * @method \Illuminate\Database\Eloquent\Relations\HasMany createdDrives()
  * @method \Illuminate\Database\Eloquent\Relations\BelongsToMany supportedDrives()
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany receivedReceipts()
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany submittedReceipts()
  * @method bool isAdmin()
  * @method bool isDonor()
  * @method bool isNgo()
@@ -181,6 +183,24 @@ class User extends Authenticatable
     public function otpVerifications()
     {
         return $this->hasMany(OtpVerification::class);
+    }
+
+    /**
+     * Donation receipts submitted TO this NGO.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedReceipts()
+    {
+        return $this->hasMany(DonationReceipt::class, 'ngo_id');
+    }
+
+    /**
+     * Donation receipts submitted BY this user.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function submittedReceipts()
+    {
+        return $this->hasMany(DonationReceipt::class, 'user_id');
     }
 
     /**

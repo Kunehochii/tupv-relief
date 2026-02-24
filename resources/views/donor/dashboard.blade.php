@@ -39,15 +39,20 @@
                                     </div>
                                 @endif
                                 <div class="drive-card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="drive-card-title mb-0">{{ Str::limit($drive->name, 25) }}</h5>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h5 class="drive-card-title mb-0">{{ Str::limit($drive->name, 35) }}</h5>
                                         <span class="drive-progress-percent">{{ $drive->progress_percentage }}%</span>
                                     </div>
+                                    @if ($drive->address)
+                                        <p class="drive-card-location mb-1">
+                                            <i class="bi bi-geo-alt-fill me-1"></i>{{ Str::limit($drive->address, 40) }}
+                                        </p>
+                                    @endif
                                     <div class="drive-progress-bar">
                                         <div class="drive-progress-fill"
                                             style="width: {{ $drive->progress_percentage }}%"></div>
                                     </div>
-                                    <p class="drive-card-info mb-0">{{ Str::limit($drive->description, 30) }}</p>
+                                    <p class="drive-card-desc mb-0">{{ Str::limit($drive->description, 80) }}</p>
                                 </div>
                             </div>
                         </a>
@@ -155,7 +160,14 @@
             transition: width 0.5s ease;
         }
 
-        .drive-card-info {
+        .drive-card-location {
+            font-size: 0.78rem;
+            color: #e51d00;
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+        }
+
+        .drive-card-desc {
             font-size: 0.85rem;
             color: #6d6d73;
         }

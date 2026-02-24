@@ -55,6 +55,13 @@
         </div>
 
         <div class="container py-4">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show mb-3">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             {{-- Stats Row --}}
             <div class="row g-3 mb-4">
                 <div class="col-4">
@@ -180,6 +187,18 @@
                                         </div>
                                     @endforeach
                                 </div>
+
+                                {{-- Upload Receipt Button --}}
+                                @auth
+                                    @if (auth()->id() !== $ngo->id && (auth()->user()->isDonor() || auth()->user()->isNgo()))
+                                        <div class="mt-3">
+                                            <a href="{{ route('receipt.create', $ngo->id) }}"
+                                                class="btn btn-outline-primary w-100 fw-semibold">
+                                                <i class="bi bi-receipt me-1"></i>Upload Donation Receipt
+                                            </a>
+                                        </div>
+                                    @endif
+                                @endauth
                             </div>
                         </div>
                     @endif

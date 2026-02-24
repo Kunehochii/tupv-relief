@@ -138,7 +138,19 @@ Route::middleware(['auth', 'otp.verified', 'ngo'])->prefix('ngo')->name('ngo.')-
     Route::get('notifications', [\App\Http\Controllers\Donor\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('notifications/{notification}/read', [\App\Http\Controllers\Donor\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('notifications/read-all', [\App\Http\Controllers\Donor\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+
+    // Donation Receipts Management
+    Route::get('receipts', [\App\Http\Controllers\Ngo\DonationReceiptController::class, 'index'])->name('receipts.index');
+    Route::get('receipts/{receipt}', [\App\Http\Controllers\Ngo\DonationReceiptController::class, 'show'])->name('receipts.show');
+    Route::post('receipts/{receipt}/verify', [\App\Http\Controllers\Ngo\DonationReceiptController::class, 'verify'])->name('receipts.verify');
+    Route::post('receipts/{receipt}/reject', [\App\Http\Controllers\Ngo\DonationReceiptController::class, 'reject'])->name('receipts.reject');
 });
 
 // Public NGO Profile
 Route::get('/ngo/{ngoId}/profile', [\App\Http\Controllers\Ngo\ProfileController::class, 'show'])->name('ngo.profile.public');
+
+// Donation Receipt Upload (authenticated donors & NGOs)
+Route::middleware(['auth', 'otp.verified'])->group(function () {
+    Route::get('/ngo/{ngoId}/receipt', [\App\Http\Controllers\DonationReceiptUploadController::class, 'create'])->name('receipt.create');
+    Route::post('/ngo/{ngoId}/receipt', [\App\Http\Controllers\DonationReceiptUploadController::class, 'store'])->name('receipt.store');
+});
