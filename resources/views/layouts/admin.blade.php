@@ -355,6 +355,7 @@
         .admin-table {
             width: 100%;
             font-size: 14px;
+            margin-bottom: 0;
         }
 
         .admin-table thead th {

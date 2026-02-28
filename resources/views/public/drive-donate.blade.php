@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', $drive->name . ' - Donate')
+@section('title', $drive->name . (auth()->check() && auth()->user()->isNgo() ? '' : ' - Donate'))
 
 @section('content')
     <div class="container py-5">
-        <div class="row">
+        <div class="row @if(auth()->check() && auth()->user()->isNgo()) justify-content-center @endif">
             <!-- Left Side: Drive Details -->
-            <div class="col-lg-5 mb-4">
+            <div class="@if(auth()->check() && auth()->user()->isNgo()) col-lg-8 text-center @else col-lg-5 @endif mb-4">
                 <h2 class="drive-title mb-3">{{ $drive->name }}</h2>
 
                 @if ($drive->cover_photo)
@@ -64,7 +64,7 @@
                         @endif
 
                         @if (auth()->user()->isNgo() && auth()->user()->isVerifiedNgo())
-                            <form action="{{ route('ngo.drives.support', $drive) }}" method="POST" class="mt-3">
+                            <form action="{{ route('ngo.drives.support', $drive) }}" method="POST" class="mt-3 @if(auth()->user()->isNgo()) d-inline-block @endif">
                                 @csrf
                                 @if ($isSupporting ?? false)
                                     <button type="submit" class="btn-support-custom btn-supporting-custom">
@@ -86,6 +86,7 @@
             </div>
 
             <!-- Right Side: Donate Section with NGO Logos -->
+            @if(!auth()->check() || !auth()->user()->isNgo())
             <div class="col-lg-7">
                 <h2 class="donate-title mb-4">DONATE</h2>
 
@@ -113,6 +114,7 @@
                     </div>
                 @endif
             </div>
+            @endif
         </div>
     </div>
 
@@ -166,7 +168,7 @@
         .donate-title {
             color: var(--vivid-red);
             font-weight: 800;
-            font-size: 2.5rem;
+            font-size: 1.75rem;
             letter-spacing: 2px;
         }
 
