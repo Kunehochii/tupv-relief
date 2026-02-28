@@ -148,21 +148,26 @@
         }
 
         .btn-pledge-custom {
-            display: inline-block;
+            display: block;
+            width: 100%;
+            text-align: center;
             background: var(--dark-blue);
             color: #ffffff !important;
-            padding: 1rem 2.5rem;
-            font-weight: 600;
-            border-radius: 4px;
+            padding: 1.25rem 2.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border-radius: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-decoration: none;
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 1, 103, 0.35);
         }
 
         .btn-pledge-custom:hover {
             background: #000050;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 1, 103, 0.45);
         }
 
         .donate-title {
