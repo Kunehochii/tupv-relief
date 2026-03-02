@@ -61,6 +61,26 @@
 
                     <hr>
 
+                    {{-- Payment Method --}}
+                    <div class="mb-3">
+                        <label for="payment_method" class="form-label fw-semibold small">Payment Method <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select @error('payment_method') is-invalid @enderror" id="payment_method"
+                            name="payment_method" required>
+                            <option value="">Select payment method...</option>
+                            @foreach ($paymentMethods as $value => $label)
+                                <option value="{{ $label }}"
+                                    {{ old('payment_method', request('method')) === $label ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('payment_method')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Select which payment channel you used for this donation.</div>
+                    </div>
+
                     {{-- Amount --}}
                     <div class="mb-3">
                         <label for="amount" class="form-label fw-semibold small">Amount Donated (₱) <span

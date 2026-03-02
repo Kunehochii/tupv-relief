@@ -141,13 +141,17 @@
                         </div>
                         <div class="card-body p-3 px-md-4">
                             <p class="text-muted small mb-3">Upload QR codes for your payment channels (GCash, Maya, bank
-                                transfers, etc.) so donors can easily send contributions.</p>
+                                transfers, etc.) so donors can easily send contributions. Add a label to identify each payment channel.</p>
 
                             @if (!empty(auth()->user()->qr_channels))
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Current QR Codes</label>
                                     <div class="row g-2">
-                                        @foreach (auth()->user()->qr_channels as $index => $qrPath)
+                                        @foreach (auth()->user()->qr_channels as $index => $qrChannel)
+                                            @php
+                                                $qrPath = is_array($qrChannel) ? ($qrChannel['path'] ?? '') : $qrChannel;
+                                                $qrLabel = is_array($qrChannel) ? ($qrChannel['label'] ?? '') : '';
+                                            @endphp
                                             <div class="col-6 col-sm-4 col-md-3">
                                                 <div class="position-relative qr-card">
                                                     <img src="{{ asset('storage/' . $qrPath) }}"
@@ -162,6 +166,13 @@
                                                         <label class="form-check-label visually-hidden"
                                                             for="removeQr{{ $index }}">Remove</label>
                                                     </div>
+                                                    <input type="text"
+                                                        class="form-control form-control-sm mt-1"
+                                                        name="existing_qr_labels[{{ $qrPath }}]"
+                                                        value="{{ $qrLabel }}"
+                                                        placeholder="Label (e.g. GCash)"
+                                                        maxlength="50"
+                                                        style="font-size: 0.75rem;">
                                                     <small class="text-muted d-block text-center mt-1"
                                                         style="font-size: 0.7rem;">Check to remove</small>
                                                 </div>
@@ -172,18 +183,35 @@
                             @endif
 
                             <div class="mb-0">
-                                <label for="qr_uploads" class="form-label fw-semibold">Upload New QR Codes</label>
-                                <input type="file"
-                                    class="form-control @error('qr_uploads') is-invalid @enderror @error('qr_uploads.*') is-invalid @enderror"
-                                    id="qr_uploads" name="qr_uploads[]" accept="image/*" multiple>
+                                <label class="form-label fw-semibold">Upload New QR Codes</label>
+                                <div id="qrUploadContainer">
+                                    <div class="qr-upload-row mb-2">
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-5">
+                                                <label class="form-label small mb-1">Label</label>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="qr_labels[]" placeholder="e.g. GCash, Maya..."
+                                                    maxlength="50">
+                                            </div>
+                                            <div class="col-7">
+                                                <label class="form-label small mb-1">QR Image</label>
+                                                <input type="file"
+                                                    class="form-control form-control-sm"
+                                                    name="qr_uploads[]" accept="image/*">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm mt-1" id="addQrRow">
+                                    <i class="bi bi-plus-circle me-1"></i>Add Another QR Code
+                                </button>
                                 @error('qr_uploads')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                                 @error('qr_uploads.*')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Select multiple images at once. JPG, PNG, GIF, or WebP. Max 2MB
-                                    each, up to 5 images.</div>
+                                <div class="form-text">JPG, PNG, GIF, or WebP. Max 2MB each, up to 5 images.</div>
                             </div>
                         </div>
                     </div>
@@ -321,6 +349,37 @@
                 btn.classList.add('btn-outline-secondary');
             }, 2000);
         }
+
+        // Dynamic QR upload rows
+        document.getElementById('addQrRow').addEventListener('click', function() {
+            const container = document.getElementById('qrUploadContainer');
+            const rowCount = container.querySelectorAll('.qr-upload-row').length;
+            if (rowCount >= 5) {
+                alert('Maximum 5 QR codes allowed.');
+                return;
+            }
+            const row = document.createElement('div');
+            row.className = 'qr-upload-row mb-2';
+            row.innerHTML = `
+                <div class="row g-2 align-items-end">
+                    <div class="col-5">
+                        <input type="text" class="form-control form-control-sm"
+                            name="qr_labels[]" placeholder="e.g. GCash, Maya..."
+                            maxlength="50">
+                    </div>
+                    <div class="col-5">
+                        <input type="file" class="form-control form-control-sm"
+                            name="qr_uploads[]" accept="image/*">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="this.closest('.qr-upload-row').remove()">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+        });
     </script>
 @endsection
 @endsection

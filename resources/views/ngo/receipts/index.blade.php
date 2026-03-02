@@ -65,6 +65,7 @@
                         <tr>
                             <th class="ps-3" style="font-size: 0.8rem;">Donor</th>
                             <th style="font-size: 0.8rem;">Amount</th>
+                            <th style="font-size: 0.8rem;">Method</th>
                             <th style="font-size: 0.8rem;">Date</th>
                             <th style="font-size: 0.8rem;">Status</th>
                             <th class="pe-3 text-end" style="font-size: 0.8rem;">Actions</th>
@@ -83,6 +84,13 @@
                                 </td>
                                 <td>
                                     <span class="fw-semibold">₱{{ number_format($receipt->amount, 2) }}</span>
+                                </td>
+                                <td>
+                                    @if ($receipt->payment_method)
+                                        <span class="badge bg-primary bg-opacity-75 small">{{ $receipt->payment_method }}</span>
+                                    @else
+                                        <span class="text-muted small">—</span>
+                                    @endif
                                 </td>
                                 <td>
                                     <span class="small text-muted">{{ $receipt->created_at->format('M d, Y') }}</span>
@@ -104,7 +112,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
+                                <td colspan="6" class="text-center py-5 text-muted">
                                     <i class="bi bi-receipt" style="font-size: 2rem;"></i>
                                     <p class="mt-2 mb-0">No donation receipts yet.</p>
                                 </td>

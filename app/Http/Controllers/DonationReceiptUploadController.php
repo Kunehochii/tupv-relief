@@ -26,7 +26,9 @@ class DonationReceiptUploadController extends Controller
             abort(403, 'You cannot upload a receipt to your own profile.');
         }
 
-        return view('receipts.create', compact('ngo'));
+        $paymentMethods = DonationReceipt::PAYMENT_METHODS;
+
+        return view('receipts.create', compact('ngo', 'paymentMethods'));
     }
 
     /**
@@ -46,6 +48,7 @@ class DonationReceiptUploadController extends Controller
 
         $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
+            'payment_method' => ['required', 'string', 'max:50'],
             'message' => ['nullable', 'string', 'max:1000'],
             'receipt_image' => ['required', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
         ]);
@@ -56,6 +59,7 @@ class DonationReceiptUploadController extends Controller
             'ngo_id' => $ngo->id,
             'user_id' => Auth::id(),
             'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
             'message' => $request->message,
             'receipt_path' => $receiptPath,
             'status' => DonationReceipt::STATUS_PENDING,

@@ -96,6 +96,89 @@
             <div class="row g-3 g-lg-4">
                 {{-- Main Content --}}
                 <div class="col-12 col-lg-8">
+                    {{-- QR Payment Channels - Prominent Section --}}
+                    @if (!empty($ngo->qr_channels))
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px; border-left: 4px solid var(--vivid-orange) !important;">
+                            <div class="card-body p-3 p-md-4">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="bi bi-qr-code-scan me-2" style="color: var(--vivid-orange);"></i>Donate via QR Code
+                                    </h5>
+                                    @auth
+                                        @if (auth()->id() !== $ngo->id && (auth()->user()->isDonor() || auth()->user()->isNgo()))
+                                            <a href="{{ route('receipt.create', $ngo->id) }}"
+                                                class="btn btn-sm btn-outline-primary fw-semibold">
+                                                <i class="bi bi-receipt me-1"></i>Upload Receipt
+                                            </a>
+                                        @endif
+                                    @endauth
+                                </div>
+                                <p class="text-muted small mb-3">Scan any QR code below to donate directly to {{ $ngo->display_name }}. After donating, upload your receipt so we can verify your contribution.</p>
+                                <div class="row g-3">
+                                    @foreach ($ngo->qr_channels as $index => $qrChannel)
+                                        @php
+                                            $qrPath = is_array($qrChannel) ? ($qrChannel['path'] ?? '') : $qrChannel;
+                                            $qrLabel = is_array($qrChannel) ? ($qrChannel['label'] ?? '') : '';
+                                        @endphp
+                                        <div class="col-6 col-sm-4 col-md-3">
+                                            <div class="qr-channel-card text-center" data-bs-toggle="modal"
+                                                data-bs-target="#qrModal{{ $index }}" role="button">
+                                                <div class="qr-image-wrapper mb-2">
+                                                    <img src="{{ asset('storage/' . $qrPath) }}"
+                                                        alt="{{ $qrLabel ?: 'Payment QR ' . ($index + 1) }}"
+                                                        class="img-fluid rounded border w-100"
+                                                        style="aspect-ratio: 1; object-fit: cover;">
+                                                    <div class="qr-overlay">
+                                                        <i class="bi bi-zoom-in fs-4"></i>
+                                                    </div>
+                                                </div>
+                                                @if ($qrLabel)
+                                                    <span class="badge rounded-pill fw-semibold qr-label-badge">
+                                                        {{ $qrLabel }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        {{-- QR Modal --}}
+                                        <div class="modal fade" id="qrModal{{ $index }}" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0" style="border-radius: 16px;">
+                                                    <div class="modal-header border-0 pb-0">
+                                                        <h6 class="modal-title">
+                                                            <i class="bi bi-qr-code me-1"></i>
+                                                            {{ $qrLabel ?: 'Payment QR Code' }}
+                                                        </h6>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body text-center p-4">
+                                                        <img src="{{ asset('storage/' . $qrPath) }}"
+                                                            alt="{{ $qrLabel ?: 'Payment QR ' . ($index + 1) }}"
+                                                            class="img-fluid rounded" style="max-width: 350px;">
+                                                        @if ($qrLabel)
+                                                            <p class="mt-3 mb-0 fw-semibold text-muted">{{ $qrLabel }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="modal-footer border-0 pt-0 justify-content-center">
+                                                        @auth
+                                                            @if (auth()->id() !== $ngo->id && (auth()->user()->isDonor() || auth()->user()->isNgo()))
+                                                                <a href="{{ route('receipt.create', ['ngoId' => $ngo->id, 'method' => $qrLabel]) }}"
+                                                                    class="btn btn-primary btn-sm fw-semibold">
+                                                                    <i class="bi bi-receipt me-1"></i>I've Donated — Upload Receipt
+                                                                </a>
+                                                            @endif
+                                                        @endauth
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- About Section --}}
                     @if ($ngo->bio)
                         <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
@@ -146,63 +229,6 @@
 
                 {{-- Sidebar --}}
                 <div class="col-12 col-lg-4">
-                    {{-- QR Payment Channels --}}
-                    @if (!empty($ngo->qr_channels))
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
-                            <div class="card-body p-3 p-md-4">
-                                <h5 class="fw-bold mb-3"><i class="bi bi-qr-code me-2 text-primary"></i>Payment Channels
-                                </h5>
-                                <p class="text-muted small mb-3">Scan any QR code below to donate directly.</p>
-                                <div class="row g-2">
-                                    @foreach ($ngo->qr_channels as $index => $qrPath)
-                                        <div class="col-6">
-                                            <div class="qr-image-wrapper" data-bs-toggle="modal"
-                                                data-bs-target="#qrModal{{ $index }}" role="button">
-                                                <img src="{{ asset('storage/' . $qrPath) }}"
-                                                    alt="Payment QR {{ $index + 1 }}"
-                                                    class="img-fluid rounded border w-100"
-                                                    style="aspect-ratio: 1; object-fit: cover;">
-                                                <div class="qr-overlay">
-                                                    <i class="bi bi-zoom-in fs-4"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- QR Modal --}}
-                                        <div class="modal fade" id="qrModal{{ $index }}" tabindex="-1">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content border-0" style="border-radius: 16px;">
-                                                    <div class="modal-header border-0 pb-0">
-                                                        <h6 class="modal-title">Payment QR Code</h6>
-                                                        <button type="button" class="btn-close"
-                                                            data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body text-center p-4">
-                                                        <img src="{{ asset('storage/' . $qrPath) }}"
-                                                            alt="Payment QR {{ $index + 1 }}"
-                                                            class="img-fluid rounded" style="max-width: 350px;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                {{-- Upload Receipt Button --}}
-                                @auth
-                                    @if (auth()->id() !== $ngo->id && (auth()->user()->isDonor() || auth()->user()->isNgo()))
-                                        <div class="mt-3">
-                                            <a href="{{ route('receipt.create', $ngo->id) }}"
-                                                class="btn btn-outline-primary w-100 fw-semibold">
-                                                <i class="bi bi-receipt me-1"></i>Upload Donation Receipt
-                                            </a>
-                                        </div>
-                                    @endif
-                                @endauth
-                            </div>
-                        </div>
-                    @endif
-
                     {{-- Donate CTA --}}
                     @if ($ngo->external_donation_url)
                         <div class="card border-0 shadow-sm mb-3"
@@ -218,6 +244,26 @@
                                 </a>
                             </div>
                         </div>
+                    @endif
+
+                    {{-- Upload Receipt CTA (if QR channels exist) --}}
+                    @if (!empty($ngo->qr_channels))
+                        @auth
+                            @if (auth()->id() !== $ngo->id && (auth()->user()->isDonor() || auth()->user()->isNgo()))
+                                <div class="card border-0 shadow-sm mb-3"
+                                    style="border-radius: 12px; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
+                                    <div class="card-body p-3 p-md-4 text-center">
+                                        <i class="bi bi-receipt fs-2 text-success mb-2 d-block"></i>
+                                        <h6 class="fw-bold mb-2">Already Donated?</h6>
+                                        <p class="text-muted small mb-3">Upload your donation receipt so {{ $ngo->display_name }} can verify your contribution.</p>
+                                        <a href="{{ route('receipt.create', $ngo->id) }}"
+                                            class="btn btn-success w-100 fw-semibold">
+                                            <i class="bi bi-upload me-1"></i>Upload Receipt
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
                     @endif
 
                     {{-- Contact Card --}}
@@ -321,6 +367,21 @@
 
         .qr-image-wrapper:hover .qr-overlay {
             opacity: 1;
+        }
+
+        .qr-channel-card {
+            transition: transform 0.2s;
+        }
+
+        .qr-channel-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .qr-label-badge {
+            background: var(--dark-blue);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 0.35em 0.8em;
         }
 
         @media (max-width: 768px) {

@@ -14,11 +14,24 @@ class DonationReceipt extends Model
         'user_id',
         'amount',
         'message',
+        'payment_method',
         'receipt_path',
         'status',
         'rejection_reason',
         'verified_at',
         'rejected_at',
+    ];
+
+    /**
+     * Common payment method options.
+     */
+    const PAYMENT_METHODS = [
+        'gcash' => 'GCash',
+        'maya' => 'Maya',
+        'bank_transfer' => 'Bank Transfer',
+        'paypal' => 'PayPal',
+        'cash' => 'Cash',
+        'other' => 'Other',
     ];
 
     protected function casts(): array

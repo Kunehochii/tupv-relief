@@ -40,6 +40,10 @@ class ProfileController extends Controller
             'logo_upload' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
             'qr_uploads' => ['nullable', 'array', 'max:5'],
             'qr_uploads.*' => ['image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
+            'qr_labels' => ['nullable', 'array', 'max:5'],
+            'qr_labels.*' => ['nullable', 'string', 'max:50'],
+            'existing_qr_labels' => ['nullable', 'array'],
+            'existing_qr_labels.*' => ['nullable', 'string', 'max:50'],
             'remove_qr' => ['nullable', 'array'],
             'remove_qr.*' => ['string'],
         ]);
@@ -70,15 +74,33 @@ class ProfileController extends Controller
         if (!empty($validated['remove_qr'])) {
             foreach ($validated['remove_qr'] as $qrPath) {
                 Storage::disk('public')->delete($qrPath);
-                $existingQrChannels = array_filter($existingQrChannels, fn($path) => $path !== $qrPath);
+                $existingQrChannels = array_filter($existingQrChannels, fn($ch) => ($ch['path'] ?? $ch) !== $qrPath);
             }
         }
 
-        // Handle new QR uploads
+        // Update labels on existing QR channels
+        if (!empty($validated['existing_qr_labels'])) {
+            foreach ($existingQrChannels as &$channel) {
+                $path = $channel['path'] ?? $channel;
+                if (isset($validated['existing_qr_labels'][$path])) {
+                    $channel = [
+                        'path' => $path,
+                        'label' => $validated['existing_qr_labels'][$path] ?? '',
+                    ];
+                }
+            }
+            unset($channel);
+        }
+
+        // Handle new QR uploads with labels
         if ($request->hasFile('qr_uploads')) {
-            foreach ($request->file('qr_uploads') as $qrFile) {
+            $newLabels = $validated['qr_labels'] ?? [];
+            foreach ($request->file('qr_uploads') as $index => $qrFile) {
                 $qrPath = $qrFile->store('ngo-qr-channels', 'public');
-                $existingQrChannels[] = $qrPath;
+                $existingQrChannels[] = [
+                    'path' => $qrPath,
+                    'label' => $newLabels[$index] ?? '',
+                ];
             }
         }
 

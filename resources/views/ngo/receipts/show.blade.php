@@ -76,6 +76,19 @@
                                     ₱{{ number_format($receipt->amount, 2) }}</p>
                             </div>
                             <div class="col-sm-6 mb-3">
+                                <label class="text-muted small">Payment Method</label>
+                                <p class="mb-0">
+                                    @if ($receipt->payment_method)
+                                        <span class="badge bg-primary bg-opacity-75 fs-6">{{ $receipt->payment_method }}</span>
+                                    @else
+                                        <span class="text-muted">Not specified</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-3">
                                 <label class="text-muted small">Date Submitted</label>
                                 <p class="mb-0">{{ $receipt->created_at->format('M d, Y h:i A') }}</p>
                             </div>
