@@ -52,14 +52,14 @@
                 <!-- Pledge Button -->
                 <div class="mt-4">
                     @auth
-                        @if (auth()->user()->role !== 'admin')
+                        @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.drives.show', $drive) }}" class="btn-pledge-custom">
+                                <i class="bi bi-gear-fill me-2"></i>MANAGE DRIVE
+                            </a>
+                        @elseif (!request()->has('from') || request('from') !== 'donor')
                             <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}"
                                 class="btn-pledge-custom">
                                 <i class="bi bi-heart-fill me-2"></i>PLEDGE
-                            </a>
-                        @else
-                            <a href="{{ route('admin.drives.show', $drive) }}" class="btn-pledge-custom">
-                                <i class="bi bi-gear-fill me-2"></i>MANAGE DRIVE
                             </a>
                         @endif
 

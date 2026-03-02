@@ -49,6 +49,7 @@ class DashboardController extends Controller
                     'pledge_url' => route('donor.pledges.create', ['drive' => $drive->id]),
                     'preview_url' => route('drive.preview', $drive),
                     'donate_url' => route('drive.donate', $drive),
+                    'detail_url' => route('donor.drives.show', $drive),
                 ];
             });
 
@@ -58,6 +59,21 @@ class DashboardController extends Controller
             'drives' => $drives,
             'hasMore' => $hasMore,
         ]);
+    }
+
+    /**
+     * Show drive detail page (intermediate between dashboard and pledge/donate)
+     */
+    public function showDrive(Drive $drive): View|\Illuminate\Http\RedirectResponse
+    {
+        if (!$drive->isActive()) {
+            return redirect()->route('donor.dashboard')
+                ->with('warning', 'This drive is no longer active.');
+        }
+
+        $drive->load(['driveItems', 'supportingNgos']);
+
+        return view('donor.drives.show', compact('drive'));
     }
 
     public function map(): View

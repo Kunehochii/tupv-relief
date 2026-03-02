@@ -32,7 +32,7 @@
                                     <div class="progress-bar"
                                         style="width: {{ $drive->progress_percentage }}%; background: #e51d00;"></div>
                                 </div>
-                                <a href="{{ route('drive.donate', $drive) }}" class="btn btn-sm btn-primary w-100">
+                                <a href="{{ route('donor.drives.show', $drive) }}" class="btn btn-sm btn-primary w-100">
                                     <i class="bi bi-eye me-1"></i>View Drive
                                 </a>
                             </div>

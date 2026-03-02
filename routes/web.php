@@ -93,6 +93,7 @@ Route::middleware(['auth', 'otp.verified', 'donor'])->prefix('donor')->name('don
     Route::get('dashboard', [\App\Http\Controllers\Donor\DashboardController::class, 'index'])->name('dashboard');
     Route::get('map', [\App\Http\Controllers\Donor\DashboardController::class, 'map'])->name('map');
     Route::get('drives/fetch', [\App\Http\Controllers\Donor\DashboardController::class, 'fetchDrives'])->name('drives.fetch');
+    Route::get('drives/{drive}', [\App\Http\Controllers\Donor\DashboardController::class, 'showDrive'])->name('drives.show');
 
     // Pledges
     Route::get('pledges', [\App\Http\Controllers\Donor\PledgeController::class, 'index'])->name('pledges.index');
