@@ -120,6 +120,87 @@
     width: 100%;
     }
 
+    .photos-upload-area {
+    border: 2px dashed #d0d0d0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .photos-upload-area:hover {
+    border-color: var(--relief-dark-blue);
+    background-color: #fafafa;
+    }
+
+    .photos-upload-area i {
+    font-size: 28px;
+    color: var(--relief-gray-blue);
+    margin-bottom: 6px;
+    }
+
+    .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+    }
+
+    .photo-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border: 1px solid #d0d0d0;
+    }
+
+    .photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+    .photo-item .remove-photo {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .photo-item .remove-photo:hover {
+    background: var(--relief-red);
+    }
+
+    .photo-item.marked-delete {
+    opacity: 0.4;
+    }
+
+    .photo-item.marked-delete::after {
+    content: 'Will be removed';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--relief-red);
+    color: #fff;
+    text-align: center;
+    font-size: 11px;
+    padding: 2px;
+    }
+
     .pack-type-card {
     background: #ffffff;
     border: 1px solid #d0d0d0;
@@ -286,6 +367,38 @@
                     <img id="cover_preview_img" src="" alt="Preview" class="cover-preview"
                         style="aspect-ratio: 16/9; object-fit: cover; width: 100%;">
                 </div>
+            </div>
+
+            {{-- Drive Photos Section --}}
+            <div class="mb-4">
+                <label class="form-label-styled">Drive Photos <small class="text-muted fw-normal">(up to 5)</small></label>
+                @if ($drive->photos->count() > 0)
+                    <div class="photos-grid mb-3" id="existing_photos_grid">
+                        @foreach ($drive->photos as $photo)
+                            <div class="photo-item" id="photo-{{ $photo->id }}">
+                                <img src="{{ $photo->url }}" alt="Drive photo">
+                                <button type="button" class="remove-photo" title="Remove" onclick="toggleDeletePhoto({{ $photo->id }})">
+                                    &times;
+                                </button>
+                                <input type="checkbox" name="delete_photos[]" value="{{ $photo->id }}" class="d-none" id="delete_photo_{{ $photo->id }}">
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+                <div class="photos-upload-area" onclick="document.getElementById('photos_input').click()" id="photos_upload_area"
+                    @if($drive->photos->count() >= 5) style="display: none;" @endif>
+                    <i class="bi bi-images"></i>
+                    <p class="mb-1 text-muted" style="font-size: 13px;">Click to add more photos</p>
+                    <small class="text-muted">Max 5 total • 5MB each • JPEG, PNG, WebP</small>
+                </div>
+                <input type="file" class="d-none" id="photos_input" name="photos[]" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                @error('photos')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                @error('photos.*')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                <div class="photos-grid" id="new_photos_preview"></div>
             </div>
 
             {{-- Drive Name --}}
@@ -531,6 +644,77 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // Toggle photo deletion
+        const deletedPhotoIds = new Set();
+        function toggleDeletePhoto(id) {
+            const checkbox = document.getElementById('delete_photo_' + id);
+            const item = document.getElementById('photo-' + id);
+            if (deletedPhotoIds.has(id)) {
+                deletedPhotoIds.delete(id);
+                checkbox.checked = false;
+                item.classList.remove('marked-delete');
+            } else {
+                deletedPhotoIds.add(id);
+                checkbox.checked = true;
+                item.classList.add('marked-delete');
+            }
+            updatePhotosUploadVisibility();
+        }
+
+        // Drive photos multi-upload
+        (function() {
+            const input = document.getElementById('photos_input');
+            const grid = document.getElementById('new_photos_preview');
+            const uploadArea = document.getElementById('photos_upload_area');
+            let selectedFiles = [];
+            const existingCount = {{ $drive->photos->count() }};
+
+            function getTotalCount() {
+                return existingCount - deletedPhotoIds.size + selectedFiles.length;
+            }
+
+            window.updatePhotosUploadVisibility = function() {
+                uploadArea.style.display = getTotalCount() >= 5 ? 'none' : '';
+            };
+
+            input.addEventListener('change', function() {
+                const newFiles = Array.from(this.files);
+                const remaining = 5 - getTotalCount();
+                const filesToAdd = newFiles.slice(0, remaining);
+
+                filesToAdd.forEach(file => {
+                    selectedFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const item = document.createElement('div');
+                        item.className = 'photo-item';
+                        item.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <button type="button" class="remove-photo" title="Remove">&times;</button>
+                        `;
+                        item.querySelector('.remove-photo').addEventListener('click', function() {
+                            const idx = Array.from(grid.children).indexOf(item);
+                            selectedFiles.splice(idx, 1);
+                            item.remove();
+                            updateFileInput();
+                            updatePhotosUploadVisibility();
+                        });
+                        grid.appendChild(item);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                updateFileInput();
+                updatePhotosUploadVisibility();
+            });
+
+            function updateFileInput() {
+                const dt = new DataTransfer();
+                selectedFiles.forEach(f => dt.items.add(f));
+                input.files = dt.files;
+            }
+        })();
 
         // Pack type card selection
         document.querySelectorAll('.pack-type-card input').forEach(input => {

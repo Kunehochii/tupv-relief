@@ -9,7 +9,36 @@
             <div class="@if(auth()->check() && auth()->user()->isNgo()) col-lg-8 text-center @else col-lg-5 @endif mb-4">
                 <h2 class="drive-title mb-3">{{ $drive->name }}</h2>
 
-                @if ($drive->cover_photo)
+                @if ($drive->photos->count() > 0)
+                    <div id="donatePhotoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            @foreach ($drive->photos as $index => $photo)
+                                <button type="button" data-bs-target="#donatePhotoCarousel"
+                                    data-bs-slide-to="{{ $index }}"
+                                    @if ($index === 0) class="active" aria-current="true" @endif
+                                    aria-label="Photo {{ $index + 1 }}"></button>
+                            @endforeach
+                        </div>
+                        <div class="carousel-inner" style="border-radius: 0.5rem; overflow: hidden;">
+                            @foreach ($drive->photos as $index => $photo)
+                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                    <img src="{{ $photo->url }}" alt="{{ $drive->name }}"
+                                        class="d-block w-100 drive-image" style="object-fit: cover;">
+                                </div>
+                            @endforeach
+                        </div>
+                        @if ($drive->photos->count() > 1)
+                            <button class="carousel-control-prev" type="button" data-bs-target="#donatePhotoCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#donatePhotoCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        @endif
+                    </div>
+                @elseif ($drive->cover_photo)
                     <img src="{{ asset('storage/' . $drive->cover_photo) }}" alt="{{ $drive->name }}"
                         class="img-fluid rounded mb-4 drive-image">
                 @else

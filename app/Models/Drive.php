@@ -74,6 +74,11 @@ class Drive extends Model
         return $this->hasMany(DriveItem::class);
     }
 
+    public function photos()
+    {
+        return $this->hasMany(DrivePhoto::class)->orderBy('sort_order');
+    }
+
     public function ngoSupports()
     {
         return $this->hasMany(NgoDriveSupport::class);

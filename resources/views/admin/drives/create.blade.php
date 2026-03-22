@@ -113,6 +113,69 @@
     margin-top: 12px;
     }
 
+    .photos-upload-area {
+    border: 2px dashed #d0d0d0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .photos-upload-area:hover {
+    border-color: var(--relief-dark-blue);
+    background-color: #fafafa;
+    }
+
+    .photos-upload-area i {
+    font-size: 28px;
+    color: var(--relief-gray-blue);
+    margin-bottom: 6px;
+    }
+
+    .photos-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+    }
+
+    .photo-preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    }
+
+    .photo-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+    .photo-preview-item .remove-photo {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .photo-preview-item .remove-photo:hover {
+    background: var(--relief-red);
+    }
+
     .pack-type-card {
     background: #ffffff;
     border: 1px solid #d0d0d0;
@@ -186,6 +249,24 @@
                     <img id="cover_preview_img" src="" alt="Preview" class="cover-preview"
                         style="aspect-ratio: 16/9; object-fit: cover; width: 100%;">
                 </div>
+            </div>
+
+            {{-- Drive Photos Section --}}
+            <div class="mb-4">
+                <label class="form-label-styled">Drive Photos <small class="text-muted fw-normal">(up to 5)</small></label>
+                <div class="photos-upload-area" onclick="document.getElementById('photos_input').click()" id="photos_upload_area">
+                    <i class="bi bi-images"></i>
+                    <p class="mb-1 text-muted" style="font-size: 13px;">Click to upload drive photos</p>
+                    <small class="text-muted">Max 5 photos • 5MB each • JPEG, PNG, WebP</small>
+                </div>
+                <input type="file" class="d-none" id="photos_input" name="photos[]" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                @error('photos')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                @error('photos.*')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+                <div class="photos-preview-grid" id="photos_preview_grid"></div>
             </div>
 
             {{-- Drive Name --}}
@@ -304,6 +385,51 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // Drive photos multi-upload preview
+        (function() {
+            const input = document.getElementById('photos_input');
+            const grid = document.getElementById('photos_preview_grid');
+            const uploadArea = document.getElementById('photos_upload_area');
+            let selectedFiles = [];
+
+            input.addEventListener('change', function() {
+                const newFiles = Array.from(this.files);
+                const remaining = 5 - selectedFiles.length;
+                const filesToAdd = newFiles.slice(0, remaining);
+
+                filesToAdd.forEach(file => {
+                    selectedFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const item = document.createElement('div');
+                        item.className = 'photo-preview-item';
+                        item.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <button type="button" class="remove-photo" title="Remove">&times;</button>
+                        `;
+                        item.querySelector('.remove-photo').addEventListener('click', function() {
+                            const idx = Array.from(grid.children).indexOf(item);
+                            selectedFiles.splice(idx, 1);
+                            item.remove();
+                            updateFileInput();
+                            if (selectedFiles.length < 5) uploadArea.style.display = '';
+                        });
+                        grid.appendChild(item);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                updateFileInput();
+                if (selectedFiles.length >= 5) uploadArea.style.display = 'none';
+            });
+
+            function updateFileInput() {
+                const dt = new DataTransfer();
+                selectedFiles.forEach(f => dt.items.add(f));
+                input.files = dt.files;
+            }
+        })();
 
         // Pack type card selection
         document.querySelectorAll('.pack-type-card input').forEach(input => {

@@ -42,6 +42,34 @@
     opacity: 0.5;
     }
 
+    .drive-photos-grid {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    }
+
+    .drive-photos-grid img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .drive-photos-grid img:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+    }
+
+    .photo-modal-img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+    }
+
     .drive-info {
     flex: 1;
     }
@@ -448,6 +476,15 @@
                     @endif
                 </div>
                 <p class="drive-description">{{ Str::limit($drive->description, 200) }}</p>
+                @if ($drive->photos->count() > 0)
+                    <div class="drive-photos-grid">
+                        @foreach ($drive->photos as $photo)
+                            <img src="{{ $photo->url }}" alt="Drive photo"
+                                data-bs-toggle="modal" data-bs-target="#photoModal"
+                                onclick="document.getElementById('modalPhoto').src=this.src">
+                        @endforeach
+                    </div>
+                @endif
                 <div class="drive-meta">
                     <div class="drive-meta-item">
                         <i class="bi bi-calendar3"></i>
@@ -681,6 +718,18 @@
             </div>
         </div>
     </div>
+    {{-- Photo Modal --}}
+    @if ($drive->photos->count() > 0)
+        <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="modal-body text-center p-0">
+                        <img id="modalPhoto" src="" alt="Drive photo" class="photo-modal-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @if ($drive->latitude && $drive->longitude)

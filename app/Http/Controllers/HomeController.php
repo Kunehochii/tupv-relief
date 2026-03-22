@@ -32,11 +32,15 @@ class HomeController extends Controller
 
     public function drivePreview(Drive $drive): View
     {
+        $drive->load('photos');
+
         return view('public.drive-preview', compact('drive'));
     }
 
     public function driveDonate(Drive $drive): View
     {
+        $drive->load('photos');
+
         // Load supporting NGOs with their logos
         $supportingNgos = $drive->supportingNgos()
             ->where('verification_status', 'verified')

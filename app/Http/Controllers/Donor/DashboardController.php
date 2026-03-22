@@ -71,7 +71,7 @@ class DashboardController extends Controller
                 ->with('warning', 'This drive is no longer active.');
         }
 
-        $drive->load(['driveItems', 'supportingNgos']);
+        $drive->load(['driveItems', 'supportingNgos', 'photos']);
 
         return view('donor.drives.show', compact('drive'));
     }

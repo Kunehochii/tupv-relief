@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Drive;
 use App\Models\DriveItem;
+use App\Models\DrivePhoto;
 use App\Models\ReliefPackItem;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
@@ -45,6 +46,8 @@ class DriveController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'cover_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'], // 5MB max
+            'photos' => ['nullable', 'array', 'max:5'],
+            'photos.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'target_amount' => ['required', 'numeric', 'min:0'],
             'collected_amount' => ['nullable', 'numeric', 'min:0'],
             'target_type' => ['required', 'in:financial,quantity'],
@@ -70,6 +73,7 @@ class DriveController extends Controller
         // Map pack_types to pack_types_needed (consistent with update method)
         $validated['pack_types_needed'] = $validated['pack_types'];
         unset($validated['pack_types']);
+        unset($validated['photos']);
 
         $validated['created_by'] = Auth::id();
         $validated['status'] = Drive::STATUS_ACTIVE;
@@ -81,6 +85,17 @@ class DriveController extends Controller
         unset($validated['custom_items']);
 
         $drive = Drive::create($validated);
+
+        // Handle drive photos upload (up to 5)
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $index => $photo) {
+                $path = $photo->store('drive-photos', 'public');
+                $drive->photos()->create([
+                    'path' => $path,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         // Generate items from families affected if provided
         if ($drive->families_affected && !empty($drive->pack_types_needed)) {
@@ -105,14 +120,14 @@ class DriveController extends Controller
 
     public function show(Drive $drive): View
     {
-        $drive->load(['creator', 'pledges.user', 'pledges.pledgeItems', 'driveItems', 'supportingNgos']);
+        $drive->load(['creator', 'pledges.user', 'pledges.pledgeItems', 'driveItems', 'supportingNgos', 'photos']);
 
         return view('admin.drives.show', compact('drive'));
     }
 
     public function edit(Drive $drive): View
     {
-        $drive->load('driveItems');
+        $drive->load(['driveItems', 'photos']);
         $packTypes = ReliefPackItem::PACK_TYPES;
 
         return view('admin.drives.edit', compact('drive', 'packTypes'));
@@ -124,6 +139,10 @@ class DriveController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'cover_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'photos' => ['nullable', 'array', 'max:5'],
+            'photos.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'delete_photos' => ['nullable', 'array'],
+            'delete_photos.*' => ['integer', 'exists:drive_photos,id'],
             'target_amount' => ['required', 'numeric', 'min:0'],
             'collected_amount' => ['nullable', 'numeric', 'min:0'],
             'target_type' => ['required', 'in:financial,quantity'],
@@ -147,6 +166,30 @@ class DriveController extends Controller
             $validated['cover_photo'] = $request->file('cover_photo')->store('drive-covers', 'public');
         }
 
+        // Delete selected photos
+        if ($request->filled('delete_photos')) {
+            $photosToDelete = $drive->photos()->whereIn('id', $request->input('delete_photos'))->get();
+            foreach ($photosToDelete as $photo) {
+                Storage::disk('public')->delete($photo->path);
+                $photo->delete();
+            }
+        }
+
+        // Upload new photos (enforce max 5 total)
+        if ($request->hasFile('photos')) {
+            $existingCount = $drive->photos()->count() - count($request->input('delete_photos', []));
+            $maxNew = max(0, 5 - $existingCount);
+            $nextOrder = $drive->photos()->max('sort_order') + 1;
+
+            foreach (array_slice($request->file('photos'), 0, $maxNew) as $photo) {
+                $path = $photo->store('drive-photos', 'public');
+                $drive->photos()->create([
+                    'path' => $path,
+                    'sort_order' => $nextOrder++,
+                ]);
+            }
+        }
+
         // Check if pack types or families affected changed
         $shouldRegenerateItems =
             $drive->families_affected !== $validated['families_affected'] ||
@@ -155,6 +198,8 @@ class DriveController extends Controller
         // Map pack_types to pack_types_needed
         $validated['pack_types_needed'] = $validated['pack_types'];
         unset($validated['pack_types']);
+        unset($validated['photos']);
+        unset($validated['delete_photos']);
 
         $drive->update($validated);
 
