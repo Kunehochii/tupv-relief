@@ -79,7 +79,9 @@
                                 @else
                                     <h5 class="mb-3">Ready to help?</h5>
                                     <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}"
-                                        class="btn btn-primary btn-lg">
+                                        class="btn btn-primary btn-lg"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Send material aid via DSWD">
                                         <i class="bi bi-heart-fill me-2"></i>Pledge to this Drive
                                     </a>
                                 @endif
@@ -101,6 +103,11 @@
     @if ($drive->latitude && $drive->longitude)
         @section('scripts')
             <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    tooltipTriggerList.map(function(el) { return new bootstrap.Tooltip(el); });
+                });
+
                 const map = L.map('map').setView([{{ $drive->latitude }}, {{ $drive->longitude }}], 14);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

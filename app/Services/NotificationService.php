@@ -226,6 +226,28 @@ class NotificationService
         }
     }
 
+    /**
+     * Notify all donors/NGOs who pledged to a drive that it is completed and goods were distributed
+     */
+    public function sendDriveCompleted(\App\Models\Drive $drive): void
+    {
+        $pledges = Pledge::where('drive_id', $drive->id)
+            ->with('user')
+            ->get()
+            ->unique('user_id');
+
+        foreach ($pledges as $pledge) {
+            $this->createNotification(
+                $pledge->user,
+                Notification::TYPE_DRIVE_COMPLETED,
+                'Drive Completed',
+                "Great news! The drive \"{$drive->name}\" has been completed and all goods have been distributed to beneficiaries. Thank you for your contribution!",
+                ['drive_id' => $drive->id],
+                true // Send email
+            );
+        }
+    }
+
     public function sendNgoVerified(User $user): void
     {
         $this->createNotification(

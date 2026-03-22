@@ -58,7 +58,9 @@
                             </a>
                         @elseif (!request()->has('from') || request('from') !== 'donor')
                             <a href="{{ route(auth()->user()->role . '.pledges.create', ['drive_id' => $drive->id]) }}"
-                                class="btn-pledge-custom">
+                                class="btn-pledge-custom"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                title="Send material aid via DSWD">
                                 <i class="bi bi-heart-fill me-2"></i>PLEDGE
                             </a>
                         @endif
@@ -88,7 +90,8 @@
             <!-- Right Side: Donate Section with NGO Logos -->
             @if(!auth()->check() || !auth()->user()->isNgo())
             <div class="col-lg-7">
-                <h2 class="donate-title mb-4">DONATE</h2>
+                <h2 class="donate-title mb-4" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Send financial aid via NGOs" style="cursor: default;">DONATE</h2>
 
                 @if ($supportingNgos->count() > 0)
                     <div class="row g-4">
@@ -261,4 +264,13 @@
             }
         }
     </style>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(el) { return new bootstrap.Tooltip(el); });
+        });
+    </script>
 @endsection

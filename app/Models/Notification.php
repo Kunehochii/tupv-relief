@@ -41,6 +41,7 @@ class Notification extends Model
     const TYPE_NGO_VERIFIED = 'ngo_verified';
     const TYPE_NGO_REJECTED = 'ngo_rejected';
     const TYPE_NGO_PLEDGE_ADDED = 'ngo_pledge_added';
+    const TYPE_DRIVE_COMPLETED = 'drive_completed';
 
     // Color mapping for notification types
     public static function getColor(string $type): string
@@ -55,6 +56,7 @@ class Notification extends Model
             self::TYPE_NGO_VERIFIED => 'success',
             self::TYPE_NGO_REJECTED => 'danger',
             self::TYPE_NGO_PLEDGE_ADDED => 'info',
+            self::TYPE_DRIVE_COMPLETED => 'success',
             default => 'secondary',
         };
     }

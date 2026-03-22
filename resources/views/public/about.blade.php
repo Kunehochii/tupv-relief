@@ -309,18 +309,6 @@
                 system, we help ensure that aid reaches the right people, at the right time, with minimal waste and
                 duplication.
             </p>
-
-            <!-- TABANG Acronym Section -->
-            <div class="acronym-section text-center py-4 bg-light rounded my-4">
-                <h4 class="mb-3" style="color: var(--dark-blue);">
-                    <i class="bi bi-heart-fill" style="color: var(--vivid-red);"></i>
-                    What is TABANG?
-                </h4>
-                <p class="lead mb-0" style="color: var(--dark-blue);">
-                    <strong>T</strong>imely <strong>A</strong>ssistance <strong>B</strong>ringing
-                    <strong>A</strong>id to <strong>N</strong>eedy <strong>G</strong>roups
-                </p>
-            </div>
         </div>
     </section>
 
@@ -369,21 +357,16 @@
                 <div class="col-md-5">
                     <div class="help-card">
                         <p>
-                            <span class="help-label">DONATE</span>
-                            <span class="help-text">Support disaster-affected communities by donating goods or monetary
-                                assistance based on verified needs. Your donation is recorded and monitored to ensure it
-                                reaches the right beneficiaries. Every contribution directly supports timely and fair
-                                relief distribution.</span>
+                            <span class="help-label">PLEDGE</span>
+                            <span class="help-text">Support disaster-affected communities by providing specific goods or essential items based on our verified needs list. Your pledge is coordinated and tracked to ensure physical supplies reach the right hands. Every item contributed directly strengthens our tangible relief efforts and fills immediate gaps in resources.</span>
                         </p>
                     </div>
                 </div>
                 <div class="col-md-5">
                     <div class="help-card">
                         <p>
-                            <span class="help-label">PLEDGE</span>
-                            <span class="help-text">Commit specific goods or support in advance through the pledge
-                                system. Pledges help responders plan, prevent oversupply, and prioritize urgent needs.
-                                Each pledge is tracked to promote accountability and transparency.</span>
+                            <span class="help-label">DONATE</span>
+                            <span class="help-text">Support disaster-affected communities by providing monetary assistance to fund our emergency operations. Your financial donation is recorded and monitored to ensure it is used transparently for the most urgent priorities. Every peso directly enables the rapid purchase and fair distribution of life-saving aid.</span>
                         </p>
                     </div>
                 </div>

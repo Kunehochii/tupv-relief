@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Drive;
 use App\Models\DriveItem;
 use App\Models\ReliefPackItem;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,9 @@ use Illuminate\View\View;
 
 class DriveController extends Controller
 {
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {}
     public function index(Request $request): View
     {
         $query = Drive::with('creator')->withCount('pledges');
@@ -166,6 +170,8 @@ class DriveController extends Controller
     public function complete(Drive $drive): RedirectResponse
     {
         $drive->update(['status' => Drive::STATUS_COMPLETED]);
+
+        $this->notificationService->sendDriveCompleted($drive);
 
         return redirect()->route('admin.drives.show', $drive)
             ->with('success', 'Drive marked as completed successfully.');

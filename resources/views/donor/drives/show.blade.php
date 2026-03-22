@@ -80,11 +80,15 @@
                             {{-- Action Buttons --}}
                             <div class="d-flex gap-3 mt-4 action-buttons">
                                 <a href="{{ route('drive.donate', $drive) }}?from=donor"
-                                    class="btn-action btn-donate-action">
+                                    class="btn-action btn-donate-action"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Send financial aid via NGOs">
                                     DONATE
                                 </a>
                                 <a href="{{ route('donor.pledges.create', ['drive_id' => $drive->id]) }}"
-                                    class="btn-action btn-pledge-action">
+                                    class="btn-action btn-pledge-action"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Send material aid via DSWD">
                                     PLEDGE
                                 </a>
                             </div>
@@ -382,6 +386,12 @@
 @endsection
 
 @section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(el) { return new bootstrap.Tooltip(el); });
+        });
+    </script>
     @if ($drive->latitude && $drive->longitude)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
